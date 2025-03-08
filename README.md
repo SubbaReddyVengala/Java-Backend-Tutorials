@@ -108,6 +108,15 @@ Variable is a name of memory location. There are three types of variables in jav
 
 There are two types of data types in Java: primitive and non-primitive.
 
+Variable
+---------
+A variable is the name of a reserved area allocated in memory. In other words, it is a name of the memory location. It is a combination of "vary + able" which means its value can be changed.
+
+![image](https://github.com/user-attachments/assets/6f2d22a9-da05-4277-8205-a97ca9a8f596)
+
+
+
+
 
 
 
