@@ -126,7 +126,55 @@ static variable
 
 ![image](https://github.com/user-attachments/assets/8459cc6f-2d2f-40fa-a995-aebd56419758)
 
+1) Local Variable
+------------------
+A variable declared inside the body of the method is called local variable. You can use this variable only within that method and the other methods in the class aren't even aware that the variable exists.
 
+A local variable cannot be defined with "static" keyword.
+
+Example of Local Variable
+
+Example
+//defining a Local Variable  
+int num = 10;  
+System.out.println(" Variable: " + num); 
+
+Output:
+Variable: 10
+
+2) Instance Variable
+   ----------------
+A variable declared inside the class but outside the body of the method, is called an instance variable. It is not declared as static.
+
+It is called an instance variable because its value is instance-specific and is not shared among instances.
+
+Example of Instance Variable
+---------------------------
+Example
+          
+public class InstanceVariableDemo {  
+    //Defining Instance Variables  
+    public String name;  
+    public int age=19;  
+ //Creadting a default Constructor initializing Instance Variable  
+    public InstanceVariableDemo()  
+    {  
+        this.name = "Deepak";  
+    }  
+}  
+public class Main{  
+    public static void main(String[] args)  
+    {  
+        // Object Creation  
+       InstanceVariableDemo obj = new InstanceVariableDemo();  
+        System.out.println("Student Name is: " + obj.name);  
+        System.out.println("Age: "+ obj.age);  
+    }  
+}  
+Output:
+
+Student Name is: Deepak
+Age: 19
 
 
 
