@@ -277,13 +277,30 @@ System.out.println("b= " + b);
 Output
 ------
  a= false
+ 
  b= true
 
 Note:
 -----
 For instance, an if statement executes a block of code if the boolean expression evaluates to true, and skips it if the expression is false.
 
+Byte Data Type
+--------------
+The byte data type in Java is a primitive data type that represents an 8-bit signed two's complement integer. It has a range of values from -128 to 127. Its default value is 0. The byte data type is commonly used when working with raw binary data or when memory conservation is a concern, as it occupies less memory than larger integer types like int or long.
 
+Example
+byte a=10;  
+byte b=-20;  
+System.out.println("a= " + a);  
+System.out.println("b= " + b)
 
+Output
+ a= 10
+ b= -20
+ a= 10
+ b= -20
 
+Note:
+-----
+One common use of the byte data type is in reading and writing binary data, such as files or network streams. Since binary data is often represented using bytes, the byte data type provides a convenient way to work with such data.
 
