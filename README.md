@@ -114,6 +114,7 @@ A variable is the name of a reserved area allocated in memory. In other words, i
 
 ![image](https://github.com/user-attachments/assets/6f2d22a9-da05-4277-8205-a97ca9a8f596)
 
+int data=50;//Here data is variable  
 
 
 
