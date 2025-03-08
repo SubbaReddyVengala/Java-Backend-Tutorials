@@ -264,33 +264,25 @@ double data type
 
 ![image](https://github.com/user-attachments/assets/677ffe1e-ad80-4d48-a49f-9b9bd7ad852a)
 
-Data Type
-Default Value
-Default size
-boolean
-false
-1 bit
-char
-'\u0000'
-2 byte
-byte
-0
-1 byte
-short
-0
-2 byte
-int
-0
-4 byte
-long
-0L
-8 byte
-float
-0.0f
-4 byte
-double
-0.0d
-8 byte
+Boolean Data Type
+------------------
+In Java, the boolean data type represents a single bit of information with two possible states: true or false. It is used to store the result of logical expressions or conditions. Unlike other primitive data types like int or double, boolean does not have a specific size or range.
+
+Example
+boolean a=false;  
+boolean b=true;  
+System.out.println("a= " + a);  
+System.out.println("b= " + b);
+
+Output
+------
+ a= false
+ b= true
+
+Note:
+-----
+For instance, an if statement executes a block of code if the boolean expression evaluates to true, and skips it if the expression is false.
+
 
 
 
