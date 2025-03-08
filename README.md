@@ -116,6 +116,17 @@ A variable is the name of a reserved area allocated in memory. In other words, i
 
 int data=50;//Here data is variable  
 
+Types of Variables
+------------------
+There are three types of variables in Java:
+
+local variable
+instance variable
+static variable
+
+![image](https://github.com/user-attachments/assets/8459cc6f-2d2f-40fa-a995-aebd56419758)
+
+
 
 
 
