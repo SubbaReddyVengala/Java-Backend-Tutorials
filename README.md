@@ -304,3 +304,168 @@ Note:
 -----
 One common use of the byte data type is in reading and writing binary data, such as files or network streams. Since binary data is often represented using bytes, the byte data type provides a convenient way to work with such data.
 
+Short Data Type
+---------------
+The short data type in Java is a primitive data type that represents a 16-bit signed two's complement integer. It has a range of values from -32,768 to 32,767. Similar to the byte data type, short is used when memory conservation is a concern, but more precision than byte is required. Its default value is 0.
+
+Example
+short a=10000;  
+short b=-5000;  
+System.out.println("a= " + a);  
+System.out.println("b= " + b); 
+
+Output
+
+ a= 10000
+ b= -5000
+ a= 10000
+ b= -5000
+ 
+Note:
+-----
+As with the byte data type, short variables must be explicitly cast when used in expressions with larger integer types to avoid loss of precision.
+
+Int Data Type
+--------------
+The int data type in Java is a primitive data type that represents a 32-bit signed two's complement integer. It has a range of values from -2,147,483,648 to 2,147,483,647. The int data type is one of the most commonly used data types in Java and is typically used to store whole numbers without decimal points. Its default value is 0.
+
+Example
+--------
+int a=100000;  
+int b=-200000;  
+System.out.println("a= " + a);  
+System.out.println("b= " + b);  
+
+Output
+
+ a= 100000
+ b= -200000
+
+ Note:
+ -----
+ Int variables can be used in mathematical expressions, assigned to other int variables, and used in conditional statements.
+
+ Long Data Type
+ --------------
+
+ The long data type in Java is a primitive data type that represents a 64-bit signed two's complement integer. It has a wider range of values than int, ranging from -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807. Its default value is 0.0F. The long data type is used when int is not large enough to hold the desired value, or when a larger range of integer values is needed.
+
+ Example
+long a = 5000000L;    
+long b = -6000000L;  
+System.out.println("a= " + a);    
+System.out.println("b= " + b); 
+
+Output
+
+a= 5000000
+b= -6000000
+a= 5000000
+b= -6000000
+
+Note:
+----
+The long data type is commonly used in applications where large integer values are required, such as in scientific computations, financial applications, and systems programming. It provides greater precision and a larger range than int, making it suitable for scenarios where int is insufficient
+
+Float Data Type
+--------------
+The float data type in Java is a primitive data type that represents single-precision 32-bit IEEE 754 floating-point numbers. It can represent a wide range of decimal values, but it is not suitable for precise values such as currency. The float data type is useful for applications where a higher range of values is needed, and precision is not critical.
+
+Example
+float f = 234.5f;    
+System.out.println("f = " + f);   
+
+Output
+f = 234.5
+
+Note:
+----
+One of the key characteristics of the float data type is its ability to represent a wide range of values, both positive and negative, including very small and very large values. However, due to its limited precision (approximately 6-7 significant decimal digits), it is not suitable for applications where exact decimal values are required.
+
+Double Data Type
+-----------------
+The double data type in Java is a primitive data type that represents double-precision 64-bit IEEE 754 floating-point numbers. Its default value is 0.0d. It provides a wider range of values and greater precision compared to the float data type, making it suitable for applications where accurate representation of decimal values is required.
+
+Example
+double d = 12.3;    
+System.out.println("d = " + d); 
+
+Output
+d = 12.3
+
+Note:
+-----
+One of the key advantages of the double data type is its ability to represent a wider range of values with greater precision compared to float. It can accurately represent values with up to approximately 15-16 significant decimal digits, making it suitable for applications that require high precision, such as financial calculations, scientific computations, and graphics programming.
+
+Char Data Type:
+----------------
+The char data type in Java is a primitive data type that represents a single 16-bit Unicode character. It can store any character from the Unicode character set, that allows Java to support internationalization and representation of characters from various languages and writing systems.
+
+Example:
+
+char c = 'A';  
+System.out.println("c = " + c); 
+
+Output
+c = A
+
+Note:
+----
+The char data type is commonly used to represent characters, such as letters, digits, and symbols, in Java programs. It can also be used to perform arithmetic operations, as the Unicode values of characters can be treated as integers. For example, you can perform addition or subtraction operations on char variables to manipulate their Unicode values.
+
+Non-primitive data types in Java, also known as reference types, refer to objects and arrays rather than the simple, built-in primitives like int or char. Here are some key points about them:
+
+Characteristics
+Reference-Based:
+---------------
+Variables of non-primitive types store memory addresses (references) that point to the actual data (objects) on the heap.
+
+Complex Structures:
+------------------
+They can contain multiple values and methods, allowing for more complex data structures.
+
+Default Value:
+--------------
+If not explicitly initialized, non-primitive types default to null.
+
+User-Defined:
+------------
+You can create your own classes and interfaces, which are non-primitive by nature.
+
+Types of Non-Primitive Data Types
+-------------------------------
+Classes and Objects:
+------------------
+Any object created from a class is a non-primitive type. For example, the String class is a non-primitive type:
+
+String greeting = "Hello, World!";
+Interfaces:
+Variables that refer to an interface are also non-primitive types. They hold references to objects of classes that implement the interface.
+
+Arrays:
+--------
+Arrays in Java, whether of primitive or non-primitive elements, are themselves non-primitive:
+
+
+int[] numbers = {1, 2, 3, 4};
+Student[] students = new Student[10];
+Enumerations (Enums):
+Enums are special types of classes that define a fixed set of constants:
+
+enum Day { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY }
+Wrapper Classes:
+These are classes that encapsulate primitive types (e.g., Integer for int, Double for double). Even though they wrap primitives, they are non-primitive types and provide methods for converting and manipulating values.
+
+Why Use Non-Primitive Types?
+--------------------------
+Object-Oriented Programming:
+---------------------------
+They allow you to implement encapsulation, inheritance, and polymorphism.
+
+Functionality
+---------------
+Non-primitive types come with built-in methods (e.g., string manipulation methods in the String class) that simplify many programming tasks.
+
+Custom Data Structures:
+----------------------
+They enable the creation of complex data models by allowing you to define classes with attributes and behaviors.
