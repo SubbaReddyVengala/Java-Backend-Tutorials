@@ -1,3 +1,5 @@
+package primenumber;
+
 public class PrimeNumbersRange {
     public static void main(String[] args) {
         int lower = 1, upper = 20;

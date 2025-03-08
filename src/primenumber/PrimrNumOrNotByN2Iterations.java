@@ -1,13 +1,18 @@
-public class PrimeNumOptimizeWithBreak {
+package primenumber;
+
+public class PrimrNumOrNotByN2Iterations {
     public static void main(String[] args) {
 
-        int i, n = 3;
+        int i, n = 33;
         boolean isprime = true;
+
         // 0 and 1 are not prime numbers also, negative numbers are not prime
         if (n < 2) {
             isprime = false;
         } else {
-            for (i = 2; i < n; i++) {
+            // running loop till n is wasteful because for any number n the numbers in
+            // the range(n/2 + 1, n) won't be divisible anyways.
+            for (i = 2; i <= n / 2; i++) {
                 if (n % i == 0) {
                     isprime = false;
                     break;
@@ -21,8 +26,8 @@ public class PrimeNumOptimizeWithBreak {
         // Time Complexity : O(N)
         // Space Complexity : O(1)
         // This program is better than previous version as :
-        // Condition for 0, 1 and negative numbers checked earlier
-        // Loops runs b/w [2, n-1] rather than [1, n]
+        // Loops runs b/w [2, n/2] rather than [2, n-1]
+
 
     }
 }

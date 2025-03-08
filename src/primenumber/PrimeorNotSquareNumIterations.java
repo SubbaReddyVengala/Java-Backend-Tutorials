@@ -1,3 +1,5 @@
+package primenumber;
+
 public class PrimeorNotSquareNumIterations {
     public static void main(String[] args) {
 

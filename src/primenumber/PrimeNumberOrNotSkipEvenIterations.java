@@ -1,3 +1,5 @@
+package primenumber;
+
 public class PrimeNumberOrNotSkipEvenIterations {
     public static void main(String[] args) {
 
