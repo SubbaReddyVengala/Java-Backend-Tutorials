@@ -469,3 +469,243 @@ Non-primitive types come with built-in methods (e.g., string manipulation method
 Custom Data Structures:
 ----------------------
 They enable the creation of complex data models by allowing you to define classes with attributes and behaviors.
+
+Operators in Java
+-----------------
+Operator are an essential part of any programming language. In Java, operator is a symbol that is used to perform operations. For example: +, -, *, / etc. These are essential for performing different types of operations on variables and values. In this section, we will discuss different types of operators used in Java programming.
+
+There are many types of operators in Java which are given below:
+
+Unary Operator,
+Arithmetic Operator,
+Shift Operator,
+Relational Operator,
+Bitwise Operator,
+Logical Operator,
+Ternary Operator and
+Assignment Operator.
+
+Java Unary Operator:
+--------------------
+The Java unary operators require only one operand. Unary operators are used to perform various operations i.e. incrementing/decrementing a value by one, negating an expression and inverting the value of a boolean.
+
+++ : increments a value by one
+Pre-increment (++p) : First increments a value by one, then uses the value.
+Post-increment (p++) : First uses the value, then increments a value by one.
+
+-- : decrements a value by one
+Pre-decrement (--p) : First decrements a value by one, then uses the value.
+Post-decrement (p--) : First uses the value, then decrements a value by one.
+
+! : negates an expression
+~ : inverts the value of a boolean
+
+Java Unary Operator Example: ++ and --
+
+Example
+int x=10;  
+System.out.println(x++);//10 (11)  
+System.out.println(++x);//12  
+System.out.println(x--);//12 (11)  
+System.out.println(--x);//10  
+
+Output
+10
+12
+12
+10
+
+int a=10;    
+int b=10;    
+System.out.println(a++ + ++a);//10+12=22    
+System.out.println(b++ + b++);//10+11=21    
+
+Java Arithmetic Operators
+--------------------------
+Java arithmetic operators are used to perform addition, subtraction, multiplication, and division. They act as basic mathematical operations.
+
+Java Arithmetic Operator Example
+
+int a=10;    
+int b=5;    
+System.out.println(a+b);//15    
+System.out.println(a-b);//5    
+System.out.println(a*b);//50    
+System.out.println(a/b);//2    
+System.out.println(a%b);//0    
+
+Java Shift Operators:
+----------------------
+Java shift operator works on the bits of the data. It shifts the bits of the number from left to right or right to left. There are three types of shift operators in Java.
+
+<< : Left Shift Operator (Signed)
+>> : Right Shift Operator (Signed)
+>>> : Unsigned Right Shift Operator
+
+Java Left Shift Operator
+------------------------
+The Java left shift operator << is used to shift all of the bits in a value to the left side of a specified number of times.
+
+Java Left Shift Operator Example
+--------------------------------
+
+System.out.println(10<<2);//10*2^2=10*4=40  
+System.out.println(10<<3);//10*2^3=10*8=80  
+System.out.println(20<<2);//20*2^2=20*4=80  
+System.out.println(15<<4);//15*2^4=15*16=240  
+
+Java Right Shift Operator
+--------------------------
+The Java right shift operator >> is used to move the value of the left operand to right by the number of bits specified by the right operand.
+
+Java Right Shift Operator Example
+---------------------------------
+System.out.println(10>>2);//10/2^2=10/4=2  
+System.out.println(20>>2);//20/2^2=20/4=5  
+System.out.println(20>>3);//20/2^3=20/8=2  
+
+Java Relational Operators
+--------------------------
+Java relational operators are used to check relationship between two operands such as less than, less than or equal to, greater than, greater than or equal to, equal to and not equal to. These operators return boolean values either true or false.
+
+< : Less Than
+> : Greater Than
+<= : Less Than or Equal to
+>= : Greater Than or Equal to
+== : Equal to
+!= : Not Equal to
+
+Java Relational Operator Example
+--------------------------------
+
+int a=10;  
+int b=20;  
+System.out.println("(a < b) : " + (a<b));  
+System.out.println("(a > b) : " + (a>b));  
+System.out.println("(a <= b) : " + (a<=b));  
+System.out.println("(a >= b) : " + (a>=b));  
+System.out.println("(a == b) : " + (a==b));  
+System.out.println("(a != b) : " + (a!=b));  
+
+Output:
+
+(a < b) : true
+(a > b) : false
+(a <= b) : true
+(a >= b) : false
+(a == b) : false
+(a != b) : true
+
+Java AND Operator Example: Logical && and Bitwise 
+---------------------------------------------------
+The logical && operator does not check the second condition if the first condition is false. It checks the second condition only if the first one is true.
+
+The bitwise & operator always checks both conditions whether first condition is true or false.
+
+public class OperatorExample9{    
+public static void main(String args[]){    
+int a=10;    
+int b=5;    
+int c=20;    
+System.out.println(a<b&&a<c);//false && true = false    
+System.out.println(a<b&a<c);//false & true = false    
+}}    
+
+Output:
+
+false
+false
+
+Java AND Operator Example: Logical && vs Bitwise &
+File Name: OperatorExample10.java
+
+public class OperatorExample10{    
+public static void main(String args[]){    
+int a=10;    
+int b=5;    
+int c=20;    
+System.out.println(a<b&&a++<c);//false && true = false    
+System.out.println(a);//10 because second condition is not checked    
+System.out.println(a<b&a++<c);//false && true = false    
+System.out.println(a);//11 because second condition is checked    
+}}    
+Output:
+
+false
+10
+false
+11
+
+
+Java OR Operator Example: Logical || and Bitwise |
+The logical || operator does not check the second condition if the first condition is true. It checks the second condition only if the first one is false.
+
+The bitwise | operator always checks both conditions whether first condition is true or false.
+
+File Name: OperatorExample11.java
+
+public class OperatorExample11{    
+public static void main(String args[]){    
+int a=10;    
+int b=5;    
+int c=20;    
+System.out.println(a>b||a<c);//true || true = true    
+System.out.println(a>b|a<c);//true | true = true    
+//|| vs |    
+System.out.println(a>b||a++<c);//true || true = true    
+System.out.println(a);//10 because second condition is not checked    
+System.out.println(a>b|a++<c);//true | true = true    
+System.out.println(a);//11 because second condition is checked    
+}}    
+Output:
+
+true
+true
+true
+10
+true
+11
+
+Java Ternary Operator
+-----------------------
+Java Ternary operator is used as one line replacement for if-then-else statement and used a lot in Java programming. It is the only conditional operator which takes three operands.
+
+Java Ternary Operator Example
+-----------------------------------
+File Name: OperatorExample12.java
+
+public class OperatorExample12{    
+public static void main(String args[]){    
+int a=2;    
+int b=5;    
+int min=(a<b)?a:b;    
+System.out.println(min);    
+}}    
+
+
+Output:
+2
+
+Java Assignment Operator
+---------------------------
+Java assignment operator is one of the most common operators. It is used to assign the value on its right to the operand on its left.
+
+Java Assignment Operator Example
+-----------------------------------
+File Name: OperatorExample14.java
+
+public class OperatorExample14{  
+public static void main(String args[]){  
+int a=10;  
+int b=20;  
+a+=4;//a=a+4 (a=10+4)  
+b-=4;//b=b-4 (b=20-4)  
+System.out.println(a);  
+System.out.println(b);  
+}}  
+
+
+Conclusion
+------------
+Operators are a fundamental part of Java programming, enabling developers to perform various tasks ranging from simple arithmetic to complex bitwise operations. Understanding the different types of operators and their precedence is crucial for writing efficient and effective Java code. 
+
