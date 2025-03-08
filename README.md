@@ -162,6 +162,7 @@ public class InstanceVariableDemo {
         this.name = "Deepak";  
     }  
 }  
+
 public class Main{  
     public static void main(String[] args)  
     {  
@@ -170,13 +171,66 @@ public class Main{
         System.out.println("Student Name is: " + obj.name);  
         System.out.println("Age: "+ obj.age);  
     }  
-}  
-Output:
+} 
 
+Output:
+-------
 Student Name is: Deepak
 Age: 19
 
+3) Static variable
+ -----------------
+A variable that is declared as static is called a static variable. It cannot be local. You can create a single copy of the static variable and share it among all the instances of the class. Memory allocation for static variables happens only once when the class is loaded in the memory.
 
+Example Static variable
+-----------------------
+
+Example
+class Student{  
+    //static variable  
+   static int age;  
+} 
+
+public class Main{  
+   public static void main(String args[]){  
+       Student s1 = new Student();  
+       Student s2 = new Student();  
+       s1.age = 24;  
+       s2.age = 21;  
+       Student.age = 23;  
+       System.out.println("S1\'s age is: " + s1.age);  
+       System.out.println("S2\'s age is: " + s2.age);  
+   }  
+}   
+
+Output:
+----------
+S1's age is: 23
+S2's age is: 23
+
+Explanation:
+-------------
+In Java, a static variable belongs to the class itself rather than to any individual instance. This means there is only one copy of that variable, regardless of how many objects (instances) of the class you create.
+
+Consider the following points:
+-----------------------------
+Single Copy:
+------------
+When you declare static int age in the Student class, there's only one age variable shared by all instances of Student. It doesn't matter whether you refer to it via s1.age, s2.age, or Student.age; they all point to the same memory location.
+
+Modification:
+-------------
+When you change the value of age using any reference, the change is reflected for all references. For example:
+
+Setting s1.age = 24; makes the shared age 24.
+Then, setting s2.age = 21; changes the same shared age to 21.
+Finally, Student.age = 23; updates the same variable to 23.
+Access Through Instances:
+Even though you use s1 and s2 to modify age, they are just ways to access the shared variable. They don't have their own separate age field.
+
+Thus, when you print s1.age and s2.age, both will output 23 because that is the last value assigned to the shared static variable.
+
+This is why using static is helpful when you need a property or method that is common to all objects of a class and should not be duplicated for each instance.
 
 
 
