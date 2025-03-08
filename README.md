@@ -232,6 +232,37 @@ Thus, when you print s1.age and s2.age, both will output 23 because that is the 
 
 This is why using static is helpful when you need a property or method that is common to all objects of a class and should not be duplicated for each instance.
 
+Data Types in Java
+-------------------
+Data types specify the different sizes and values that can be stored in the variable. There are two types of data types in Java:
+
+Primitive data types: 
+----------------------
+The primitive data types include boolean, char, byte, short, int, long, float and double.
+
+Non-primitive data types: 
+-------------------------
+The non-primitive data types include Classes, Interfaces, and Arrays.
+
+Let's understand in detail about the two major data types of Java in the following paragraphs.
+
+Java Primitive Data Types
+-------------------------
+In Java language, primitive data types are the building blocks of data manipulation. These are the most basic data types available in Java languag
+In Java, there are mainly eight primitive data types and let's understand about them in detail in the following paragraphs.
+
+Java Primitive data types:
+-------------------------
+boolean data type
+byte data type
+char data type
+short data type
+int data type
+long data type
+float data type
+double data type
+
+![image](https://github.com/user-attachments/assets/677ffe1e-ad80-4d48-a49f-9b9bd7ad852a)
 
 
 
