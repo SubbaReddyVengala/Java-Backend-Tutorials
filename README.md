@@ -264,7 +264,33 @@ double data type
 
 ![image](https://github.com/user-attachments/assets/677ffe1e-ad80-4d48-a49f-9b9bd7ad852a)
 
-
+Data Type
+Default Value
+Default size
+boolean
+false
+1 bit
+char
+'\u0000'
+2 byte
+byte
+0
+1 byte
+short
+0
+2 byte
+int
+0
+4 byte
+long
+0L
+8 byte
+float
+0.0f
+4 byte
+double
+0.0d
+8 byte
 
 
 
