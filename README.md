@@ -151,7 +151,8 @@ It is called an instance variable because its value is instance-specific and is 
 Example of Instance Variable
 ---------------------------
 Example
-          
+
+```          
 public class InstanceVariableDemo {  
     //Defining Instance Variables  
     public String name;  
@@ -173,11 +174,14 @@ public class Main{
     }  
 } 
 
+```
+```
 Output:
 -------
 Student Name is: Deepak
 Age: 19
 
+```
 3) Static variable
  -----------------
 A variable that is declared as static is called a static variable. It cannot be local. You can create a single copy of the static variable and share it among all the instances of the class. Memory allocation for static variables happens only once when the class is loaded in the memory.
@@ -185,6 +189,7 @@ A variable that is declared as static is called a static variable. It cannot be 
 Example Static variable
 -----------------------
 
+```
 Example
 class Student{  
     //static variable  
@@ -203,11 +208,15 @@ public class Main{
    }  
 }   
 
+```
+
+```
 Output:
 ----------
 S1's age is: 23
 S2's age is: 23
 
+```
 Explanation:
 -------------
 In Java, a static variable belongs to the class itself rather than to any individual instance. This means there is only one copy of that variable, regardless of how many objects (instances) of the class you create.
@@ -578,6 +587,7 @@ Java relational operators are used to check relationship between two operands su
 Java Relational Operator Example
 --------------------------------
 
+```
 int a=10;  
 int b=20;  
 System.out.println("(a < b) : " + (a<b));  
@@ -587,6 +597,9 @@ System.out.println("(a >= b) : " + (a>=b));
 System.out.println("(a == b) : " + (a==b));  
 System.out.println("(a != b) : " + (a!=b));  
 
+```
+
+```
 Output:
 
 (a < b) : true
@@ -596,12 +609,14 @@ Output:
 (a == b) : false
 (a != b) : true
 
+```
 Java AND Operator Example: Logical && and Bitwise 
 ---------------------------------------------------
 The logical && operator does not check the second condition if the first condition is false. It checks the second condition only if the first one is true.
 
 The bitwise & operator always checks both conditions whether first condition is true or false.
 
+```
 public class OperatorExample9{    
 public static void main(String args[]){    
 int a=10;    
@@ -611,6 +626,7 @@ System.out.println(a<b&&a<c);//false && true = false
 System.out.println(a<b&a<c);//false & true = false    
 }}    
 
+```
 Output:
 
 false
@@ -619,6 +635,7 @@ false
 Java AND Operator Example: Logical && vs Bitwise &
 File Name: OperatorExample10.java
 
+```
 public class OperatorExample10{    
 public static void main(String args[]){    
 int a=10;    
@@ -628,7 +645,9 @@ System.out.println(a<b&&a++<c);//false && true = false
 System.out.println(a);//10 because second condition is not checked    
 System.out.println(a<b&a++<c);//false && true = false    
 System.out.println(a);//11 because second condition is checked    
-}}    
+}}  
+
+```
 Output:
 
 false
@@ -644,6 +663,7 @@ The bitwise | operator always checks both conditions whether first condition is 
 
 File Name: OperatorExample11.java
 
+```
 public class OperatorExample11{    
 public static void main(String args[]){    
 int a=10;    
@@ -656,7 +676,9 @@ System.out.println(a>b||a++<c);//true || true = true
 System.out.println(a);//10 because second condition is not checked    
 System.out.println(a>b|a++<c);//true | true = true    
 System.out.println(a);//11 because second condition is checked    
-}}    
+}}  
+
+```
 Output:
 
 true
@@ -674,6 +696,7 @@ Java Ternary Operator Example
 -----------------------------------
 File Name: OperatorExample12.java
 
+```
 public class OperatorExample12{    
 public static void main(String args[]){    
 int a=2;    
@@ -682,6 +705,7 @@ int min=(a<b)?a:b;
 System.out.println(min);    
 }}    
 
+```
 
 Output:
 2
@@ -694,6 +718,7 @@ Java Assignment Operator Example
 -----------------------------------
 File Name: OperatorExample14.java
 
+```
 public class OperatorExample14{  
 public static void main(String args[]){  
 int a=10;  
@@ -705,6 +730,7 @@ System.out.println(b);
 }}  
 
 
+```
 Conclusion
 ------------
 Operators are a fundamental part of Java programming, enabling developers to perform various tasks ranging from simple arithmetic to complex bitwise operations. Understanding the different types of operators and their precedence is crucial for writing efficient and effective Java code. 
@@ -857,6 +883,7 @@ if(condition) {
 statement 1; //executes when condition is true   
 }    
 
+```
 public class Main {      
     public static void main(String[] args) {      
         int x = 10;      
@@ -867,10 +894,14 @@ public class Main {
     }        
 }       
 
+```
+
+```
 Output:
 
 x + y is greater than 20
 
+```
 2) if-else statement
 The if-else statement is an extension to the if-statement, which uses another block of code, i.e., else block. The else block is executed if the condition of the if-block is evaluated as false.
 
@@ -885,6 +916,8 @@ statement 2; //executes when condition is false
 
 Example
 --------
+
+```
 public class Main {    
     public static void main(String[] args) {    
         int x = 10;    
@@ -897,13 +930,19 @@ public class Main {
     }    
 }    
 
+```
+
+```
+
 Output:
 
 x + y is greater than 20
 
+```
 3) if-else-if ladder:
 The if-else-if statement contains the if-statement followed by multiple else-if statements. In other words, we can say that it is the chain of if-else statements that create a decision tree where the program may enter in the block of code where the condition is true. We can also define an else statement at the end of the chain.
 
+```
 Syntax of if-else-if statement is given below.
 
 if(condition 1) {    
@@ -916,6 +955,8 @@ else {
 statement 2; //executes when all the conditions are false   
 }  
 
+```
+```
 Example
 public class Main {    
     public static void main(String[] args) {    
@@ -932,15 +973,20 @@ public class Main {
     }    
 }    
 
+```
+
+```
 Output:
 
 Delhi
 
+```
 4. Nested if-statement
 In nested if-statements, the if statement can contain a if or if-else statement inside another if or else-if statement.
 
 Syntax of Nested if-statement is given below.
 
+```
 if(condition 1) {    
 statement 1; //executes when condition 1 is true   
 if(condition 2) {  
@@ -949,7 +995,9 @@ statement 2; //executes when condition 2 is true
 else{  
 statement 2; //executes when condition 2 is false   
 }  
-}  
+} 
+
+```
 
 public class Main {      
     public static void main(String[] args) {      
@@ -988,6 +1036,7 @@ While using switch statements, we must notice that the case expression will be o
 
 The syntax to use the switch statement is given below.
 
+```
 switch (expression){  
     case value1:  
      statement1;  
@@ -1002,6 +1051,8 @@ switch (expression){
      default statement;  
 }  
 
+```
+```
 public class Main {    
     public static void main(String[] args) {    
         int num = 2;    
@@ -1018,10 +1069,14 @@ public class Main {
     }    
 }    
 
+```
+
+```
 Output:
 
 2
 
+```
 Note:
 ----
 While using switch statements, we must notice that the case expression will be of the same type as the variable. However, it will also be a constant value. The switch permits only int, string, and Enum type variables to be used.
@@ -1049,6 +1104,7 @@ The flow chart for the for-loop is given below.
 
 Consider the following example to understand the proper functioning of the for loop in java.
 
+```
 Example
 public class Main {    
     public static void main(String[] args) {    
@@ -1061,10 +1117,14 @@ public class Main {
     }    
 }    
 
+```
+
+```
 Output:
 
 The sum of first 10 natural numbers is 55
 
+```
 Java for-each loop
 ------------------
 Java provides an enhanced for loop to traverse the data structures like array or collection. 
@@ -1076,6 +1136,7 @@ for(data_type var : array_name/collection_name){
 
 Consider the following example to understand the functioning of the for-each loop in Java.
 
+```
 Example
 public class Main {      
     public static void main(String[] args) {      
@@ -1087,6 +1148,9 @@ public class Main {
     }      
 }      
 
+```
+
+```
 Output:
 
 Printing the content of the array names:
@@ -1097,6 +1161,7 @@ C++
 Python
 JavaScript
 
+```
 Java while loop
 ---------------
 The while loop is also used to iterate over the number of statements multiple times. However, if we don't know the number of iterations in advance, it is recommended to use a while loop. Unlike for loop, the initialization and increment/decrement doesn't take place inside the loop statement in while loop.
@@ -1105,13 +1170,17 @@ It is also known as the entry-controlled loop since the condition is checked at 
 
 The syntax of the while loop is given below.
 
+```
 while(condition){    
 //looping statements    
-}    
+}  
+
+```
 The flow chart for the while loop is given in the following image.
 
 ![image](https://github.com/user-attachments/assets/afe2ca11-ddaa-46ec-a3e9-1c37c8c783b8)
 
+```
 public class Main {      
     public static void main(String[] args) {      
         int i = 0;      
@@ -1123,6 +1192,8 @@ public class Main {
     }      
 }      
 
+```
+```
 Output:
 
 Printing the list of first 10 even numbers
@@ -1134,21 +1205,25 @@ Printing the list of first 10 even numbers
 8
 10
 
+```
 Java do-while loop
 -------------------
 The do-while loop checks the condition at the end of the loop after executing the loop statements. When the number of iteration is not known and we have to execute the loop at least once, we can use do-while loop.
 
 It is also known as the exit-controlled loop since the condition is not checked in advance. The syntax of the do-while loop is given below.
 
+```
 do     
 {    
 //statements    
 } while (condition);    
 
+```
 The flow chart of the do-while loop is given in the following image.
 
 ![image](https://github.com/user-attachments/assets/328990f3-ba83-40b8-8770-126c4c2784cf)
 
+```
 public class Main {      
     public static void main(String[] args) {      
         int i = 0;      
@@ -1160,6 +1235,9 @@ public class Main {
     }      
 }    
 
+```
+
+```
 Output:
 
 Printing the list of first 10 even numbers
@@ -1170,6 +1248,7 @@ Printing the list of first 10 even numbers
 8
 10
 
+```
 Jump Statements:
 ----------------
 Jump statements are used to transfer the control of the program to the specific statements. In other words, jump statements transfer the execution control to the other part of the program. There are two types of jump statements in Java, i.e., break and continue.
@@ -1184,6 +1263,7 @@ The break statement example with for loop
 
 Consider the following example in which we have used the break statement with the for loop.
 
+```
 Example
 public class Main {    
     public static void main(String[] args) {    
@@ -1196,6 +1276,7 @@ public class Main {
     }    
 }    
 
+```
 0
 1
 2
@@ -1206,6 +1287,7 @@ public class Main {
 
 break statement example with labeled for loop
 
+```
 Example
 public class Main {      
 public static void main(String[] args) {      
@@ -1226,6 +1308,7 @@ public static void main(String[] args) {
 }      
 } 
 
+```
 
 Output:
 0
@@ -1384,6 +1467,7 @@ if(condition){
 
 ![image](https://github.com/user-attachments/assets/b2078ac8-f53a-49e0-88c4-ba44114f9808)
 
+```
 /Java Program to demonstate the use of if statement.  
 public class Main {  
 public static void main(String[] args) {  
@@ -1396,10 +1480,14 @@ public static void main(String[] args) {
 }  
 }  
 
+```
+
+```
 Output:
 
 Age is greater than 18
 
+```
 Java if-else Statement
 The Java if-else statement also tests the condition. It executes the if block if condition is true otherwise else block is executed.
 
@@ -1413,6 +1501,7 @@ if(condition){
 
 ![image](https://github.com/user-attachments/assets/a66b5643-3179-4b53-90df-ed6d7c12e747)
 
+```
 /Java Program to demonstrate the use of if-else statement.  
 //It is a program of odd and even number.  
 public class Main {  
@@ -1428,15 +1517,20 @@ public static void main(String[] args) {
 }  
 }  
 
+```
+```
 Output:
 
 odd number
 
+```
 Leap Year Example Using IfElse:
 
 A year is leap, if it is divisible by 4 and 400. But, not by 100.
 
 Example
+
+```
 public class Main {    
 public static void main(String[] args) {    
     int year=2020;    
@@ -1449,10 +1543,14 @@ public static void main(String[] args) {
 }    
 }    
 
+```
+
+```
 Output:
 
 LEAP YEAR
 
+```
 Java if-else-if ladder Statement
 ----------------------------------
 
@@ -1460,6 +1558,7 @@ The if-else-if ladder statement executes one condition from multiple statements.
 
 Syntax:
 
+```
 if(condition1){  
 //code to be executed if condition1 is true  
 }else if(condition2){  
@@ -1473,6 +1572,7 @@ else{
 //code to be executed if all the conditions are false  
 }  
 
+```
 ![image](https://github.com/user-attachments/assets/52d24cfe-d139-4963-95c9-a970990474f6)
 
 //Java Program to demonstrate the use of If else-if ladder.  
@@ -1503,6 +1603,7 @@ public static void main(String[] args) {
 }  
 }  
 
+
 Output:
 
 C grade
@@ -1513,6 +1614,7 @@ The nested if statement represents the if block within another if block. Here, t
 
 Syntax:
 
+```
 if(condition){    
      //code to be executed    
           if(condition){  
@@ -1520,8 +1622,10 @@ if(condition){
     }    
 }  
 
+```
 ![image](https://github.com/user-attachments/assets/42fe1d03-51f1-4d40-8b47-b21dfb762699)
 
+```
 //Java Program to demonstrate the use of Nested If Statement.  
 public class Main {    
 public static void main(String[] args) {    
@@ -1536,10 +1640,14 @@ public static void main(String[] args) {
     }    
 }}  
 
+```
+```
 Output:
 
 You are eligible to donate blood
 
+```
+```
 //Java Program to demonstrate the use of Nested If Statement.    
 public class Main {      
 public static void main(String[] args) {      
@@ -1559,13 +1667,17 @@ public static void main(String[] args) {
 }    
 }  
 
+```
+```
 Output:
 
 You are not eligible to donate blood
 
+```
 Ternary Operator
 We can also use ternary operator (? :) to perform the task of if...else statement. It is a shorthand way to check the condition. If the condition is true, the result of ? is returned. But, if the condition is false, the result of : is returned.
 
+```
 Example
 public class Main {    
 public static void main(String[] args) {    
@@ -1576,10 +1688,14 @@ public static void main(String[] args) {
 }    
 }    
 
+```
+
+```
 Output:
 
 odd number
 
+```
 Conclusion:
 ------------
 'If-else' statements are indispensable tools in Java programming for making decisions based on conditions. They provide the flexibility to execute different code blocks based on varying circumstances, thus enabling developers to create dynamic and responsive applications. By mastering the usage of 'if-else' statements, programmers can unlock the full potential of Java for crafting efficient and robust software solutions.
@@ -1635,8 +1751,10 @@ Explanation: In Java, accessing a character at an index that exceeds the length 
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
 4. Consider the following code snippet:
 
+```
 int x = 10;  
 f (x > 5) {  
    System.out.println("x is greater than 5");  
@@ -1644,7 +1762,8 @@ f (x > 5) {
    System.out.println("x is greater than 7");  
  else {  
    System.out.println("x is less than or equal to 5");  
-    
+  
+```  
 What will be the output if x is assigned a value of 4?
 
 x is greater than 5
@@ -1686,6 +1805,7 @@ If a break statement is not found, it executes the next case.
 
 The case value can have a default label which is optional
 
+```
 Syntax:
 
 switch(expression){    
@@ -1701,10 +1821,12 @@ default:
   code to be executed if all cases are not matched;  
 }    
 
+```
 ![image](https://github.com/user-attachments/assets/ab699f01-0fc2-4199-b585-4604faad8e36)
 
 Finding Month Example:
 
+```
 Example
 //Java Program to demonstrate the example of Switch statement  
 //where we are printing month name for the given number  
@@ -1747,10 +1869,14 @@ public static void main(String[] args) {
 }    
 }   
 
+```
+
+```
 Output:
 
 7 - July
 
+```
 
 Java Comments
 ---------------
@@ -1779,6 +1905,60 @@ Documentation Comment
 ![image](https://github.com/user-attachments/assets/64072eb8-8b2c-41bc-8d34-dd13c3f9c72b)
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+OOPs (Object-Oriented Programming System)
+-----------------------------------------
+Object means a real-world entity such as a mobile, book, table, computer, watch, etc. Object-Oriented Programming is a methodology or paradigm to design a program using classes and objects. It simplifies software development and maintenance by providing some concepts.
+
+
+![image](https://github.com/user-attachments/assets/8ad16f74-40fe-44c2-80a6-e2eda23a48b9)
+
+
+Object:
+--------
+Any entity that has state and behavior is known as an object. For example, a chair, pen, table, keyboard, bike, etc. It can be physical or logical.
+
+An Object can be defined as an instance of a class. It contains an address and takes up some space in memory. Objects can communicate without knowing the details of each other's data or code. The only necessary thing is the type of message accepted and the type of response returned by the objects.
+
+Example: A dog is an object because it has states like color, name, breed, etc. as well as behaviors like wagging the tail, barking, eating, etc.
+
+![image](https://github.com/user-attachments/assets/2ab24a3b-9ba1-48f8-9d80-7c70b2b83bec)
+
+Class
+-----
+
+Collection of objects is called class. It is a logical entity.
+
+A class can also be defined as a blueprint from which you can create an individual object. Class does not consume any space.
+
+Examples of Class
+-----------------
+
+If you want to create a class for students. In that case, "Student" will be a class, and student records (like student1, student2, etc) will be objects.
+
+We can also consider that class is a factory (user-defined blueprint) to produce objects.
+
+```
+// create a Student class
+public class Student {
+   // Declaring attributes
+   String name;
+   int rollNo;
+   String section;
+
+   // initialize attributes
+   Student(String name, int rollNo, String section){
+      this.name= name;
+      this.rollNo = rollNo;
+      this.section = section;
+   }
+   // print details	  
+   public void printDetails() {
+      System.out.println("Student Details:");
+      System.out.println(this.name+ ", "+", " + this.rollNo + ", " + section);
+   }
+}
+```
 
 
 
