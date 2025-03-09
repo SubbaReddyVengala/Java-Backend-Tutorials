@@ -1026,6 +1026,314 @@ Note:
 ----
 While using switch statements, we must notice that the case expression will be of the same type as the variable. However, it will also be a constant value. The switch permits only int, string, and Enum type variables to be used.
 
+Loop Statements
+---------------
+In programming, sometimes we need to execute the block of code repeatedly while some condition evaluates to true. However, loop statements are used to execute the set of instructions in a repeated order. The execution of the set of instructions depends upon a particular condition.
+
+In Java, we have three types of loops that execute similarly. However, there are differences in their syntax and condition checking time.
+
+for loop
+while loop
+do-while loop
+Let's understand the loop statements one by one.
+
+Java for loop
+In Java, for loop is similar to C and C++. It enables us to initialize the loop variable, check the condition, and increment/decrement in a single line of code. We use the for loop only when we exactly know the number of times, we want to execute the block of code.
+
+for(initialization, condition, increment/decrement) {    
+//block of statements    
+}    
+The flow chart for the for-loop is given below.
+
+![image](https://github.com/user-attachments/assets/c1909dec-ce76-489b-9e91-f8ad63c06f89)
+
+Consider the following example to understand the proper functioning of the for loop in java.
+
+Example
+public class Main {    
+    public static void main(String[] args) {    
+        // TODO Auto-generated method stub    
+        int sum = 0;    
+        for(int j = 1; j<=10; j++) {    
+            sum = sum + j;    
+        }    
+        System.out.println("The sum of first 10 natural numbers is " + sum);    
+    }    
+}    
+
+Output:
+
+The sum of first 10 natural numbers is 55
+
+Java for-each loop
+------------------
+Java provides an enhanced for loop to traverse the data structures like array or collection. 
+In the for-each loop, we don't need to update the loop variable. The syntax to use the for-each loop in java is given below.
+
+for(data_type var : array_name/collection_name){    
+//statements    
+}    
+
+Consider the following example to understand the functioning of the for-each loop in Java.
+
+Example
+public class Main {      
+    public static void main(String[] args) {      
+        String[] names = {"Java","C","C++","Python","JavaScript"};      
+        System.out.println("Printing the content of the array names:");      
+        for(String name:names) {      
+            System.out.println(name);      
+        }      
+    }      
+}      
+
+Output:
+
+Printing the content of the array names:
+
+Java
+C
+C++
+Python
+JavaScript
+
+Java while loop
+---------------
+The while loop is also used to iterate over the number of statements multiple times. However, if we don't know the number of iterations in advance, it is recommended to use a while loop. Unlike for loop, the initialization and increment/decrement doesn't take place inside the loop statement in while loop.
+
+It is also known as the entry-controlled loop since the condition is checked at the start of the loop. If the condition is true, then the loop body will be executed; otherwise, the statements after the loop will be executed.
+
+The syntax of the while loop is given below.
+
+while(condition){    
+//looping statements    
+}    
+The flow chart for the while loop is given in the following image.
+
+![image](https://github.com/user-attachments/assets/afe2ca11-ddaa-46ec-a3e9-1c37c8c783b8)
+
+public class Main {      
+    public static void main(String[] args) {      
+        int i = 0;      
+        System.out.println("Printing the list of first 10 even numbers");      
+        while(i<=10) {      
+            System.out.println(i);      
+            i = i + 2;      
+        }      
+    }      
+}      
+
+Output:
+
+Printing the list of first 10 even numbers
+
+0
+2
+4
+6
+8
+10
+
+Java do-while loop
+-------------------
+The do-while loop checks the condition at the end of the loop after executing the loop statements. When the number of iteration is not known and we have to execute the loop at least once, we can use do-while loop.
+
+It is also known as the exit-controlled loop since the condition is not checked in advance. The syntax of the do-while loop is given below.
+
+do     
+{    
+//statements    
+} while (condition);    
+
+The flow chart of the do-while loop is given in the following image.
+
+![image](https://github.com/user-attachments/assets/328990f3-ba83-40b8-8770-126c4c2784cf)
+
+public class Main {      
+    public static void main(String[] args) {      
+        int i = 0;      
+        System.out.println("Printing the list of first 10 even numbers ");      
+        do {      
+            System.out.println(i);      
+            i = i + 2;      
+        }while(i<=10);      
+    }      
+}    
+
+Output:
+
+Printing the list of first 10 even numbers
+0
+2
+4
+6
+8
+10
+
+Jump Statements:
+----------------
+Jump statements are used to transfer the control of the program to the specific statements. In other words, jump statements transfer the execution control to the other part of the program. There are two types of jump statements in Java, i.e., break and continue.
+
+Java break statement
+---------------------
+As the name suggests, the break statement is used to break the current flow of the program and transfer the control to the next statement outside a loop or switch statement. However, it breaks only the inner loop in the case of the nested loop.
+
+The break statement cannot be used independently in the Java program, i.e., it can only be written inside the loop or switch statement.
+
+The break statement example with for loop
+
+Consider the following example in which we have used the break statement with the for loop.
+
+Example
+public class Main {    
+    public static void main(String[] args) {    
+        for(int i = 0; i<= 10; i++) {    
+            System.out.println(i);    
+            if(i==6) {    
+            break;    
+            }    
+        }    
+    }    
+}    
+
+0
+1
+2
+3
+4
+5
+6
+
+break statement example with labeled for loop
+
+Example
+public class Main {      
+public static void main(String[] args) {      
+    a:      
+    for(int i = 0; i<= 10; i++) {      
+        b:      
+        for(int j = 0; j<=15;j++) {      
+            c:      
+            for (int k = 0; k<=20; k++) {      
+                System.out.println(k);      
+                if(k==5) {      
+                break a;      
+                }      
+            }      
+        }      
+      
+    }      
+}      
+} 
+
+
+Output:
+0
+1
+2
+3
+4
+5
+
+Java continue statement
+-----------------------
+Unlike break statement, the continue statement doesn't break the loop, whereas, it skips the specific part of the loop and jumps to the next iteration of the loop immediately.
+
+Consider the following example to understand the functioning of the continue statement in Java.
+
+public class Main {    
+public static void main(String[] args) {      
+    for(int i = 0; i<= 2; i++) {    
+    
+        for (int j = i; j<=5; j++) {    
+    
+            if(j == 4) {    
+            continue;    
+            }    
+            System.out.println(j);    
+        }    
+    }    
+}      
+}  
+
+Output:
+
+0
+1
+2
+3
+5
+1
+2
+3
+5
+2
+3
+5
+
+Java Control Statement MCQ
+--------------------------
+1. What is the key difference between the while loop and the do-while loop in Java
+
+The while loop executes its body at least once, while the do-while loop may not execute its body at all.
+The while loop always checks the loop condition at the end of the loop body, while the do-while loop checks it at the beginning.
+The do-while loop is suitable for scenarios where the loop body must execute a fixed number of times, while the while loop is more flexible.
+There is no difference between the while loop and the do-while loop.
+
+Answer: a)
+
+Explanation: Unlike the while loop, which checks the condition at the beginning, the do-while loop checks the condition at the end, ensuring that the loop body executes at least once.
+
+2. When is the continue statement commonly used in Java?
+
+To exit the loop completely
+To skip the rest of the loop body and continue with the next iteration
+To restart the loop from the beginning
+To break out of nested loops
+
+Answer: b)
+
+Explanation: The continue statement is used to skip the remaining code inside the loop body for the current iteration and move to the next iteration of the loop.
+
+3. What happens if the break statement is used inside a nested loop in Java?
+
+It exits only the innermost loop and continues with the outer loop.
+It exits all the nested loops and continues with the code after the outermost loop.
+It causes a compilation error.
+It exits only the outer loop and continues with the inner loop.
+
+Answer: a)
+
+Explanation: The break statement, when encountered inside a nested loop, exits only the innermost loop and continues with the outer loop.
+
+4.  What is the significance of the default case in a switch statement?
+
+It is executed when none of the other cases match the value of the expression.
+It is executed before any other case in the switch statement.
+It is optional and not required in a switch statement.
+It is executed if the value of the expression is null.
+
+Answer: a)
+
+Explanation: The default case is executed if none of the other cases in the switch statement match the value of the expression being evaluated.
+
+5. In a for loop in Java, which of the following components is optional?
+
+Initialization
+Condition
+Increment/Decrement
+All components are mandatory
+
+Answer: d)
+
+Explanation: In Java's for loop, all three components - initialization, condition, and increment/decrement - are mandatory and must be present for the loop to function correctly.
+
+
+
+
+
+
+
 
 
 
