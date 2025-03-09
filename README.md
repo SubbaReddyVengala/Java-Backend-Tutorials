@@ -1276,57 +1276,392 @@ Java Control Statement MCQ
 1. What is the key difference between the while loop and the do-while loop in Java
 
 The while loop executes its body at least once, while the do-while loop may not execute its body at all.
+
 The while loop always checks the loop condition at the end of the loop body, while the do-while loop checks it at the beginning.
+
 The do-while loop is suitable for scenarios where the loop body must execute a fixed number of times, while the while loop is more flexible.
+
 There is no difference between the while loop and the do-while loop.
 
 Answer: a)
 
 Explanation: Unlike the while loop, which checks the condition at the beginning, the do-while loop checks the condition at the end, ensuring that the loop body executes at least once.
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 2. When is the continue statement commonly used in Java?
 
 To exit the loop completely
+
 To skip the rest of the loop body and continue with the next iteration
+
 To restart the loop from the beginning
+
 To break out of nested loops
 
 Answer: b)
 
 Explanation: The continue statement is used to skip the remaining code inside the loop body for the current iteration and move to the next iteration of the loop.
 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 3. What happens if the break statement is used inside a nested loop in Java?
 
 It exits only the innermost loop and continues with the outer loop.
+
 It exits all the nested loops and continues with the code after the outermost loop.
+
 It causes a compilation error.
+
 It exits only the outer loop and continues with the inner loop.
 
 Answer: a)
 
 Explanation: The break statement, when encountered inside a nested loop, exits only the innermost loop and continues with the outer loop.
 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 4.  What is the significance of the default case in a switch statement?
 
 It is executed when none of the other cases match the value of the expression.
+
 It is executed before any other case in the switch statement.
+
 It is optional and not required in a switch statement.
+
 It is executed if the value of the expression is null.
 
 Answer: a)
 
 Explanation: The default case is executed if none of the other cases in the switch statement match the value of the expression being evaluated.
 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 5. In a for loop in Java, which of the following components is optional?
 
 Initialization
+
 Condition
+
 Increment/Decrement
+
 All components are mandatory
+
 
 Answer: d)
 
 Explanation: In Java's for loop, all three components - initialization, condition, and increment/decrement - are mandatory and must be present for the loop to function correctly.
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Java if-else Statement
+----------------------
+In the realm of programming, decision-making plays a pivotal role in determining the flow of execution. Whether it's directing traffic in a complex intersection or navigating through various scenarios in a program, making decisions is essential. In Java, one of the fundamental constructs for decision-making is the 'if-else' statement. Let's delve into what 'if-else' statements are, how they work, and how they can be effectively utilized in Java programming.
+
+The Java if statement is used to test the condition. It checks boolean condition: true or false. There are various types of if statement in Java.
+
+if statement
+if-else statement
+if-else-if ladder
+nested if statement
+
+How Does It Work?
+
+When the 'if-else' statement is encountered, the condition within the parentheses is evaluated. If the condition evaluates to true, the block of code inside the 'if' block is executed. However, if the condition evaluates to false, the block of code inside the 'else' block is executed. It allows the program to take different paths based on the outcome of the condition.
+
+Java if Statement
+
+The Java if statement tests the condition. It executes the if block if condition is true.
+
+
+Syntax:
+
+if(condition){  
+//code to be executed  
+}  
+
+![image](https://github.com/user-attachments/assets/b2078ac8-f53a-49e0-88c4-ba44114f9808)
+
+/Java Program to demonstate the use of if statement.  
+public class Main {  
+public static void main(String[] args) {  
+    //defining an 'age' variable  
+    int age=20;  
+    //checking the age  
+    if(age>18){  
+        System.out.print("Age is greater than 18");  
+    }  
+}  
+}  
+
+Output:
+
+Age is greater than 18
+
+Java if-else Statement
+The Java if-else statement also tests the condition. It executes the if block if condition is true otherwise else block is executed.
+
+Syntax:
+
+if(condition){  
+//code if condition is true  
+}else{  
+//code if condition is false  
+}  
+
+![image](https://github.com/user-attachments/assets/a66b5643-3179-4b53-90df-ed6d7c12e747)
+
+/Java Program to demonstrate the use of if-else statement.  
+//It is a program of odd and even number.  
+public class Main {  
+public static void main(String[] args) {  
+    //defining a variable  
+    int number=13;  
+    //Check if the number is divisible by 2 or not  
+    if(number%2==0){  
+        System.out.println("even number");  
+    }else{  
+        System.out.println("odd number");  
+    }  
+}  
+}  
+
+Output:
+
+odd number
+
+Leap Year Example Using IfElse:
+
+A year is leap, if it is divisible by 4 and 400. But, not by 100.
+
+Example
+public class Main {    
+public static void main(String[] args) {    
+    int year=2020;    
+    if(((year % 4 ==0) && (year % 100 !=0)) || (year % 400==0)){  
+        System.out.println("LEAP YEAR");  
+    }  
+    else{  
+        System.out.println("COMMON YEAR");  
+    }  
+}    
+}    
+
+Output:
+
+LEAP YEAR
+
+Java if-else-if ladder Statement
+----------------------------------
+
+The if-else-if ladder statement executes one condition from multiple statements.
+
+Syntax:
+
+if(condition1){  
+//code to be executed if condition1 is true  
+}else if(condition2){  
+//code to be executed if condition2 is true  
+}  
+else if(condition3){  
+//code to be executed if condition3 is true  
+}  
+...  
+else{  
+//code to be executed if all the conditions are false  
+}  
+
+![image](https://github.com/user-attachments/assets/52d24cfe-d139-4963-95c9-a970990474f6)
+
+//Java Program to demonstrate the use of If else-if ladder.  
+//It is a program of grading system for fail, D grade, C grade, B grade, A grade and A+.  
+public class Main {  
+public static void main(String[] args) {  
+    int marks=65;  
+      
+    if(marks<50){  
+        System.out.println("fail");  
+    }  
+    else if(marks>=50 && marks<60){  
+        System.out.println("D grade");  
+    }  
+    else if(marks>=60 && marks<70){  
+        System.out.println("C grade");  
+    }  
+    else if(marks>=70 && marks<80){  
+        System.out.println("B grade");  
+    }  
+    else if(marks>=80 && marks<90){  
+        System.out.println("A grade");  
+    }else if(marks>=90 && marks<100){  
+        System.out.println("A+ grade");  
+    }else{  
+        System.out.println("Invalid!");  
+    }  
+}  
+}  
+
+Output:
+
+C grade
+
+Java Nested if statement
+--------------------------
+The nested if statement represents the if block within another if block. Here, the inner if block condition executes only when outer if block condition is true.
+
+Syntax:
+
+if(condition){    
+     //code to be executed    
+          if(condition){  
+             //code to be executed    
+    }    
+}  
+
+![image](https://github.com/user-attachments/assets/42fe1d03-51f1-4d40-8b47-b21dfb762699)
+
+//Java Program to demonstrate the use of Nested If Statement.  
+public class Main {    
+public static void main(String[] args) {    
+    //Creating two variables for age and weight  
+    int age=20;  
+    int weight=80;    
+    //applying condition on age and weight  
+    if(age>=18){    
+        if(weight>50){  
+            System.out.println("You are eligible to donate blood");  
+        }    
+    }    
+}}  
+
+Output:
+
+You are eligible to donate blood
+
+//Java Program to demonstrate the use of Nested If Statement.    
+public class Main {      
+public static void main(String[] args) {      
+    //Creating two variables for age and weight    
+    int age=25;    
+    int weight=48;      
+    //applying condition on age and weight    
+    if(age>=18){      
+        if(weight>50){    
+            System.out.println("You are eligible to donate blood");    
+        } else{  
+            System.out.println("You are not eligible to donate blood");    
+        }  
+    } else{  
+      System.out.println("Age must be greater than 18");  
+    }  
+}    
+}  
+
+Output:
+
+You are not eligible to donate blood
+
+Ternary Operator
+We can also use ternary operator (? :) to perform the task of if...else statement. It is a shorthand way to check the condition. If the condition is true, the result of ? is returned. But, if the condition is false, the result of : is returned.
+
+Example
+public class Main {    
+public static void main(String[] args) {    
+    int number=13;    
+    //Using ternary operator  
+    String output=(number%2==0)?"even number":"odd number";    
+    System.out.println(output);  
+}    
+}    
+
+Output:
+
+odd number
+
+Conclusion:
+------------
+'If-else' statements are indispensable tools in Java programming for making decisions based on conditions. They provide the flexibility to execute different code blocks based on varying circumstances, thus enabling developers to create dynamic and responsive applications. By mastering the usage of 'if-else' statements, programmers can unlock the full potential of Java for crafting efficient and robust software solutions.
+
+Java if-else MCQ
+----------------
+1. What is the key difference between if statement and if-else statement in Java?
+
+if statement allows multiple conditions to be evaluated sequentially.
+
+if statement always requires an else block for execution.
+
+if statement executes only if the condition is true, whereas if-else executes either the if block or the else block based on the condition.
+
+if statement does not support boolean conditions.
+
+Answer: C
+
+Explanation: The if statement checks a condition and executes a block of code if the condition is true. The if-else statement additionally provides an alternative block of code to execute if the condition is false.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+2. In a Java program, which of the following statements about if-else-if ladder is correct?
+
+Only one condition in the ladder can be true at a time, and its corresponding block of code is executed.
+
+Each condition in the ladder is evaluated independently regardless of the previous conditions.
+
+The else block is mandatory at the end of an if-else-if ladder.
+
+if-else-if ladder can have a maximum of three conditions.
+
+Answer: A
+
+Explanation: In an if-else-if ladder, each condition is evaluated sequentially. Once a condition is true, its corresponding block of code executes, and subsequent conditions are skipped.
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+3. Which scenario would result in a StringIndexOutOfBoundsException when using if-else statements?
+
+Checking if a string is empty using if (str.isEmpty()).
+
+Comparing two strings using if (str1.equals(str2)).
+
+Checking the length of a string using if (str.length() > 10).
+
+Accessing a character at an index that exceeds the length of the string using if (str.charAt(15) == 'a').
+
+Answer: D
+
+Explanation: In Java, accessing a character at an index that exceeds the length of the string causes a StringIndexOutOfBoundsException, as strings are zero-indexed and the index must be within the bounds of the string length.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+4. Consider the following code snippet:
+
+int x = 10;  
+f (x > 5) {  
+   System.out.println("x is greater than 5");  
+ else if (x > 7) {  
+   System.out.println("x is greater than 7");  
+ else {  
+   System.out.println("x is less than or equal to 5");  
+    
+What will be the output if x is assigned a value of 4?
+
+x is greater than 5
+
+x is greater than 7
+
+x is less than or equal to 5
+
+No output will be printed.
+
+Answer: C
+
+Explanation: Since x is 4, the first condition x > 5 is false. The second condition x > 7 is also false. Therefore, the else block is executed, printing x is less than or equal to 5.
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 
 
