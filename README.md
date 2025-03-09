@@ -1752,6 +1752,33 @@ Output:
 7 - July
 
 
+Java Comments
+---------------
+The Java comments are the statements in a program that are not executed by the compiler and interpreter.
+
+Why do we use comments in a code?
+
+Comments are used to make the program more readable by adding the details of the code.
+
+It makes easy to maintain the code and to find the errors easily.
+
+The comments can be used to provide information or explanation about the variable, method, class, or any statement.
+
+It can also be used to prevent the execution of program code while testing the alternative code.
+
+Types of Java Comments
+----------------------
+There are three types of comments in Java.
+
+Single Line Comment
+
+Multi Line Comment
+
+Documentation Comment
+
+![image](https://github.com/user-attachments/assets/64072eb8-8b2c-41bc-8d34-dd13c3f9c72b)
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
