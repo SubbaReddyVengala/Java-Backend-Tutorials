@@ -1931,6 +1931,10 @@ Collection of objects is called class. It is a logical entity.
 
 A class can also be defined as a blueprint from which you can create an individual object. Class does not consume any space.
 
+A class is a group of objects which have common properties. It is a template or blueprint from which objects are created. It is a logical entity. It can't be physical.
+
+![image](https://github.com/user-attachments/assets/815d72c9-a5d6-4d0d-a4c3-adf56e0c6ab0)
+
 Examples of Class
 -----------------
 
@@ -1938,28 +1942,325 @@ If you want to create a class for students. In that case, "Student" will be a cl
 
 We can also consider that class is a factory (user-defined blueprint) to produce objects.
 
-```
-// create a Student class
-public class Student {
-   // Declaring attributes
-   String name;
-   int rollNo;
-   String section;
 
-   // initialize attributes
-   Student(String name, int rollNo, String section){
-      this.name= name;
-      this.rollNo = rollNo;
-      this.section = section;
-   }
-   // print details	  
-   public void printDetails() {
-      System.out.println("Student Details:");
-      System.out.println(this.name+ ", "+", " + this.rollNo + ", " + section);
-   }
+Object
+In object-oriented programming, an object is an entity that has two characteristics (states and behavior). Some of the real-world objects are book, mobile, table, computer, etc. An object is a variable of the type class, it is a basic component of an object-oriented programming system. A class has the methods and data members (attributes), these methods and data members are accessed through an object. Thus, an object is an instance of a class.
+
+In object oriented programming, classes and objects play a vital role in programming. These are the two main pillars of OOPs (Object-Oriented Programming). Without class and object, we cannot create a program in Java. So, in this section, we are going to discuss about classes and objects in Java.
+
+![image](https://github.com/user-attachments/assets/ced8119a-f778-459e-bcc8-d6c3cebc4e88)
+
+An object is a real-word entity that has state and behaviour. In other words, an object is a tangible thing that can be touch and feel, like a car or chair, etc. are the example of objects.
+The banking system is an example of an intangible object. Every object has a distinct identity, which is usually implemented by a unique ID that the JVM uses internally for identification.
+
+Characteristics of an Object:
+----------------------------
+
+State: It represents the data (value) of an object.
+
+Behavior: It represents the behavior (functionality) of an object such as deposit, withdraw, etc.
+
+Identity: An object's identity is typically implemented via a unique ID. The ID's value is not visible to the external user; however, it is used internally by the JVM to identify each object uniquely.
+
+For Example, Pen is an object. Its name is Reynolds; color is white, known as its state. It is used to write, so writing is its behavior.
+
+Example of Objects
+Continuing with the example of students, let's create some students as objects and print their details.
+
+An object is an instance of a class. A class is a template or blueprint from which objects are created. So, an object is the instance(result) of a class.
+
+Instance Variable in Java
+---------------------------
+A variable created inside the class but outside the method is known as an instance variable. An instance variable does not get memory at compile time; it gets memory at runtime when an object or instance is created.
+
+Each class instance has its own copy of instance variables, which means that changes made to instance variables of one object do not affect the values of instance variables in other objects of the same class. Moreover, setter methods and constructors can be used to initialize them. In object-oriented programming, instance variables are crucial for encapsulating data within objects since they are frequently used to represent the state or properties of objects.
+
+Method in Java
+---------------
+In Java method is a block of code inside a class that's intended to carry out a certain function. To provide a mechanism to interact with the state of an object and to encapsulate behaviour within objects, methods are required.
+
+Advantages of Methods
+---------------------
+Code Reusability: Methods encourage code reusability by permitting the same block of code to be used repeatedly inside a program. Once defined, a method can be called from any area of the program where it is available.
+
+Code Optimisation: Methods allow for code optimization by enclosing intricate or repetitive functionality into reusable components. The modularization of logic facilitates readability and simplifies code maintenance.
+
+new keyword in Java:
+--------------------
+The new keyword is used to allocate memory at runtime. All objects get memory in the Heap memory area
+
+In Java, an instance of a class (also referred to as an object) is created using the new keyword. The new keyword dynamically allocates memory for an object of that class and returns a reference to it when it is followed by the class name and brackets with optional argument
+
+Object and Class Example: main() method within the class
+In Java, the main() method can be declared in a class, which is typically done in demonstration or basic programs. Having the main() method defined inside of a class allows a program to run immediately without creating a separate class containing it.
+
+In this example, we have created a Student class which has two data members id and name. We are creating the object of the Student class by new keyword and printing the object's value.
+
+Here, we are creating a main() method inside the class.
+
+File: Student.java
+
+```
+/Java Program to illustrate how to define a class and fields  
+//Defining a Student class.  
+class Student{  
+ //defining fields  
+ int id;//field or data member or instance variable  
+ String name;  
+ //creating main method inside the Student class  
+ public static void main(String args[]){  
+  //Creating an object or instance  
+  Student s1=new Student();//creating an object of Student  
+  //Printing values of the object  
+  System.out.println(s1.id);//accessing member through reference variable  
+  System.out.println(s1.name);  
+ }  
 }
 ```
 
+Output:
+```
+0
+null
+```
+
+Explanation:
+-------------
+
+Two fields are defined for the Student class in this Java programme: an int type for the id and a string type for the name. The Student class itself defines the primary method. The new keyword is used to create an object s1 of type Student inside the main procedure. The fields' default values-0 for int and null for String-are printed because they are not explicitly initialised. The values of the s1 object's name and id fields are finally printed by the programme.
+
+Object and Class Example: main() method Outside the Class
+---------------------------------------------------------
+
+In real-world development, it is usual practice to organise Java classes into distinct files and to place the main method outside of the class it is intended to execute from. This strategy improves the readability, maintainability, and reusability of the code.
+
+In real time development, we create classes and use it from another class. It is a better approach than previous one. Let's see a simple example, where we are having main() method in another class.
+
+We can have multiple classes in different Java files or single Java file. If you define multiple classes in a single Java source file, it is a good idea to save the file name with the class name which has main() method.
+
+```
+//Creating a Student class   
+class Student{    
+ //declaring fields or instance variables  
+ int id;    
+ String name;    
+}    
+//Creating another class which contains the main() method    
+class Main{    
+ public static void main(String args[]){    
+  Student s1=new Student();    
+  System.out.println(s1.id);    
+  System.out.println(s1.name);    
+ }    
+}
+```
+Output:
+```
+0
+null
+```
+Explanation
+-----------
+The main method in this Java programme is shown to be in a different class than the Student class. There are no methods defined for the two fields, name and id, in the Student class. The main method then resides in a another class called TestStudent1, where the default constructor is used to generate an object s1 of type Student. The fields name and id are written with their default values, which are null for String and 0 for int, since they are not explicitly initialised.
+
+Initializing Object in Java
+There are the following three ways to initialize object in Java.
+
+By reference variable
+By method
+By constructor
+
+1) Object Initialization through Reference Variable
+----------------------------------------------------
+
+Initializing an object means storing data in the object. Let's see a simple example where we are going to initialize the object through a reference variable.
+
+```
+class Student{    
+ int id;    
+ String name;    
+}    
+public class Main{    
+ public static void main(String args[]){    
+  //Creating instance of Student class  
+  Student s1=new Student();    
+  //assigning values through reference variable  
+  s1.id=101;    
+  s1.name="Sonoo";    
+  //printing values of s1 object  
+  System.out.println(s1.id+" "+s1.name);    
+ }    
+}
+```
+Output:
+```
+101 Sonoo
+```
+Explanation
+------------
+There are two classes in this Java code: Student and TestStudent2. The two fields that the Student class defines, id and name, stand for the student's ID and name, respectively. The main method, which is the program's entry point, is specified in the TestStudent2 class. The new keyword is used to create an object s1 of type Student inside the main procedure. Next, values 101 and "Sonoo" are initialised in the id and name fields of s1.
+
+We can also create multiple objects and store information in it through reference variable.
+
+2) Object Initialization through Method
+------------------------------------
+In this example, we are creating the two objects of Student class and initializing the value to these objects by invoking the insertRecord method.
+
+Here, we are displaying the state (data) of the objects by invoking the displayInformation() method.
+
+```
+class Student{    
+ int rollno;    
+ String name;    
+ void insertRecord(int r, String n){    
+  rollno=r;    
+  name=n;    
+ }    
+ void displayInformation(){System.out.println(rollno+" "+name);}    
+}    
+public class Main{    
+ public static void main(String args[]){    
+  Student s1=new Student();    
+  Student s2=new Student();    
+  s1.insertRecord(111,"Karan");    
+  s2.insertRecord(222,"Aryan");    
+  s1.displayInformation();    
+  s2.displayInformation();    
+ }    
+}
+```
+
+Output:
+```
+111 Karan
+222 Aryan
+```
+The provided Java code includes two classes: Student and TestStudent4. The Student class includes rollno and name fields, along with the methods insertRecord and displayInformation to initialise and print the respective fields' data. Two Student objects are created in the main method of the TestStudent4 class, and their corresponding insertRecord methods are called to set their rollno and name
+
+![image](https://github.com/user-attachments/assets/8ea224c5-85a8-404a-8316-a1fe519c273c)
+
+As we can see in the above figure, the object gets the memory in the heap memory area. The reference variable refers to the object allocated in the heap memory area. Here, s1 and s2 are reference variables that refer to the objects allocated in memory.
+
+3) Object Initialization through a Constructor
+   --------------------------------------------
+The concept of object initialization through a constructor is essential to object-oriented programming in Java. Special methods inside a class called constructors are called when an object of that class is created with the new keyword. They initialise the state of objects by entering initial values in their fields or carrying out any required setup procedures. The constructor is automatically invoked upon object instantiation, guaranteeing correct initialization of the object prior to usage.
+
+Here's an example demonstrating object initialization through a constructor:
+
+```
+class Student {    
+    int id;    
+    String name;    
+    // Constructor with parameters    
+    public Student(int id, String name) {    
+        this.id = id;    
+        this.name = name;    
+    }    
+    // Method to display student information    
+    public void displayInformation() {    
+        System.out.println("Student ID: " + id);    
+        System.out.println("Student Name: " + name);    
+    }    
+}    
+public class Main {    
+    public static void main(String[] args) {    
+        // Creating objects of Student class with constructor    
+        Student student1 = new Student(1, "John Doe");    
+        Student student2 = new Student(2, "Jane Smith");    
+        // Displaying information of the objects    
+        student1.displayInformation();    
+        student2.displayInformation();    
+    }    
+}
+```
+Output:
+```
+Student ID: 1
+Student Name: John Doe
+Student ID: 2
+Student Name: Jane Smith
+
+```
+
+Explanation:
+------------
+In this example, the id and name fields of a Student object are initialised using a constructor defined by the Student class, which accepts two parameters: id and name. Upon creating objects student1 and student2 using this constructor, the fields of each are initialised with the values supplied. This method makes ensuring that objects are created with the correct starting values, which makes it easier to instantiate and use objects later on in the programme.
+
+Object and Class Example: Employee
+Let's see an example where we are maintaining records of employees.
+```
+class Employee{      
+    int id;      
+    String name;      
+    float salary;      
+    void insert(int i, String n, float s) {      
+        id=i;      
+        name=n;      
+        salary=s;      
+    }      
+    void display(){System.out.println(id+" "+name+" "+salary);}      
+}      
+public class Main {      
+public static void main(String[] args) {      
+    Employee e1=new Employee();      
+    Employee e2=new Employee();      
+    Employee e3=new Employee();      
+    e1.insert(101,"ajeet",45000);      
+    e2.insert(102,"irfan",25000);      
+    e3.insert(103,"nakul",55000);      
+    e1.display();      
+    e2.display();      
+    e3.display();      
+}      
+}
+```
+
+Output:
+```
+101 ajeet 45000.0
+102 irfan 25000.0
+103 nakul 55000.0
+```
+
+Explanation
+
+The employee class in this Java code has three fields: id, name, and salary. It also has two methods: insert, which sets the values for these fields, and display, which prints the values. The main function of the TestEmployee class creates three Employee objects (e1, e2, and e3). To initialise the id, name, and salary fields of each object with precise values, the insert method is called on each of the objects. Then, each object's display method is called, displaying object initialization and information display via method invocation. Each object's id, name, and salary values are printed to the console.
+
+hat are the different ways to create an object in Java?
+There are the following ways to create an object in Java.
+
+1. By new keyword
+-----------------
+
+The most common way to create an object in Java is by using the new keyword followed by a constructor.
+
+For example: ClassName obj = new ClassName();. This allocates memory for the object and calls its constructor to initialize it.
+
+2. By newInstance() method
+--------------------------
+
+This method is part of the java.lang.Class class and is used to create a new instance of a class dynamically at runtime. It invokes the no-argument constructor of the class.
+
+For example: ClassName obj = (ClassName) Class.forName("ClassName").newInstance();.
+
+3. By clone() method
+---------------------
+
+The clone() method creates a copy of an existing object by performing a shallow copy. It returns a new object that is a duplicate of the original object. For example: ClassName obj2 = (ClassName) obj1.clone();.
+
+4. By deserialization
+----------------------
+
+Objects can be created by deserializing them from a stream of bytes. This is achieved using the ObjectInputStream class in Java. The serialized object is read from a file or network, and then the readObject() method is called to recreate the object.
+
+5. By factory method
+---------------------
+
+Factory methods are static methods within a class that return instances of the class. They provide a way to create objects without directly invoking a constructor and can be used to encapsulate object creation logic.
+
+For example: ClassName obj = ClassName.createInstance().
+
+![image](https://github.com/user-attachments/assets/11101507-6a31-4d09-8173-5632a4d4de12)
 
 
 
