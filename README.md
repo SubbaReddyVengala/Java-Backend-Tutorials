@@ -3352,4 +3352,165 @@ gzb UP india
 gno UP india
 
 ```
+# Method Overloading in Java
+
+Method overloading in Java is the feature that enables defining several methods in a class having the same name but with different parameters lists. These algorithms may vary with regard to the number or type of parameters. When a method is called, Java decides which version of it to execute depending on the arguments given. If we have to perform only one operation, having the same name of the methods increases the readability of the program.
+
+Suppose you have to perform the addition of the given numbers, but there can be any number of arguments if you write the method such as a(int,int) for two parameters, and b(int,int,int) for three parameters then it may be difficult for you as well as other programmers to understand the behavior of the method because its name differs. Here's an explanation with real-life examples:
+
+## Math Operations:
+
+In a math class, you might have multiple methods for adding numbers, each accepting a different number of arguments:
+
+```
+public class MathOperations {  
+    public int add(int a, int b) {  
+        return a + b;  
+    }  
+    public double add(double a, double b, double c) {  
+        return a + b + c;  
+    }  
+}
+
+```
+Here, the add method is overloaded to handle both adding two integers and adding three doubles.
+
+## String Manipulation:
+
+In a utility class for string manipulation, you might have overloaded methods for concatenating strings
+
+![image](https://github.com/user-attachments/assets/5fecc5d7-a271-41fe-8dd3-87bbc5b4f413)
+
+## Different ways to overload a method in Java
+There are two ways to overload the method in java
+
+By changing number of arguments
+By changing the data type
+
+Note :
+------
+```
+In Java, Method Overloading is not possible by changing the return type of the method only.
+```
+### 1) Method Overloading: By changing no. of arguments
+   
+Method overloading in Java allows defining multiple methods with the same name but different parameter lists. One common form of overloading is changing the number of arguments in the method signature. In this example, we have created two methods, the first add() method performs addition of two numbers, and the second add method performs addition of three numbers.
+
+In this example, we are creating static methods so that we don't need to create instance for calling methods.
+```
+/ Class Adder contains overloaded methods to add integers    
+class Adder {    
+    // Method to add two integers    
+    static int add(int a, int b) {    
+        return a + b;    
+    }    
+    // Method to add three integers    
+    static int add(int a, int b, int c) {    
+        return a + b + c;    
+    }    
+}    
+public class Main {    
+    public static void main(String[] args) {    
+        // Calling the add method with two integers    
+        System.out.println(Adder.add(11, 11)); // Output: 22    
+        // Calling the add method with three integers    
+        System.out.println(Adder.add(11, 11, 11)); // Output: 33    
+    }    
+}   
+```
+Output:
+```
+22
+33
+```
+
+### 2) Method Overloading: By changing data type of arguments
+
+Method overloading in Java also allows changing the data type of arguments in the method signature. Here's an example demonstrating method overloading based on the data type of arguments: In this example, we have created two methods that differs in data type. The first add method receives two integer arguments and second add method receives two double arguments.
+```
+// Class Adder contains overloaded methods to add numbers    
+class Adder {    
+    // Method to add two integers    
+    static int add(int a, int b) {    
+        return a + b;    
+    }    
+    // Method to add two doubles    
+    static double add(double a, double b) {    
+        return a + b;    
+    }    
+}    
+public class Main {    
+    public static void main(String[] args) {    
+        // Calling the add method with two integers    
+        System.out.println(Adder.add(11, 11)); // Output: 22         
+        // Calling the add method with two doubles    
+        System.out.println(Adder.add(12.3, 12.6)); // Output: 24.9    
+    }    
+}   
+```
+Output:
+```
+22
+24.9
+```
+
+# Q) Why Method Overloading is not possible by changing the return type of method only?
+
+Method overloading in Java is based on the method signature, which includes the method name and parameter list. The return type alone is not sufficient to distinguish between overloaded methods because Java does not consider the return type when resolving method calls. If two methods have the same name and parameter list but different return types, the compiler cannot determine which method to call based solely on the return type. Let's see how ambiguity may occur:
+
+```
+// Class Adder contains overloaded methods to add numbers  
+class Adder {  
+    // Method to add two integers and return an integer  
+    static int add(int a, int b) {  
+        return a + b;  
+    }  
+    // Method to add two integers and return a double  
+    static double add(int a, int b) {  
+        return a + b;  
+    }  
+}  
+public class TestOverloading3 {  
+    public static void main(String[] args) {  
+        // This line of code will cause ambiguity because both add methods have the same signature  
+        System.out.println(Adder.add(11, 11)); // Error: ambiguity  
+    }  
+}
+```
+Output:
+```
+TestOverloading3.java:9: error: method add(int,int) is already defined in class Adder
+static double add(int a, int b) {
+^
+1 error
+```
+
+# Note:
+```
+_**Compile Time Error is better than Run Time Error. So, java compiler renders compiler time error if you declare the same method having same parameters.**_
+```
+
+### Can we overload Java main() method?
+
+Yes, technically, it is possible to overload the main() method in Java, but it won't be considered as the entry point for the Java Virtual Machine (JVM) to start the execution of the program. While overloading the main() method is syntactically valid, it doesn't serve the purpose of being the entry point for program execution. The JVM expects the standard signature public static void main(String[] args) for the entry point. Any other overloaded main() method will be treated as a regular method and won't be invoked by the JVM to start the program. Therefore, although overloading main() is possible, it's not practically useful for program execution. Let's see a simple example:
+```
+// Class TestOverloading4 demonstrates method overloading with different parameter types and no parameters  
+class TestOverloading4 {    
+    public static void main(String[] args) {  
+        System.out.println("main with String[]");  
+    }  
+    // Overloaded main method with parameter String args  
+    public static void main(String args) {  
+        System.out.println("main with String");  
+    }  
+    // Overloaded main method with no parameters  
+    public static void main() {  
+        System.out.println("main without args");  
+    }  
+}  
+```
+Output:
+```
+main with String[]
+```
 
