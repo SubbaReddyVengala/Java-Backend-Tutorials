@@ -3990,3 +3990,84 @@ AXIS Rate of Interest: 9.7
 
 This Java sample uses method overriding to demonstrate polymorphism. It provides a method called getRateOfInterest() on the Bank type, which returns 0. The Bank class is extended by the subclasses SBI, ICICI, and AXIS, which override the getRateOfInterest() function to return particular interest rates. Objects of SBI, ICICI, and AXIS are created and assigned to a Bank reference variable b in the TestPolymorphism class's main method. The relevant getRateOfInterest() method is dynamically executed through polymorphism, depending on the actual object type provided to b, and the interest rates for SBI, ICICI, and AXIS banks are printed out.
 
+# Static Binding and Dynamic Binding
+![image](https://github.com/user-attachments/assets/0b2dadd4-73a6-4ff4-a06e-b3cdca940b7d)
+
+static binding and dynamic binding in java
+
+Connecting a method call to the method body is known as binding.
+
+There are two types of binding
+
+Static Binding (also known as Early Binding).
+Dynamic Binding (also known as Late Binding).
+
+![image](https://github.com/user-attachments/assets/97d6ac03-106e-4f67-b796-9b7e8d1dc7bd)
+
+## 1) variables have a type
+   
+Each variable has a type, it may be primitive and non-primitive.
+
+int data=30;  
+Here data variable is a type of int.
+
+## 2) References have a type
+```
+class Dog{  
+ public static void main(String args[]){  
+  Dog d1;//Here d1 is a type of Dog  
+ }  
+}  
+3) Objects have a type
+An object is an instance of particular java class,but it is also an instance of its superclass.
+class Animal{}  
+  
+class Dog extends Animal{  
+ public static void main(String args[]){  
+  Dog d1=new Dog();  
+ }  
+}
+```
+Here d1 is an instance of Dog class, but it is also an instance of Animal.
+static binding
+When type of the object is determined at compiled time(by the compiler), it is known as static binding.
+
+If there is any private, final or static method in a class, there is static binding.
+
+### Example of static binding
+```
+class Dog{  
+ private void eat(){System.out.println("dog is eating...");}  
+  
+ public static void main(String args[]){  
+  Dog d1=new Dog();  
+  d1.eat();  
+ }  
+}
+```
+
+## Dynamic binding
+
+When type of the object is determined at run-time, it is known as dynamic binding.
+
+### Example of dynamic binding 
+```
+class Animal{  
+ void eat(){System.out.println("animal is eating...");}  
+}  
+  
+class Dog extends Animal{  
+ void eat(){System.out.println("dog is eating...");}  
+  
+ public static void main(String args[]){  
+  Animal a=new Dog();  
+  a.eat();  
+ }  
+}
+```
+```
+
+Output:dog is eating...
+
+```
+In the above example object type cannot be determined by the compiler, because the instance of Dog is also an instance of Animal.So compiler doesn't know its type, only its base type
