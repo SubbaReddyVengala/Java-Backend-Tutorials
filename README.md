@@ -3033,3 +3033,252 @@ Output:
 ```
 method is invoked
 ```
+ans we do not explicitly declare an access modifier for a class, field, method, etc.
+
+A variable or method declared without any access control modifier is available to any other class in the same package. The fields in an interface are implicitly public static final and the methods in an interface are by default public.
+
+Example of Default Access Modifiers
+Variables and methods can be declared without any modifiers, as in the following examples −
+```
+String version = "1.5.1";
+
+boolean processOrder() {
+   return true;
+}
+```
+### Inheritance in Java
+------------------------
+Inheritance in Java is a mechanism in which one object acquires all the properties and behaviors of a parent object. 
+
+The idea behind inheritance in Java is that we can create new classes that are built upon existing classes. When we inherit methods from an existing class, we can reuse methods and fields of the parent class. However, we can add new methods and fields in your current class also.
+
+## What is Inheritance?
+----------------------
+Inheritance in Java enables a class to inherit properties and actions from another class, called a superclass or parent class. A class derived from a superclass is called a subclass or child group. Through inheritance, a subclass can access members of its superclass (fields and methods), enforce reuse rules, and encourage hierarchy.
+
+Inheritance represents the IS-A relationship which is also known as a parent-child relationship.
+
+### Why use inheritance in Java?
+
+For Method Overriding (so runtime polymorphism can be achieved).
+For Code Reusability.
+
+### The syntax of Java Inheritance
+```
+class Subclass-name extends Superclass-name  
+{  
+   //methods and fields  
+}  
+```
+The extends keyword indicates that we are making a new class that derives from an existing class. The meaning of "extends" is to increase the functionality.
+
+In the terminology of Java, a class that is inherited is called a parent or superclass, and the new class is called child or subclass.
+
+![image](https://github.com/user-attachments/assets/7bc0bc28-b250-42ef-8df7-dfb06795d610)
+
+As displayed in the above figure, Programmer is the subclass and Employee is the superclass. The relationship between the two classes is Programmer IS-A Employee. It means that Programmer is a type of Employee.
+
+```
+class Employee{  
+ float salary=40000;  
+}  
+class Programmer extends Employee{  
+ int bonus=10000;  
+}  
+public class Main{  
+ public static void main(String args[]){  
+   Programmer p=new Programmer();  
+   System.out.println("Programmer salary is:"+p.salary);  
+   System.out.println("Bonus of Programmer is:"+p.bonus);  
+}  
+}
+```
+Output:
+```
+Programmer salary is:40000.0
+Bonus of programmer is:10000
+```
+
+In the above example, Programmer object can access the field of own class as well as of Employee class i.e. code reusability.
+
+## Types of Inheritance in Java
+-------------------------------
+
+On the basis of class, there can be three types of inheritance in java: single, multilevel and hierarchical.
+
+In java programming, multiple and hybrid inheritance is supported through interface only. We will learn about interfaces later.
+
+![image](https://github.com/user-attachments/assets/b38183d9-84d4-483e-9fa7-dd56fd300d74)
+
+### Note :
+----------
+```
+Note: Multiple inheritance is not supported in Java through class.
+```
+When one class inherits multiple classes, it is known as multiple inheritance
+
+![image](https://github.com/user-attachments/assets/9eb18ef6-5411-46c8-92cc-849f646ef2cf)
+
+## Single Inheritance Example
+----------------------------
+When a class inherits another class, it is known as a single inheritance. In the example given below, Dog class inherits the Animal class, so there is the single inheritance.
+
+```
+class Animal{  
+void eat(){System.out.println("eating...");}  
+}  
+class Dog extends Animal{  
+void bark(){System.out.println("barking...");}  
+}  
+public class Main{  
+public static void main(String args[]){  
+Dog d=new Dog();  
+d.bark();  
+d.eat();  
+}}
+```
+Output:
+```
+barking...
+eating...
+```
+## Multilevel Inheritance Example
+----------------------------------
+When there is a chain of inheritance, it is known as multilevel inheritance. As you can see in the example given below, BabyDog class inherits the Dog class which again inherits the Animal class, so there is a multilevel inheritance.
+```
+Example
+class Animal{  
+void eat(){System.out.println("eating...");}  
+}  
+class Dog extends Animal{  
+void bark(){System.out.println("barking...");}  
+}  
+class BabyDog extends Dog{  
+void weep(){System.out.println("weeping...");}  
+}  
+public class Main{  
+public static void main(String args[]){  
+BabyDog d=new BabyDog();  
+d.weep();  
+d.bark();  
+d.eat();  
+}}
+```
+Output:
+```
+weeping...
+barking...
+eating...
+```
+## Hierarchical Inheritance Example
+
+When two or more classes inherits a single class, it is known as hierarchical inheritance. In the example given below, Dog and Cat classes inherits the Animal class, so there is hierarchical inheritance.
+```
+class Animal{  
+void eat(){System.out.println("eating...");}  
+}  
+class Dog extends Animal{  
+void bark(){System.out.println("barking...");}  
+}  
+class Cat extends Animal{  
+void meow(){System.out.println("meowing...");}  
+}  
+public class Main{  
+public static void main(String args[]){  
+Cat c=new Cat();  
+c.meow();  
+c.eat();  
+//c.bark();//C.T.Error  
+}}
+```
+Output:
+```
+meowing...
+eating...
+```
+### Q) Why multiple inheritance is not supported in Java?
+
+To reduce the complexity and simplify the language, multiple inheritance is not supported in java.
+
+Suppose there are three classes A, B, and C. The C class inherits A and B classes. If A and B classes have the same method and we call it from child class object, there will be ambiguity to call the method of A or B class.
+
+Since compile-time errors are better than runtime errors, Java renders compile-time error if you inherit 2 classes. So whether you have same method or different, there will be compile time error
+```
+class A{  
+void msg(){System.out.println("Hello");}  
+}  
+class B{  
+void msg(){System.out.println("Welcome");}  
+}  
+class C extends A,B{//suppose if it were  
+   
+ public static void main(String args[]){  
+   C obj=new C();  
+   obj.msg();//Now which msg() method would be invoked?  
+}  
+}
+```
+```
+Compile Time Error
+
+```
+
+However, Java supports multiple inheritance through interfaces, where a class can implement multiple interfaces. Let's demonstrate this with a simple example:
+
+```
+interface A {  
+    default void methodA() {  
+        System.out.println("Method A from interface A");  
+    }  
+}  
+// Interface B  
+interface B {  
+    default void methodB() {  
+        System.out.println("Method B from interface B");  
+    }  
+}  
+// Class implementing both interfaces A and B  
+class MyClass implements A, B {  
+    public void myMethod() {  
+        System.out.println("My method in MyClass");  
+    }  
+}  
+public class Main {  
+    public static void main(String[] args) {  
+        // Creating an object of MyClass  
+        MyClass obj = new MyClass();  
+        // Calling methods from both interfaces  
+        obj.methodA();  
+        obj.methodB();  
+        // Calling method defined in MyClass  
+        obj.myMethod();  
+    }  
+}
+```
+Output:
+```
+Method A from interface A
+Method B from interface B
+My method in MyClass
+```
+
+In this example, MyClass implements both interfaces A and B, allowing it to inherit methods from both interfaces. This demonstrates the concept of achieving multiple inheritance in Java through interfaces.
+
+## Benefits of Inheritance
+---------------------------
+
+Inheritance offers several advantages, including:
+
+Code Reusability: Inherited members from a superclass can be reused in subclasses, reducing redundant code and promoting a modular approach to software development.
+
+Hierarchical Organization: Inheritance facilitates the creation of well-structured class hierarchies, improving code readability and maintainability.
+
+Polymorphism: Subclasses can override superclass methods, allowing for polymorphic behavior, where methods can behave differently based on the object type at runtime.
+
+Easier Maintenance: Changes made to a superclass automatically propagate to its subclasses, ensuring consistency and simplifying maintenance efforts.
+
+## Conclusion
+----------
+Inheritance in Java is a powerful tool for creating rule sets and reusing rules in object-oriented programs. By understanding its syntax, types, utility, and best practices, developers can effectively use inheritance to create maintainable, extensible, and scalable Java applications.
+
+
