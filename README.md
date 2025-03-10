@@ -3762,4 +3762,84 @@ super() is added in each class constructor automatically by compiler if there is
 
 As we know well that default constructor is provided by compiler automatically if there is no constructor. But, it also adds super() as the first statement.
 
+# Final Keyword In Java
+The final keyword in Java is used to restrict the user. The java final keyword can be used in many context. Final can be:
 
+variable
+method
+class
+
+The final keyword can be applied with the variables, a final variable that have no value it is called blank final variable or uninitialized final variable. It can be initialized in the constructor only. The blank final variable can be static also which will be initialized in the static block only.
+
+![image](https://github.com/user-attachments/assets/855cfe40-af1b-4440-b6b6-aa64c339c54e)
+
+## 1) Java final variable
+
+If you make any variable as final, you cannot change the value of final variable(It will be constant).
+
+### Example of final variable
+
+There is a final variable speedlimit, we are going to change the value of this variable, but It can't be changed because final variable once assigned a value can never be changed.
+```
+class Bike{  
+  final int speedlimit=90;//final variable  
+  void run(){  
+   speedlimit=400;//we cannot change the final variable  
+  }  
+  public static void main(String args[]){  
+  Bike obj=new  Bike();  
+  obj.run();  
+  }  
+ }//end of class
+``` 
+Output:
+```
+Compile Time Error
+```
+
+## 2) Java final method
+If you make any method as final, you cannot override it.
+
+### Example of final method
+```
+Example
+class Bike{  
+  final void run(){System.out.println("running");}  
+}  
+     
+class Honda extends Bike{  
+   //We cannot override the final method  
+   void run(){System.out.println("running safely with 100kmph");}  
+     
+   public static void main(String args[]){  
+   Honda honda= new Honda();  
+   honda.run();  
+   }  
+}  
+``` 
+Output:
+```
+Compile Time Error
+```
+## 3) Java final class
+
+If you make any class as final, you cannot extend it.
+
+## Example of final class
+```
+final class Bike{}  
+  
+//We cannot inherit the final class  
+class Honda extends Bike{  
+   void run(){System.out.println("running safely with 100kmph");}  
+     
+   public static void main(String args[]){  
+    Honda honda= new Honda();  
+    honda.run();  
+   }  
+}
+``` 
+Output:
+```
+Compile Time Error
+```
