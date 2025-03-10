@@ -3649,5 +3649,117 @@ AXIS Rate of Interest: 9
 
 This Java programme uses a real-world scenario where three classes-SBI, ICICI, and AXIS-override a method from their parent class, Bank, to demonstrate the idea of method overriding. The getRateOfInterest() function of the Bank class yields 0. With their own implementation, each of the child classes overrides this method: SBI returns 8, ICICI returns 7, and AXIS returns 9. Each child class object is created in the Test2 class, and then each object's getRateOfInterest() method is used to print out the corresponding interest rates for each bank. This illustrates how polymorphic behaviour dependent on the type of object at runtime is made possible by method overriding, which enables each subclass to give its own implementation of a method inherited from the superclass.
 
+# Super Keyword in Java
+The super keyword in Java is a reference variable which is used to refer immediate parent class object.
+
+Whenever you create the instance of subclass, an instance of parent class is created implicitly which is referred by super reference variable.
+
+## Usage of Java super Keyword
+
+super can be used to refer immediate parent class instance variable.
+super can be used to invoke immediate parent class method.
+super() can be used to invoke immediate parent class constructor.
+
+![image](https://github.com/user-attachments/assets/a3b56988-73fd-4723-8e4c-7ce67a63fc0b)
+
+### 1) super is used to refer immediate parent class instance variable.
+We can use super keyword to access the data member or field of parent class. It is used if parent class and child class have same fields.
+```
+//Java Program to illustrate the use of super keyword  
+//Creating parent class  
+class Animal{    
+    String color="white";    
+}    
+//Creating child class  
+class Dog extends Animal{    
+    String color="black";    
+    void printColor(){    
+        System.out.println(color);//prints color of Dog class    
+        System.out.println(super.color);//prints color of Animal class    
+    }    
+}    
+//Creating Main class to create object and call methods  
+public class Main{    
+    public static void main(String args[]){    
+        Dog d=new Dog();    
+        d.printColor();    
+    }  
+}
+```
+Output:
+
+```
+black
+white
+```
+In the above example, Animal and Dog both classes have a common property color. If we print color property, it will print the color of current class by default. To access the parent property, we need to use super keyword.
+
+### 2) super can be used to invoke parent class method
+
+The super keyword can also be used to invoke parent class method. It should be used if subclass contains the same method as parent class. In other words, it is used if method is overridden.
+```
+Example
+//Java Program to illustrate the use of super()  
+//Creating parent class  
+class Animal{    
+    void eat(){System.out.println("eating...");}    
+}    
+//Creating child class  
+class Dog extends Animal{    
+    void eat(){System.out.println("eating bread...");}    
+    void bark(){System.out.println("barking...");}    
+    void work(){    
+        super.eat();    
+        bark();    
+    }    
+}    
+//Creating Main class to create object and call methods  
+public class Main{    
+    public static void main(String args[]){    
+        Dog d=new Dog();    
+        d.work();    
+    }  
+}    
+```
+Output:
+```
+eating...
+barking...
+```
+
+### 3) super is used to invoke parent class constructor.
+
+The super keyword can also be used to invoke the parent class constructor. Let's see a simple example:
+
+```
+class Animal{    
+    Animal(){System.out.println("animal is created");}    
+}    
+class Dog extends Animal{    
+    Dog(){    
+        super();  //calls the constructor of parent class  
+        System.out.println("dog is created");    
+    }    
+}    
+public class Main{    
+    public static void main(String args[]){    
+        Dog d=new Dog();    
+    }  
+}
+```
+
+Output:
+```
+animal is created
+dog is created
+```
+
+### Note: 
+```
+super() is added in each class constructor automatically by compiler if there is no super() or this().
+```
+![image](https://github.com/user-attachments/assets/fa6215ae-5fdb-4eb7-ac4f-5c497fac88b4)
+
+As we know well that default constructor is provided by compiler automatically if there is no constructor. But, it also adds super() as the first statement.
 
 
