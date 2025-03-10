@@ -3843,3 +3843,150 @@ Output:
 ```
 Compile Time Error
 ```
+
+# Polymorphism in Java
+
+Polymorphism in Java is a concept by which we can perform a single action in different ways. Polymorphism is derived from 2 Greek words: poly and morphs. The word "poly" means many and "morphs" means forms. So polymorphism means many forms.
+
+## Advantages of Polymorphism
+
+### 1. Code Reusability
+
+Polymorphism allows methods in subclasses to override methods in their superclass, enabling code reuse and maintaining a consistent interface across related classes.
+
+### 2. Flexibility and Extensibility
+
+Polymorphism allows subclasses to provide their own implementations of methods defined in the superclass, making it easier to extend and customize behavior without modifying existing code.
+
+### 3. Dynamic Method Invocation:
+
+Polymorphism enables dynamic method invocation, where the method called is determined by the actual object type at runtime, providing flexibility in method dispatch.
+
+### 4. Interface Implementation:
+
+Interfaces in Java allow multiple classes to implement the same interface with their own implementations, facilitating polymorphic behavior and enabling objects of different classes to be treated interchangeably based on a common interface.
+
+### 5. Method Overloading:
+
+Polymorphism is also achieved through method overloading, where multiple methods with the same name but different parameter lists can be defined within a class or its subclasses, enhancing code readability and allowing flexibility in method invocation based on parameter types.
+
+### 6. Reduced Code Complexity:
+
+Polymorphism helps reduce code complexity by promoting a modular and hierarchical class structure, making it easier to understand, maintain, and extend large-scale software systems.
+
+## Types of Polymorphism
+
+There are two types of polymorphism in Java:
+
+Compile-time Polymorphism
+
+Runtime Polymorphism.
+
+We can perform polymorphism in Java by method overloading and method overriding.
+
+### 1) Compile-Time Polymorphism in Java
+
+In Java, method overloading is used to achieve compile-time polymorphism. A class can have numerous methods with the same name but distinct parameter lists thanks to method overloading. The compiler uses the amount and kind of parameters provided to it during compilation to decide which method to call. This choice is made during compilation, which is why it's called "compile-time polymorphism."
+
+### 2) Runtime Polymorphism in Java
+
+Runtime polymorphism or Dynamic Method Dispatch is a process in which a call to an overridden method is resolved at runtime rather than compile-time.
+
+In this process, an overridden method is called through the reference variable of a superclass. The determination of the method to be called is based on the object being referred to by the reference variable.
+
+Let's first understand the upcasting before Runtime Polymorphism.
+
+### Upcasting
+
+If the reference variable of Parent class refers to the object of Child class, it is known as upcasting. For example:
+
+![image](https://github.com/user-attachments/assets/14fbeba2-a187-4686-9c0d-91ceb45cc2c6)
+
+Upcasting in Java
+```
+class A{}  
+class B extends A{}  
+A a=new B();//upcasting  
+For upcasting, we can use the reference variable of class type or an interface type. For Example:
+
+interface I{}  
+class A{}  
+class B extends A implements I{}
+```
+Here, the relationship of B class would be:
+```
+B IS-A A
+B IS-A I
+B IS-A Object
+```
+### Example of Java Runtime Polymorphism
+In this example, we are creating two classes Bike and Splendor. Splendor class extends Bike class and overrides its run() method. We are calling the run method by the reference variable of Parent class. Since it refers to the subclass object and subclass method overrides the Parent class method, the subclass method is invoked at runtime.
+
+Since method invocation is determined by the JVM not compiler, it is known as runtime polymorphism.
+```
+Example
+class Bike{    
+  void run(){System.out.println("running");}    
+}    
+class Splendor extends Bike{    
+  void run(){System.out.println("running safely with 60km");}    
+}  
+public class Main{  
+  public static void main(String args[]){    
+    Bike b = new Splendor();//upcasting    
+    b.run();    
+  }    
+}
+```
+Output:
+```
+running safely with 60km.
+```
+### Explanation
+
+This Java sample uses method overriding to illustrate runtime polymorphism. While the Splendour class extends Bike and overrides the run() method to output "running safely with 60km," the Bike class provides a method called run() that prints "running." Because of upcasting, a Bike reference variable called b is generated in the main method that points to a Splendour object. Runtime polymorphism is demonstrated by the overridden method from the Splendour class, which is called when the run() method is called using this reference variable. The JVM determines which method to call based on the actual object type at runtime.
+
+### Java Runtime Polymorphism Example: Bank
+
+Consider a scenario where Bank is a class that provides a method to get the rate of interest. However, the rate of interest may differ according to banks. For example, SBI, ICICI, and AXIS banks are providing 8.4%, 7.3%, and 9.7% rate of interest.
+
+![image](https://github.com/user-attachments/assets/6be2ccc7-3047-4a4b-a4db-759059292d54)
+```
+Note: This example is also given in method overriding but there was no upcasting.
+```
+```
+class Bank{    
+    float getRateOfInterest(){return 0;}    
+}    
+class SBI extends Bank{    
+    float getRateOfInterest(){return 8.4f;}    
+}    
+class ICICI extends Bank{    
+    float getRateOfInterest(){return 7.3f;}    
+}    
+class AXIS extends Bank{    
+    float getRateOfInterest(){return 9.7f;}    
+}    
+public class Main{    
+ public static void main(String args[]){    
+  Bank b;    
+  b=new SBI();    
+  System.out.println("SBI Rate of Interest: "+b.getRateOfInterest());    
+  b=new ICICI();    
+  System.out.println("ICICI Rate of Interest: "+b.getRateOfInterest());    
+  b=new AXIS();    
+  System.out.println("AXIS Rate of Interest: "+b.getRateOfInterest());    
+ }    
+}    
+```
+
+Output:
+```
+SBI Rate of Interest: 8.4
+ICICI Rate of Interest: 7.3
+AXIS Rate of Interest: 9.7
+```
+### Explanation
+
+This Java sample uses method overriding to demonstrate polymorphism. It provides a method called getRateOfInterest() on the Bank type, which returns 0. The Bank class is extended by the subclasses SBI, ICICI, and AXIS, which override the getRateOfInterest() function to return particular interest rates. Objects of SBI, ICICI, and AXIS are created and assigned to a Bank reference variable b in the TestPolymorphism class's main method. The relevant getRateOfInterest() method is dynamically executed through polymorphism, depending on the actual object type provided to b, and the interest rates for SBI, ICICI, and AXIS banks are printed out.
+
