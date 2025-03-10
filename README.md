@@ -3281,4 +3281,75 @@ Easier Maintenance: Changes made to a superclass automatically propagate to its 
 ----------
 Inheritance in Java is a powerful tool for creating rule sets and reusing rules in object-oriented programs. By understanding its syntax, types, utility, and best practices, developers can effectively use inheritance to create maintainable, extensible, and scalable Java applications.
 
+# Aggregation in Java
+If a class have an entity reference, it is known as Aggregation. Aggregation represents HAS-A relationship.
+
+Consider a situation, Employee object contains many informations such as id, name, emailId etc. It contains one more object named address, which contains its own informations such as city, state, country, zipcode etc. as given below.
+
+```
+class Employee{  
+int id;  
+String name;  
+Address address;//Address is a class  
+...  
+}
+```
+In such case, Employee has an entity reference address, so relationship is Employee HAS-A address.
+
+### Why use Aggregation?
+For Code Reusability.
+
+## When use Aggregation?
+Code reuse is also best achieved by aggregation when there is no is-a relationship.
+Inheritance should be used only if the relationship is-a is maintained throughout the lifetime of the objects involved; otherwise, aggregation is the best choice.
+
+## Real-Time Example of Aggregation
+ this example, Employee has an object of Address, address object contains its own informations such as city, state, country etc. In such case relationship is Employee HAS-A Address.
+```
+ class Address {    
+ String city,state,country;    
+    
+ public Address(String city, String state, String country) {    
+    this.city = city;    
+    this.state = state;    
+    this.country = country;    
+ }    
+}    
+//Employee class that has Address  
+class Emp {    
+    int id;    
+    String name;    
+    Address address;  //Emp Has-A Address  
+    
+ public Emp(int id, String name,Address address) {    
+    this.id = id;    
+    this.name = name;    
+    this.address=address;    
+ }    
+    
+ void display(){    
+  System.out.println(id+" "+name);    
+  System.out.println(address.city+" "+address.state+" "+address.country);    
+ }    
+}  
+//Main class   
+public class Main{  
+ public static void main(String[] args) {    
+  Address address1=new Address("gzb","UP","india");    
+  Address address2=new Address("gno","UP","india");    
+  Emp e=new Emp(111,"varun",address1);    
+  Emp e2=new Emp(112,"arun",address2);    
+        
+  e.display();    
+  e2.display();      
+ }    
+}
+```
+``` 
+111 varun
+gzb UP india
+112 arun
+gno UP india
+
+```
 
