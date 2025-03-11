@@ -4071,3 +4071,182 @@ Output:dog is eating...
 
 ```
 In the above example object type cannot be determined by the compiler, because the instance of Dog is also an instance of Animal.So compiler doesn't know its type, only its base type
+
+# Abstract Class in Java
+In the world of Java programming, abstract classes play an important role in defining the structure of classes and their behavior in the hierarchy. They provide a blueprint for other teams to follow, and some methods remain undefined. This flexibility empowers developers to generate a well-organized and scalable codebase. In this section, we will explore the concept of abstract classes in Java, examining their features, advantages, and best practices.
+
+A class that is declared with the abstract keyword is known as an abstract class in Java. It can have abstract and non-abstract methods (method with the body).
+
+Before learning the Java abstract class, let's understand the abstraction in Java first.
+
+## Abstraction in Java
+Abstraction is a process of hiding the implementation details and showing only functionality to the user.
+
+Another way, it shows only essential things to the user and hides the internal details, for example, sending SMS where we type the text and send the message. We do not know the internal processing about the message delivery.
+
+Abstraction lets you focus on what the object does instead of how it does it.
+
+### Ways to achieve Abstraction 
+
+There are two ways to achieve abstraction in Java:
+
+Using Abstract Class (0 to 100%)
+
+Using Interface (100%)
+
+## Abstract Class in Java
+
+An abstract class in Java acts as a partially implemented class that itself cannot be instantiated. It exists only for subclassing purposes, and provides a template for its subcategories to follow. Abstract classes can have implementations with abstract methods. Abstract methods are declared to have no body, leaving their implementation to subclasses.
+
+### Points to Remember
+
+An abstract class must be declared with an abstract keyword.
+
+It can have abstract and non-abstract methods.
+
+It cannot be instantiated.
+
+It can have constructors and static methods also.
+
+It can have final methods which will force the subclass not to change the body of the method.
+
+![image](https://github.com/user-attachments/assets/e790f0bb-f49c-4af6-a50a-afd75686ae0d)
+
+### Syntax of Abstract Classes
+
+In Java, abstract classes are defined using the abstract keyword. Here's a basic syntax example:
+```
+public abstract class Shape {  
+    public abstract double area();  
+    public void display() {  
+        System.out.println("This is a shape.");  
+    }  
+}
+```
+In this example, Shape is an abstract class with one abstract method area() and one concrete method display(). Subclasses of Shape must implement the area() method, but they can inherit the display() method.
+
+## Abstract Method in Java
+A method which is declared as abstract and does not have implementation is known as an abstract method
+
+Example of abstract method
+```
+abstract void printStatus();//no method body and abstract  
+```
+
+### Example of Abstract Class that has an Abstract Method
+
+In this example, Bike is an abstract class that contains only one abstract method run. Its implementation is provided by the Honda class.
+
+```
+//Creating an abstract class having abstract method  
+abstract class Bike{    
+  abstract void run();    
+}    
+//Creating a child class and override abstract method  
+class Honda extends Bike{    
+void run(){System.out.println("running safely");}    
+}  
+//Creating a Main class to create object and call methods  
+public class Main{  
+public static void main(String args[]){    
+ Bike obj = new Honda();    
+ obj.run();    
+}    
+} 
+```
+Output:
+```
+running safely
+```
+## Key Features of Abstract Classes
+
+Abstract Methods: Abstract classes can have abstract methods, which are declared without a body. Subclasses must provide concrete implementations for these methods.
+
+Concrete Methods: Abstract classes can also contain concrete methods with defined behavior. Subclasses inherit these methods along with their implementations.
+
+Cannot be Instantiated: Abstract classes cannot be instantiated directly. They serve as a blueprint for other classes and must be extended to be used.
+
+Can Have Constructors: Abstract classes can have constructors, which are invoked when a subclass object is created. These constructors are used to initialize the state of the abstract class.
+
+### Real Scenario of Abstract Class
+
+In this example, Shape is the abstract class, and its implementation is provided by the Rectangle and Circle classes.
+
+Mostly, we do not know about the implementation class (which is hidden to the end user), and an object of the implementation class is provided by the factory method.
+
+A factory method is a method that returns the instance of the class. We will learn about the factory method later.
+
+In this example, if we create the instance of Rectangle class, draw() method of Rectangle class will be invoked.
+```
+abstract class Shape{    
+ abstract void draw();    
+}    
+//In real scenario, implementation is provided by others i.e. unknown by end user    
+class Rectangle extends Shape{    
+ void draw(){System.out.println("drawing rectangle");}    
+}    
+class Circle extends Shape{    
+ void draw(){System.out.println("drawing circle");}    
+}    
+//In real scenario, method is called by programmer or user    
+public class Main{    
+ public static void main(String args[]){    
+  //In a real scenario, object is provided through method, e.g., getShape() method    
+  Shape s=new Circle();  
+  s.draw();    
+}    
+}
+```
+ Output:
+```
+drawing circle
+
+```
+Abstract Class: Having Constructor, Data Member and Methods
+
+An abstract class can have a data member, abstract method, method body (non-abstract method), constructor, and even main() method.
+
+```
+Example
+//Example of an abstract class that has abstract and non-abstract methods    
+abstract class Bike{    
+   Bike(){System.out.println("bike is created");}    
+   abstract void run();    
+   void changeGear(){System.out.println("gear changed");}    
+}    
+//Creating a Child class which inherits Abstract class    
+class Honda extends Bike{    
+ void run(){System.out.println("running safely..");}    
+}    
+//Creating a Main class which calls abstract and non-abstract methods    
+public class Main{    
+ public static void main(String args[]){    
+  Bike obj = new Honda();    
+  obj.run();    
+  obj.changeGear();    
+ }    
+}
+```
+
+Output:
+```
+bike is created
+running safely..
+gear changed
+```
+
+### Rule: 
+```If there is an abstract method in a class, that class must be abstract.```
+```
+class Bike12{  
+abstract void run();  
+}
+```
+Output:
+```
+compile time error
+```
+
+Rule: If we are extending an abstract class that has an abstract method, we must either provide the implementation of the method or make this class abstract.
+
+
