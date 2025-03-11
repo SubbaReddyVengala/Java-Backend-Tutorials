@@ -4249,4 +4249,209 @@ compile time error
 
 Rule: If we are extending an abstract class that has an abstract method, we must either provide the implementation of the method or make this class abstract.
 
+# Interface in Java
+
+An interface in Java is a blueprint of a class. It has static constants and abstract methods.
+
+The interface in Java is a mechanism to achieve abstraction. There can be only abstract methods in the Java interface, not method body. It is used to achieve abstraction and multiple inheritance in Java.
+
+In other words, you can say that interfaces can have abstract methods and variables. It cannot have a method body.
+
+Java Interface also represents the IS-A relationship.
+
+It cannot be instantiated just like the abstract class.
+
+Since Java 8, we can have default and static methods in an interface.
+
+Since Java 9, we can have private methods in an interface.
+
+### Why use Java interface?
+
+There are mainly three reasons to use interface. They are given below.
+
+It is used to achieve abstraction.
+
+By interface, we can support the functionality of multiple inheritance.
+
+It can be used to achieve loose coupling.
+
+![image](https://github.com/user-attachments/assets/10ec8d9d-6664-4fb0-9503-26d8a8dd446e)
+
+### How to declare an interface?
+
+An interface is declared by using the interface keyword. It provides total abstraction; means all the methods in an interface are declared with the empty body, and all the fields are public, static and final by default. A class that implements an interface must implement all the methods declared in the interface.
+
+Syntax:
+```
+interface <interface_name>{  
+      
+    // declare constant fields  
+    // declare methods that abstract   
+    // by default.  
+}
+```
+Example:
+```
+interface Animal {  
+    void eat();  
+    void sleep();  
+}
+```
+
+In this example, the Animal interface declares two method signatures: eat() and sleep(). Any class implementing the Animal interface must provide concrete implementations for these methods.
+
+### Internal addition by the compiler
+```
+The Java compiler adds public and abstract keywords before the interface method. Moreover, it adds public, static and final keywords before data members.
+```
+
+![image](https://github.com/user-attachments/assets/b414b1cb-f205-429f-aa85-de3107ac49fa)
+
+Java 8 Interface Improvement
+
+Since Java 8, interface can have default and static methods which is discussed later.
+
+Relationship Between Classes and Interfaces
+
+As shown in the figure given below, a class extends another class, an interface extends another interface, but a class implements an interface.
+
+![image](https://github.com/user-attachments/assets/1b4112b5-f350-4390-b680-f670c00edb75)
+
+## Java Interface Example
+
+In this example, the Printable interface has only one method, and its implementation is provided in the A6 class
+
+```
+//Creating an interface  
+interface Printable{      
+  void print();      
+}    
+//Creating a class that implements Printable    
+class Printer implements Printable{      
+  public void print(){System.out.println("Hello");}   
+}  
+//Creating a class that creates objects and call methods  
+public class Main{  
+  public static void main(String args[]){      
+    Printable p=new Printer();  
+    p.print();    
+ }      
+}
+```
+Output:
+```
+Hello
+```
+
+### Multiple Inheritance in Java by Interface
+
+If a class implements multiple interfaces, or an interface extends multiple interfaces, it is known as multiple inheritance.
+
+![image](https://github.com/user-attachments/assets/097398df-4cba-4f65-8c11-7e1177966f6d)
+
+```
+interface Printable{    
+  void print();    
+}    
+interface Showable{    
+  void show();    
+}    
+//Creating a class that implements two interfaces  
+class Computer implements Printable,Showable{    
+  public void print(){System.out.println("printing data...");}    
+  public void show(){System.out.println("showing data...");}    
+}  
+//Creating a Main class to create object and call methods  
+public class Main{  
+  public static void main(String args[]){    
+    Computer c = new Computer();    
+    c.print();    
+    c.show();    
+ }    
+}
+```
+Output:
+```
+printing data...
+showing data...
+```
+
+## Java 8 Default Method in Interface
+
+Since Java 8, we can have method body in interface. But we need to make it default method. Let's see an example:
+
+File: TestInterfaceDefault.java
+```
+interface Drawable{  
+void draw();  
+default void msg(){System.out.println("default method");}  
+}  
+class Rectangle implements Drawable{  
+public void draw(){System.out.println("drawing rectangle");}  
+}  
+class TestInterfaceDefault{  
+public static void main(String args[]){  
+Drawable d=new Rectangle();  
+d.draw();  
+d.msg();  
+}}  `
+```
+Output:
+```
+drawing rectangle
+default method
+```
+## Java 8 Static Method in Interface
+
+Since Java 8, we can have static method in interface. Let's see an example:
+
+File: TestInterfaceStatic.java
+```
+interface Drawable{  
+void draw();  
+static int cube(int x){return x*x*x;}  
+}  
+class Rectangle implements Drawable{  
+public void draw(){System.out.println("drawing rectangle");}  
+}  
+  
+class TestInterfaceStatic{  
+public static void main(String args[]){  
+Drawable d=new Rectangle();  
+d.draw();  
+System.out.println(Drawable.cube(3));  
+}}
+```
+Output:
+```
+drawing rectangle
+27
+```
+
+## Difference between abstract class and interface
+
+Abstract class and interface both are used to achieve abstraction where we can declare the abstract methods. Abstract class and interface both can't be instantiated.
+
+But there are many differences between abstract class and interface that are given below.
+
+### Abstract class                                                                                                 Interface
+
+1) Abstract class can have abstract and non-abstract methods.                               1) Interface can have only abstract methods. Since Java 8, it can have default and static methods also.
+   
+2) Abstract class doesn't support multiple inheritance.                                     2) Interface supports multiple inheritance.
+
+3) Abstract class can have final, non-final, static and non-static variables.               3) Interface has only static and final variables.
+
+4) Abstract class can provide the implementation of interface.                              4) Interface can't provide the implementation of abstract class.
+   
+5) The abstract keyword is used to declare abstract class.                                  5) The interface keyword is used to declare interface.
+   
+6) An abstract class can extend another Java class and implement multiple Java interfaces.  6) An interface can extend another Java interface only.
+
+7) An abstract class can be extended using keyword "extends".                               7) An interface can be implemented using keyword "implements".
+   
+8) A Java abstract class can have class members like private, protected, etc.               8) Members of a Java interface are public by default.
+
+Simply, abstract class achieves partial abstraction (0 to 100%) whereas interface achieves fully abstraction (100%).
+
 
