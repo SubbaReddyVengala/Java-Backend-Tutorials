@@ -4937,4 +4937,165 @@ Output:
 ```
 7560504000 Sonoo Jaiswal sonoojaiswal@javatpoint.com 500000.0
 ```
+# Java Arrays
+
+An array is typically a grouping of elements of the same kind that are stored in a single, contiguous block of memory.
+
+Java array is an object which contains elements of a similar data type. Additionally, The elements of an array are stored in a contiguous memory location. It is a data structure where we store similar elements. We can store only a fixed set of elements in a Java array.
+
+Array in Java is index-based, the first element of the array is stored at the 0th index, 2nd element is stored on 1st index and so on.
+
+![image](https://github.com/user-attachments/assets/ca86e6e1-3848-4842-a529-033c3c35113e)
+
+## Advantages
+
+Code Optimization: It makes the code optimized, we can retrieve or sort the data efficiently.
+
+Random access: We can get any data located at an index position.
+
+## Disadvantages
+
+Size Limit: Arrays have a fixed size and do not grow dynamically at runtime.
+
+## Types of Array in java
+
+There are two types of array.
+
+Single Dimensional Array
+
+Multidimensional Array
+
+## Single-Dimensional Array in Java
+
+A single-dimensional array in Java is a linear collection of elements of the same data type. It is declared and instantiated using the following syntax:
+```
+
+dataType[] arr; (or)  
+dataType []arr; (or)  
+dataType arr[];
+
+```
+Instantiation of an Array in Java
+```
+arrayRefVar=new datatype[size];  
+```
+## Example of Java Array
+Let's see the simple example of java array, where we are going to declare, instantiate, initialize and traverse an array.
+```
+Example
+//Java Program to illustrate how to declare, instantiate, initialize    
+//and traverse the Java array.    
+public class Main{    
+ public static void main(String args[]){    
+    //declaration and instantiation of an array  
+    int a[]=new int[5];  
+    a[0]=10;//initialization    
+    a[1]=20;    
+    a[2]=70;    
+    a[3]=40;    
+    a[4]=50;    
+    //traversing array    
+    for(int i=0;i<a.length;i++){//length is the property of array    
+        System.out.println(a[i]);    
+    }  
+ }  
+} 
+```
+Output:
+```
+10
+20
+70
+40
+50
+```
+
+## For-each Loop for Java Array
+
+We can also print the Java array using for-each loop. The Java for-each loop prints the array elements one by one. It holds an array element in a variable, then executes the body of the loop.
+
+The syntax of the for-each loop is given below:
+
+```
+for(data_type variable:array){  
+//body of the loop  
+}  
+```
+Let's see the example of printing the elements of the Java array using the for-each loop.
+```
+Example
+//Java Program to print the array elements using for-each loop    
+public class Main{    
+ public static void main(String args[]){    
+    //declaration and initialization of an array  
+    int arr[]={33,3,4,5};    
+    //traversal of an array using for-each loop    
+    for(int i:arr)    
+        System.out.println(i);    
+ }  
+}  
+```
+Output:
+```
+33
+3
+4
+5
+```
+
+# Multidimensional Array in Java
+
+A multidimensional array in Java is an array of arrays where each element can be an array itself. It is useful for storing data in row and column format.
+
+# Syntax to Declare Multidimensional Array in Java 
+
+```
+dataType[][] arrayRefVar; (or)  
+dataType [][]arrayRefVar; (or)  
+dataType arrayRefVar[][]; (or)  
+dataType []arrayRefVar[];   
+Example to instantiate Multidimensional Array in Java
+
+int[][] arr=new int[3][3];//3 row and 3 column
+
+Example to initialize Multidimensional Array in Java
+
+arr[0][0]=1;  
+arr[0][1]=2;  
+arr[0][2]=3;  
+arr[1][0]=4;  
+arr[1][1]=5;  
+arr[1][2]=6;  
+arr[2][0]=7;  
+arr[2][1]=8;  
+arr[2][2]=9;
+```
+Example of Multidimensional Java Array
+Let's see the simple example to declare, instantiate, initialize and print the 2Dimensional array.
+```
+Example
+public class Main {    
+    public static void main(String args[]) {    
+        int arr[][] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}; // 3x3 matrix    
+        // Printing the 2D array    
+        for (int i = 0; i < 3; i++) {    
+            for (int j = 0; j < 3; j++) {    
+                System.out.print(arr[i][j] + " ");    
+            }    
+            System.out.println();    
+        }    
+    }    
+}
+```
+Output:
+```
+1 2 3
+4 5 6
+7 8 9
+```
+Explanation
+
+This Java program initializes and prints a 2D array, representing a 3x3 matrix. Initially, a 2D array named arr is declared and initialized with values using array initializer syntax. The array consists of three rows, each containing three columns. The program then iterates through each row and column of the array using nested loops. Within the loops, it prints the value of each element, separated by a space. After printing all the elements of a row, a newline character is printed to move to the next line. This process continues until all elements of the array are printed. As a result, the program outputs the 3x3 matrix with each element displayed in its respective row and column.
+
+These examples demonstrate the declaration, instantiation, initialization, and traversal of both single-dimensional and multidimensional arrays in Java.
 
