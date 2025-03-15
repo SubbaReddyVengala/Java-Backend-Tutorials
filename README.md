@@ -7706,4 +7706,88 @@ System.out.println(sb);//prints Hello Java
 }  
 }
 ```
+![image](https://github.com/user-attachments/assets/103134d9-9fca-49c7-ad5b-8cd00405d78a)
+
+![image](https://github.com/user-attachments/assets/c0a3a6df-ed20-4c34-9284-6f0ad6307888)
+
+Performance Test of String and StringBuffer
+ConcatTest.java
+
+```
+
+public class ConcatTest{  
+    public static String concatWithString()    {  
+        String t = "Java";  
+        for (int i=0; i<10000; i++){  
+            t = t + "Tpoint";  
+        }  
+        return t;  
+    }  
+    public static String concatWithStringBuffer(){  
+        StringBuffer sb = new StringBuffer("Java");  
+        for (int i=0; i<10000; i++){  
+            sb.append("Tpoint");  
+        }  
+        return sb.toString();  
+    }  
+    public static void main(String[] args){  
+        long startTime = System.currentTimeMillis();  
+        concatWithString();  
+        System.out.println("Time taken by Concating with String: "+(System.currentTimeMillis()-startTime)+"ms");  
+        startTime = System.currentTimeMillis();  
+        concatWithStringBuffer();  
+        System.out.println("Time taken by Concating with  StringBuffer: "+(System.currentTimeMillis()-startTime)+"ms");  
+    }  
+}
+```
+Output:
+
+```
+Time taken by Concating with String: 578ms
+Time taken by Concating with StringBuffer: 0ms
+```
+String and StringBuffer HashCode Test
+As we can see in the program given below, String returns new hashcode while performing concatenation but the StringBuffer class returns same hashcode.
+
+InstanceTest.java
+```
+public class InstanceTest{  
+    public static void main(String args[]){  
+        System.out.println("Hashcode test of String:");  
+        String str="java";  
+        System.out.println(str.hashCode());  
+        str=str+"tpoint";  
+        System.out.println(str.hashCode());  
+   
+        System.out.println("Hashcode test of StringBuffer:");  
+        StringBuffer sb=new StringBuffer("java");  
+        System.out.println(sb.hashCode());  
+        sb.append("tpoint");  
+        System.out.println(sb.hashCode());  
+    }  
+}
+``` 
+Output:
+```
+Hashcode test of String:
+3254818
+229541438
+Hashcode test of StringBuffer:
+118352462
+118352462
+```
+
+## Difference between StringBuffer and StringBuilder
+
+Java provides three classes to represent a sequence of characters: String, StringBuffer, and StringBuilder. The String class is an immutable class whereas StringBuffer and StringBuilder classes are mutable. There are many differences between StringBuffer and StringBuilder. The StringBuilder class is introduced since JDK 1.5.
+
+A list of differences between StringBuffer and StringBuilder is given below
+
+![image](https://github.com/user-attachments/assets/6256239f-240f-414d-be83-17a13ad45082)
+
+
+![image](https://github.com/user-attachments/assets/759f8362-618e-43fd-a4de-fb81ebf5a0b0)
+
+
+
 
