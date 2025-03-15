@@ -7062,4 +7062,141 @@ The immutability of String helps to minimize the usage in the heap memory. When 
 ### Why String class is Final in Java?
 The reason behind the String class being final is because no one can override the methods of the String class. So that it can provide the same features to the new String objects as well as to the old ones.
 
+# Java String compare
+
+String comparison is a key component of Java programming and is used extensively in reference matching, sorting, and authentication. In this section, we will discuss various ways to compare string in Java.
+
+We can compare String in Java on the basis of content and reference.
+
+![image](https://github.com/user-attachments/assets/09b81c40-96ec-41c9-a1c1-3a10b4eb3344)
+
+String comparision used in authentication (by the equals() method), sorting (by the compareTo() method), reference matching (by the == operator), etc.
+
+There are three ways to compare String in Java:
+
+
+By Using equals() Method
+
+By Using == Operator
+
+By compareTo() Method
+
+Using startsWith() and endsWith() Method
+
+## 1) By Using equals() Method
+
+The String class equals() method compares the original content of the string. It compares values of string for equality. String class provides the following two methods: Additionally, the equalsIgnoreCase() method performs a case-insensitive comparison.
+
+String class provides the following two methods:
+
+public boolean equals(Object another) compares this string to the specified object.
+
+public boolean equalsIgnoreCase(String another) compares this string to another string, ignoring case.
+
+![image](https://github.com/user-attachments/assets/152e1299-502b-4de3-8a55-99fb7f7e48f1)
+
+StringComparisonUsingEqualsMethod.java
+
+```
+class StringComparisonUsingEqualsMethod{  
+ public static void main(String args[]){  
+   String s1="Sachin";  
+   String s2="Sachin";  
+   String s3=new String("Sachin");  
+   String s4="Saurav";  
+   System.out.println(s1.equals(s2));//true  
+   System.out.println(s1.equals(s3));//true  
+   System.out.println(s1.equals(s4));//false  
+ }  
+}
+```
+S1 and S2 relate to the same string pool object since they are string literals. As a result, s1.equals(s2) gives true. Despite S3 being developed with the new keyword, S1 and S3 had the same content. Since only the content is compared using the equals() method, s1.equals(s3) is true; however, s1.equals(s4) is false because the contents of s1 and s4 differ.
+
+In the above program, the methods of String class are used. The equals() method returns true if String objects are matching and both strings are of same case. equalsIgnoreCase() returns true regardless of cases of strings.
+
+StringComparisonUsingequalsIgnoreCase.java
+
+```
+class  StringComparisonUsingequalsIgnoreCase {  
+    public static void main(String[] args) {  
+        String s1 = "Ram";  
+        String s2 = "rAm";  
+        // Using equals() method for case-sensitive comparison  
+        boolean equalsResult = s1.equals(s2);  
+        System.out.println("Using equals() method: " + equalsResult); // Output: false  
+        // Using equalsIgnoreCase() method for case-insensitive comparison  
+        boolean equalsIgnoreCaseResult = s1.equalsIgnoreCase(s2);  
+        System.out.println("Using equalsIgnoreCase() method: " + equalsIgnoreCaseResult); // Output: true  
+    }  
+}
+```
+
+## 2) By Using == Operator
+
+In Java, the == operator compares references rather than values.
+
+![image](https://github.com/user-attachments/assets/03172cae-4d18-456f-9698-db5d122ae814)
+
+StringCompare.java
+```
+class StringCompare {  
+    public static void main(String[] args) {  
+        String s1 = "Kohli";  
+        String s2 = "Kohli";  
+        String s3 = new String("Kohli");  
+        System.out.println(s1 == s2);              // true   
+        System.out.println(s1 == s3);              // false  
+    }  
+}
+
+```
+
+## 3) String compare by compareTo() Method
+
+The String class compareTo() method compares values lexicographically and returns an integer value that describes if first string is less than, equal to or greater than second string.
+
+Suppose s1 and s2 are two String objects. If:
+
+s1 == s2 : The method returns 0.
+s1 > s2 : The method returns a positive value.
+s1 < s2 : The method returns a negative value.
+
+StringComparisonUsingComapreto.java
+
+```
+class StringComparisonUsingComapreto {  
+    public static void main(String[] args) {  
+       String str1 = "Sachin";  
+        String str2 = "Sachin";  
+        String str3 = "Ratan";  
+        System.out.println(str1.compareTo(str2));      // 0  
+        System.out.println(str1.compareTo(str3));      // 1 (str1 > str3)  
+        System.out.println(str3.compareTo(str1));      // -1 (str3 < str1)  
+    }  
+}
+```
+Explanation
+
+The content of str1 and str2 is the same-"Sachin," while str3 has the word "Ratan."
+
+## 4) Using startsWith() and endsWith() Methods
+
+If a string starts with a prefix and ends with a suffix, respectively, it may be determined using the methods startsWith() and endsWith().
+
+```
+class StringCompare {  
+    public static void main(String[] args) {  
+        String str = "String Compare";  
+        System.out.println(str.startsWith("String")); // true  
+        System.out.println(str.endsWith("Compare"));  // true  
+    }  
+}  
+```
+Explanation
+
+startsWith("Hello") returns true if the string begins with the given prefix.
+
+endsWith("World!") returns true if the string does, in fact, conclude with the designated suffix.
+
+
 
