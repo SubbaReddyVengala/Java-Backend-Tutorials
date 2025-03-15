@@ -6700,3 +6700,295 @@ hello
 ...
 java.lang.StackOverflowError
 ```
+# Java String
+
+In Java, string is basically an object that represents sequence of char values. An array of characters works same as Java string. For example:
+
+```
+char[] ch={'j','a','v','a','t','p','o','i','n','t'};  
+String s=new String(ch);  
+```
+
+is same as:
+```
+String s="javatpoint";
+```
+
+Java String class provides a lot of methods to perform operations on strings such as compare(), concat(), equals(), split(), length(), replace(), compareTo(), intern(), substring() etc.
+
+The java.lang.String class implements Serializable, Comparable and CharSequence interfaces.
+
+![image](https://github.com/user-attachments/assets/71584264-6cec-4b51-ba94-6918d75dd394)
+
+## CharSequence Interface
+
+The CharSequence interface is used to represent the sequence of characters. String, StringBuffer and StringBuilder classes implement it. It means, we can create strings in Java by using these three classes.
+
+![image](https://github.com/user-attachments/assets/2e3e7b2f-2e3c-4798-b3f4-1ed8cab080a0)
+
+The Java String is immutable which means it cannot be changed. Whenever we change any string, a new instance is created. For mutable strings, you can use StringBuffer and StringBuilder classes.
+
+We will discuss immutable string later. Let's first understand what String in Java is and how to create the String object.
+
+## What is String in Java?
+
+Generally, String is a sequence of characters. But in Java, string is an object that represents a sequence of characters. The java.lang.String class is used to create a string object.
+
+### How to create a string object?
+There are two ways to create String object:
+
+By string literal
+By new keyword
+
+## 1) String Literal
+
+Java String literal is created by using double quotes. For Example:
+```
+String s="welcome";  
+```
+
+Each time you create a string literal, the JVM checks the "string constant pool" first. If the string already exists in the pool, a reference to the pooled instance is returned. If the string doesn't exist in the pool, a new string instance is created and placed in the pool. For example:
+```
+String s1="Welcome";  
+String s2="Welcome";//It doesn't create a new instance
+```
+![image](https://github.com/user-attachments/assets/c04afb31-a232-4802-b99d-9d4b42f1d4bf)
+
+In the above example, only one object will be created. Firstly, JVM will not find any string object with the value "Welcome" in string constant pool that is why it will create a new object. After that it will find the string with the value "Welcome" in the pool, it will not create a new object but will return the reference to the same instance.
+
+### Note: 
+```
+String objects are stored in a special memory area known as the "string constant pool".
+
+```
+### Why Java uses the concept of String literal?
+To make Java more memory efficient (because no new objects are created if it exists already in the string constant pool).
+
+### 2) By new keyword
+
+String s=new String("Welcome");//creates two objects and one reference variable  
+In such case, JVM will create a new string object in normal (non-pool) heap memory, and the literal "Welcome" will be placed in the string constant pool. The variable s will refer to the object in a heap (non-pool).
+
+## Interfaces and Classes in Strings in Java
+
+In Java, both String and CharBuffer interact with sequences of characters, but they are designed with different use cases and underlying mechanisms in mind. Here's an exploration of their interfaces, classes, and how they fit into the Java ecosystem.
+
+## String
+The String class is one of the most fundamental types in Java, designed to represent immutable sequences of characters. Here's a closer look at its characteristics and the interfaces it implements:
+
+Immutability: Once instantiated, a String object cannot be modified. This immutable design is a deliberate choice to ensure thread safety, consistency, and efficiency, especially regarding the String pool mechanism.
+
+String Pool: Java maintains a pool of string literals to help save memory. When a new string literal is created, Java checks the Pool for a matching string. If found, the new variable references the pooled string. If not, the new string is added to the Pool.
+
+Implemented Interfaces: The String class implements several interfaces, including:
+
+Serializable: Allows string objects to be serialized into byte streams, facilitating their transmission or storage.
+
+Comparable<String>: Enables lexical comparison between two strings, supporting natural ordering within collections.
+
+CharSequence: Provides a unified read-only interface for different kinds of char sequences, allowing String objects to be manipulated and accessed generically.
+
+## CharSequence Interface
+
+Java's CharSequence interface provides a unified, read-only view of character sequences and is a component of the java.lang package. It facilitates consistent access and manipulation across various types of character sequences, including String, StringBuilder, StringBuffer, and CharBuffer. Through this interface, key functionalities for handling character data are defined, enabling actions like measuring sequence length, accessing particular characters, generating character subsequences, and transforming into a String format. By providing a common blueprint for character sequences, `CharSequence` enables flexible and implementation-independent text processing across the Java platform.
+
+String
+StringBuffer
+StringBuilder
+
+## String
+In Java, the String class encapsulates a series of characters. Once instantiated, a String object's content is fixed and cannot be modified, attributing to its immutable nature. This immutability ensures that String objects are safe for concurrent use across threads and are optimally performant in situations where the textual content remains constant. To enhance memory efficiency, Java employs a technique called string interning. This approach optimizes the storage and access of commonly utilized string literals.
+
+### Direct assignment using string literals:
+
+```
+String str = "Hello, World!";
+```
+Using the String constructor:
+```
+String str = new String("Hello, World!");
+```
+Filename: StringExample.java
+```
+public class StringExample {  
+    public static void main(String[] args) {  
+        // Creating a String  
+        String greeting = "Hello";  
+        // Concatenating strings  
+        String sentence = greeting + ", World!";  
+        // Using a method from the String class  
+        int length = sentence.length();  
+        System.out.println(sentence); // Output: Hello, World!  
+        System.out.println("Length: " + length); // Output: Length: 13  
+    }
+```
+
+## StringBuffer
+StringBuffer represents a mutable sequence of characters that ensures thread safety, making it suitable for scenarios involving multiple threads that modify a character sequence. It includes various string manipulation capabilities, including the ability to insert, delete, and append characters. This design avoids the necessity of generating new objects with each change, leading to enhanced efficiency in situations requiring regular adjustments to the string content.
+
+Syntax
+```
+StringBuffer sb = new StringBuffer();
+```
+
+Filename: StringBufferExample.java
+```
+public class StringBufferExample {  
+    public static void main(String[] args) {  
+        // Creating a StringBuffer  
+        StringBuffer sb = new StringBuffer("Hello");  
+        // Appending to the StringBuffer  
+        sb.append(", World!");  
+        // Inserting into the StringBuffer  
+        sb.insert(5, " Java");  
+        // Deleting from the StringBuffer  
+        sb.delete(5, 10);  
+        System.out.println(sb); // Output: Hello, World!  
+    }  
+}
+```
+## StringBuilder:
+
+StringBuilder shares similarities with StringBuffer by being a mutable character sequence. The crucial distinction lies in StringBuilder not being synchronized, rendering it not suitable for thread-safe operations. This absence of synchronization, though, contributes to StringBuilder offering superior performance in environments that are single-threaded or confined to a specific thread. As a result, StringBuilder becomes the favored option for manipulating strings in contexts where the safety of concurrent thread access is not an issue.
+
+Syntax
+```
+StringBuilder sb = new StringBuilder();  
+```
+```
+public class StringBuilderExample {  
+    public static void main(String[] args) {  
+        // Creating a StringBuilder  
+        StringBuilder sb = new StringBuilder("Hello");  
+        // Appending to the StringBuilder  
+        sb.append(", World!");  
+        // Inserting into the StringBuilder  
+        sb.insert(5, " Java");  
+        // Deleting from the StringBuilder  
+        sb.delete(5, 10);  
+        System.out.println(sb); // Output: Hello, World!  
+    }  
+```
+
+## StringTokenizer
+
+Java's StringTokenizer class, housed within the java.util package, simplifies the process of segmenting a string into multiple tokens, utilizing designated separators. This class is exceptionally beneficial for parsing strings and navigating through their tokens, especially in scenarios involving user inputs, file contents, or network transmissions formatted with straightforward separators such as commas, spaces, or tabs. It offers an efficient means to dissect and examine the tokenized segments of a string, catering to situations that demand basic parsing capabilities.
+
+The StringTokenizer class implements the Enumeration<Object> interface, allowing the tokens of the string to be iterated like other enumeration types in Java. It offers a straightforward approach to tokenization, avoiding the need for more complex regular expressions, making it suitable for simple parsing needs.
+
+Syntax:
+```
+public StringJoiner(CharSequence delimiter)  
+```
+Filename: StringTokenizer.java
+```
+import java.util.StringJoiner;  
+public class StringTokenizer {  
+    public static void main(String[] args) {  
+        // Creating a StringJoiner with a comma (,) as the delimiter  
+        StringJoiner joiner = new StringJoiner(", ");  
+        // Adding strings to the StringJoiner  
+        joiner.add("Apple");  
+        joiner.add("Banana");  
+        joiner.add("Cherry");  
+        // Converting the StringJoiner to a String  
+        String result = joiner.toString();  
+        // Output the result  
+        System.out.println(result);  // Output: Apple, Banana, Cherry  
+    }  
+}  
+```
+
+## Immutable String in Java
+In Java, strings are immutable. It means that its value cannot be changed once a String object is created. If any operation appears to modify a String, what happens is the creation of a new String object. The original string remains unchanged. This immutable characteristic of strings in Java has several implications for performance, security, and functionality.
+
+Filename: ImmutableStringExample.java
+
+```
+public class ImmutableStringExample {  
+    public static void main(String[] args) {  
+        // Original string  
+        String originalString = "Java";  
+        System.out.println("Original string: " + originalString);  
+        // Attempt to modify the original string  
+        String modifiedString = originalString.concat(" Programming");  
+        // Showing that the original string remains unchanged  
+        System.out.println("After modification, original string: " + originalString);  
+        // The result of the modification attempt is stored in a new string  
+        System.out.println("Modified string: " + modifiedString);  
+        // Demonstrating further that the original string is immutable  
+        originalString.toUpperCase(); // This operation does not change the original string  
+        System.out.println("After calling toUpperCase on original string: " + originalString);  
+        // Correct way to use the result of a string operation  
+        String upperCaseString = originalString.toUpperCase(); // Stores the result in a new string  
+        System.out.println("Original string in uppercase: " + upperCaseString);  
+    }  
+}
+```
+
+Output:
+
+```
+Original string: Java
+After modification, original string: Java
+Modified string: Java Programming
+After calling toUpperCase on original string: Java
+Original string in uppercase: JAVA
+```
+
+### Memory Allotment of String
+
+Memory allotment for strings in Java is interesting due to Java's handling of string immutability and the string pool mechanism. Understanding how strings are stored can help optimize memory usage in Java applications, especially those that heavily use string manipulations.
+
+String Literal Storage: When you create a string using string literals, Java checks the string pool first. The new variable points to the existing string if it already exists. If it doesn't exist, the new string is added to the Pool, and the variable points to this new string.
+
+Syntax:
+```
+String s1 = "Hello"; // String literal  
+String s2 = "Hello"; // Points to the same "Hello" in the Pool as s1  
+```
+
+new Keyword and String Pool: Strings created with the new operator do not use the Pool by default. They are stored in the heap memory outside the Pool, which means each new operation results in a new object, even if it contains the same string data.
+
+Syntax:
+```
+String s3 = new String("Hello"); // A new string object is created in the heap
+```
+Interning: We can manually add a string to the Pool or ensure it uses the Pool by calling the intern() method on a string object. If the Pool already contains an equal string, the string from the Pool is returned. Otherwise, the string is added to the Pool.
+
+Syntax:
+```
+String s4 = new String("Hello").intern(); // Ensures use of the string pool  
+```
+Filename: StringMemoryAllotment.java
+
+```
+public class StringMemoryAllotment {  
+    public static void main(String[] args) {  
+        // String literals - stored in the string pool  
+        String str1 = "Java";  
+        String str2 = "Java";  
+        // Checking if str1 and str2 point to the same object  
+        System.out.println("str1 == str2: " + (str1 == str2)); // true, because both refer to the same string literal in the pool  
+        // Strings created with 'new' - stored in heap memory outside the string pool  
+        String str3 = new String("Java");  
+        String str4 = new String("Java");  
+        // Checking if str3 and str4 point to the same object  
+        System.out.println("str3 == str4: " + (str3 == str4)); // false, because 'new' creates a new object each time  
+        // Interning str3  
+        String str5 = str3.intern();  
+        // Checking if str1 and str5 point to the same object  
+        System.out.println("str1 == str5: " + (str1 == str5)); // true, str5 is interned, so it refers to the string in the pool  
+        // Demonstrating the effect of interning on memory allocation  
+        String str6 = new String("Java").intern();  
+        // Checking if str6 is the same as str1  
+        System.out.println("str1 == str6: " + (str1 == str6)); // true, str6 is interned and points to the pooled instance  
+    }
+```
+Output
+```
+str1 == str2: true
+str3 == str4: false
+str1 == str5: true
+str1 == str6: true
+```
