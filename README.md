@@ -6039,3 +6039,107 @@ Output:
 ![image](https://github.com/user-attachments/assets/ccbd6e36-d464-4954-8699-21d68dc03ef1)
 
 
+## Difference Between throw and throws in Java
+The throw and throws is the concept of exception handling where the throw keyword throw the exception explicitly from a method or a block of code whereas the throws keyword is used in signature of the method.
+
+There are many differences between throw and throws keywords. A list of differences between throw and throws are given below:
+
+### Definition
+Java throw keyword is used throw an exception explicitly in the code, inside the function or the block of code.
+Java throws keyword is used in the method signature to declare an exception which might be thrown by the function while the execution of the code.
+
+### Uses
+Type of exception Using throw keyword, we can only propagate unchecked exception i.e., the checked exception cannot be propagated using throw only.
+Using throws keyword, we can declare both checked and unchecked exceptions. However, the throws keyword can be used to propagate checked exceptions only.
+
+### Syntax
+The throw keyword is followed by an instance of Exception to be thrown.
+The throws keyword is followed by class names of Exceptions to be thrown.
+
+### Declaration
+The keyword throw is used within the method.
+The keyword throws is used with the method signature.
+
+### Internal Implementation
+We are allowed to throw only one exception at a time i.e. we cannot throw multiple exceptions.
+We can declare multiple exceptions using throws keyword that can be thrown by the method. For example, main() throws IOException, SQLException.
+
+### Java throw Keyword
+The "throw" keyword in Java is used to explicitly throw an exception. It disrupts the normal flow of the program by transferring control to the nearest catch block that can handle the thrown exception. When an exception occurs within a method, the method creates an exception object and throws it using the "throw" keyword.
+
+### Java throw Example
+
+```
+public class TestThrow {  
+    //defining a method  
+    public static void checkNum(int num) {  
+        if (num < 1) {  
+            throw new ArithmeticException("\nNumber is negative, cannot calculate square");  
+        }  
+        else {  
+            System.out.println("Square of " + num + " is " + (num*num));  
+        }  
+    }  
+    //main method  
+    public static void main(String[] args) {  
+            TestThrow obj = new TestThrow();  
+            obj.checkNum(-3);  
+            System.out.println("Rest of the code..");  
+    }  
+}
+```
+  
+Output:
+![image](https://github.com/user-attachments/assets/a8e29246-4fb4-45fb-965c-45e3e6bfa8ca)
+
+### Explanation
+
+The Java class "TestThrow" defines a method named "checkNum()" that takes an integer parameter. Within this method, it checks if the input number is less than 1. If so, it throws an ArithmeticException with a message indicating that the number is negative and its square cannot be calculated. Otherwise, if the number is positive or zero, it calculates and prints the square of the number.
+
+In the main() method, an instance of "TestThrow" is created, and the "checkNum()" method is called with a negative integer (-3) as an argument. Since the input number is negative, the method throws an ArithmeticException, which is not caught within the main method. Consequently, the program terminates prematurely after printing the exception message. Therefore, the statement "Rest of the code." is not executed. The code illustrates how to use the "throw" keyword to explicitly throw an exception in Java when certain conditions are met, thereby controlling program flow based on runtime conditions.
+
+### Java throws Keyword
+On the other hand, the "throws" clause is used in method signatures to indicate that the method may throw certain types of exceptions during its execution. It doesn't actually throw the exception; instead, it declares that the method may throw exceptions of specified types, thereby alerting the caller to handle them appropriately.
+
+Java throws Example
+TestThrows.java
+
+```
+public class TestThrows {  
+    //defining a method  
+    public static int divideNum(int m, int n) throws ArithmeticException {  
+        int div = m / n;  
+        return div;  
+    }  
+    //main method  
+    public static void main(String[] args) {  
+        TestThrows obj = new TestThrows();  
+        try {  
+            System.out.println(obj.divideNum(45, 0));  
+        }  
+        catch (ArithmeticException e){  
+            System.out.println("\nNumber cannot be divided by 0");  
+        }  
+          
+        System.out.println("Rest of the code..");  
+    }  
+}
+```
+Output:
+![image](https://github.com/user-attachments/assets/17e46b80-48f8-4777-a2c5-ab27a7692416)
+The Java class "TestThrows" defines a method named "divideNum()" that takes two integer parameters and returns the result of dividing the first parameter by the second. The method is declared with a "throws ArithmeticException" clause, indicating that it may throw an ArithmeticException if the second parameter is zero, resulting in a division by zero error.
+
+In the main() method, an instance of "TestThrows" is created, and the "divideNum()" method is called within a try block. If an ArithmeticException is thrown during the method invocation, it is caught by the catch block, which prints a message indicating that division by zero is not allowed.
+
+Regardless of whether an exception occurs, the program continues to execute the remaining code, printing "Rest of the code." to the console. The code demonstrates how to use the "throws" keyword to specify potential exceptions in a method signature and how to handle these exceptions using a try-catch block in Java.
+
+### Conclusion
+
+In conclusion, understanding the distinction between "throw" and "throws" in Java is essential for effective exception handling. While both keywords play significant roles in managing exceptions, they serve different purposes and are used in distinct contexts. The "throw" keyword is utilized to explicitly throw exceptions within methods or blocks of code, disrupting the normal program flow and transferring control to the nearest catch block.
+
+On the other hand, the "throws" keyword is employed in method signatures to declare the types of exceptions that a method may throw during execution, providing a mechanism for the caller to handle potential exceptions appropriately. By grasping the nuances between "throw" and "throws," Java developers can enhance the robustness and reliability of their code by implementing precise exception handling strategies tailored to their specific requirements.
+
+
+
+
+
