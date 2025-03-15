@@ -6628,3 +6628,75 @@ Discuss considerations like memory usage, performance, and when to choose one ov
 ![image](https://github.com/user-attachments/assets/b0a2d43f-f409-49da-adb0-014e03cb5a16)
 
 
+# Recursion in Java
+Recursion in Java is a process in which a method calls itself continuously. A method that calls itself is called a recursive method. It is a powerful concept often used in algorithms and problem-solving.
+
+It makes the code compact but complex to understand.
+
+Syntax:
+```
+returntype methodname(){  
+//code to be executed  
+methodname();//calling same method  
+}
+```
+## How Recursion Works?
+
+### 1) Base Case:
+The base case in recursion serves as the stopping condition. It's crucial because, without it, the recursive function would keep calling itself infinitely, resulting in a stack overflow error. The base case defines when the recursion should stop.
+
+### 2) Recursive Case:
+The recursive case is where the function calls itself with modified arguments, progressing towards the base case. This part of the function keeps reducing the problem size until it reaches the base case.
+
+### Recursion Program in Java: Sum of First N Natural Numbers
+
+Consider the simplest recursive function, calculating the sum of the first N natural numbers:
+```
+class SumExample {    
+    // Recursive function to calculate the sum of first 'n' natural numbers    
+    public static int sum(int n) {    
+        // Base case: If n is 0, return 0 (base case)    
+        if (n == 0)    
+            return 0;    
+        else    
+            return n + sum(n - 1); // Recursive case: If n is not 0, recursively call the sum function with n-1 and add it to n   
+    }    
+}  
+public class Main{  
+ public static void main(String[] args) {    
+    int num = 5; // Number of natural numbers to sum    
+    // Calculate sum of first 'num' natural numbers using recursive sum function    
+    int result = SumExample.sum(num);  
+    // Print the result    
+    System.out.println("Sum of first " + num + " natural numbers is: " + result);    
+ }    
+}
+```
+Output:
+```
+Sum of first 5 natural numbers is: 15
+```
+In this example, if (n == 0) is the base case. When n becomes 0, the recursion stops
+
+## Recursion Program: Infinite Times
+```
+class RecursionExample {  
+    // Recursive function p() which prints "hello" and calls itself indefinitely  
+    static void p() {  
+        System.out.println("hello"); // Print "hello"  
+        p(); // Recursive call to itself  
+    }  
+}  
+public class Main{  
+    public static void main(String[] args) {  
+        RecursionExample.p(); // Initial call to p() from the main method  
+    }  
+}  
+```
+Output:
+```
+hello
+hello
+...
+java.lang.StackOverflowError
+```
