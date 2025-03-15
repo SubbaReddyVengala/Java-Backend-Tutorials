@@ -5369,4 +5369,98 @@ When an array exceeds to it's size, the ArrayIndexOutOfBoundsException occurs. t
 int a[]=new int[5];  
 a[10]=50; //ArrayIndexOutOfBoundsException
 ```
+# Java try-catch block
+
+## Java try block
+
+Java try block is used to enclose the code that might throw an exception. It must be used within the method.
+
+If an exception occurs at the particular statement in the try block, the rest of the block code will not execute. So, it is recommended not to keep the code in try block that will not throw an exception.
+
+Java try block must be followed by either catch or finally block.
+
+Syntax of Java try-catch
+``
+try{    
+//code that may throw an exception    
+}catch(Exception_class_Name ref){}    
+``
+Syntax of try-finally block
+```
+try{    
+//code that may throw an exception    
+}finally
+```
+Java catch block
+Java catch block is used to handle the Exception by declaring the type of exception within the parameter. The declared exception must be the parent class exception ( i.e., Exception) or the generated exception type. However, the good approach is to declare the generated type of exception.
+
+The catch block must be used after the try block only. You can use multiple catch block with a single try block.
+
+## Internal Working of Java try-catch block
+
+![image](https://github.com/user-attachments/assets/1ba545e4-1b9d-4ce0-94fa-2234cdd0412b)
+
+The JVM firstly checks whether the exception is handled or not. If exception is not handled, JVM provides a default exception handler that performs the following tasks:
+
+Prints out exception description.
+
+Prints the stack trace (Hierarchy of methods where the exception occurred).
+
+Causes the program to terminate.
+
+But if the application programmer handles the exception, the normal flow of the application is maintained, i.e., rest of the code is executed.
+
+### Problem without exception handling
+
+Let's try to understand the problem if we don't use a try-catch block.
+```
+public class TryCatchExample1 {  
+  
+    public static void main(String[] args) {  
+          
+        int data=50/0; //may throw exception   
+          
+        System.out.println("rest of the code");  
+          
+    }  
+      
+}
+```
+Output:
+```
+Exception in thread "main" java.lang.ArithmeticException: / by zero
+```
+
+As displayed in the above example, the rest of the code is not executed (in such case, the rest of the code statement is not printed).
+
+There might be 100 lines of code after the exception. If the exception is not handled, all the code below the exception won't be executed.
+
+### Solution by exception handling
+
+Let's see the solution of the above problem by a java try-catch block.
+```
+public class TryCatchExample2 {  
+  
+    public static void main(String[] args) {  
+        try  
+        {  
+        int data=50/0; //may throw exception   
+        }  
+            //handling the exception  
+        catch(ArithmeticException e)  
+        {  
+            System.out.println(e);  
+        }  
+        System.out.println("rest of the code");  
+    }  
+      
+}
+```
+Output:
+```
+java.lang.ArithmeticException: / by zero
+rest of the code
+```
+
+As displayed in the above example, the rest of the code is executed, i.e., the rest of the code statement is printed.
 
