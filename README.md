@@ -7828,3 +7828,160 @@ The class is final so we cannot create the subclass.
 
 There is no setter methods i.e. we have no option to change the value of the instance variable
 
+# Multithreading in Java
+
+Multithreading in Java is a process of executing multiple threads simultaneously.
+
+A thread is a lightweight sub-process, the smallest unit of processing. Multiprocessing and multithreading, both are used to achieve multitasking.
+
+However, we use multithreading than multiprocessing because threads use a shared memory area. They don't allocate separate memory area so saves memory, and context-switching between the threads takes less time than process.
+
+Java Multithreading is mostly used in games, animation, etc.
+
+Advantages of Java Multithreading
+1) It doesn't block the user because threads are independent and you can perform multiple operations at the same time.
+
+2) You can perform many operations together, so it saves time.
+
+3) Threads are independent, so it doesn't affect other threads if an exception occurs in a single thread.
+
+4) Multithreading can significantly enhance the performance of applications by making better use of multiple CPU cores. Each thread can run on a separate core, allowing for parallel processing and faster execution of tasks.
+
+5) In applications with a graphical user interface (GUI), multithreading can help keep the interface responsive. Long-running tasks can be handled in the background by separate threads, preventing the main thread from freezing and improving user experience.
+
+6) Threads within the same process share the same memory and resources, which makes it easier to share data between them without the need for complex inter-process communication mechanisms.
+
+7) Using multiple threads can simplify the design of complex applications, allowing for more modular and manageable code. For example, separate threads can be dedicated to different tasks, such as network communication, file I/O, and computation.
+
+8) Multithreading allows an application to continue processing while waiting for I/O operations to complete. This leads to better utilization of CPU resources as threads can perform useful work during I/O waits.
+
+## Multitasking
+Multitasking is a process of executing multiple tasks simultaneously. We use multitasking to utilize the CPU. Multitasking can be achieved in two ways:
+
+Process-based Multitasking (Multiprocessing)
+
+Thread-based Multitasking (Multithreading)
+
+## 1) Process-based Multitasking (Multiprocessing)
+
+Each process has an address in memory. In other words, each process allocates a separate memory area.
+
+A process is heavyweight.
+
+Cost of communication between the process is high.
+
+Switching from one process to another requires some time for saving and loading registers, memory maps, updating lists, etc.
+
+## 2) Thread-based Multitasking (Multithreading)
+
+Threads share the same address space.
+
+A thread is lightweight.
+
+Cost of communication between the thread is low.
+
+Note: At least one process is required for each thread.
+
+### What is Thread in Java?
+
+A thread is a lightweight subprocess, the smallest unit of processing. It is a separate path of execution.
+
+Threads are independent. If there occurs exception in one thread, it doesn't affect other threads. It uses a shared memory area.
+
+
+![image](https://github.com/user-attachments/assets/315b8673-bef0-42e4-bf15-e6be404c9722)
+
+As shown in the above figure, a thread is executed inside the process. There is context-switching between the threads. There can be multiple processes inside the OS, and one process can have multiple threads.
+
+Note: At a time one thread is executed only.
+
+## Java Thread class
+
+Java provides Thread class to achieve thread programming. Thread class provides constructors and methods to create and perform operations on a thread. Thread class extends Object class and implements Runnable interface.
+
+### Thread States:
+
+New: A thread that has been created but not yet started.
+
+Runnable: A thread that is ready to run and waiting for CPU time.
+
+Blocked: A thread that is blocked waiting for a monitor lock.
+
+Waiting: A thread that is waiting indefinitely for another thread to perform a particular action.
+
+Timed Waiting: A thread that is waiting for another thread to perform an action for up to a specified waiting time.
+
+Terminated: A thread that has completed its task.
+
+## MultiThreadingExample.java
+```
+class MyThread extends Thread {  
+    private String threadName;  
+    MyThread(String name) {  
+        threadName = name;  
+    }  
+    // Override the run method to define the task for the thread  
+    public void run() {  
+        for (int i = 1; i <= 5; i++) {  
+            System.out.println(threadName + " - Count: " + i);  
+            try {  
+                // Sleep for a while to simulate some work  
+                Thread.sleep(1000);  
+            } catch (InterruptedException e) {  
+                System.out.println(threadName + " interrupted.");  
+            }  
+        }  
+        System.out.println(threadName + " finished.");  
+    }  
+}  
+public class MultiThreadingExample {  
+    public static void main(String[] args) {  
+        // Create instances of MyThread  
+        MyThread thread1 = new MyThread("Thread 1");  
+        MyThread thread2 = new MyThread("Thread 2");  
+        MyThread thread3 = new MyThread("Thread 3");  
+        // Start the threads  
+        thread1.start();  
+        thread2.start();  
+        thread3.start();  
+        // Wait for all threads to finish  
+        try {  
+            thread1.join();  
+            thread2.join();  
+            thread3.join();  
+        } catch (InterruptedException e) {  
+            System.out.println("Main thread interrupted.");  
+        }  
+        System.out.println("All threads have finished.");  
+    }  
+}
+````
+Output:
+```
+Thread 3 - Count: 1
+Thread 1 - Count: 1
+Thread 2 - Count: 1
+Thread 3 - Count: 2
+Thread 2 - Count: 2
+Thread 1 - Count: 2
+Thread 3 - Count: 3
+Thread 2 - Count: 3
+Thread 1 - Count: 3
+Thread 3 - Count: 4
+Thread 1 - Count: 4
+Thread 2 - Count: 4
+Thread 3 - Count: 5
+Thread 2 - Count: 5
+Thread 1 - Count: 5
+Thread 1 finished.
+Thread 3 finished.
+Thread 2 finished.
+All threads have finished.
+```
+Explanation
+
+By extending the Thread class and overriding its run method to print a message five times with a one-second delay in between, this Java programme illustrates multithreading.
+
+Three instances of MyThread are generated and launched using the start function in the main class, MultiThreadingExample, enabling them to operate concurrently. In order to guarantee that the main thread waits for every thread to finish before issuing a final message stating that every thread has finished, the join() method is employed.
+
+
