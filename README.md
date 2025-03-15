@@ -6139,7 +6139,120 @@ In conclusion, understanding the distinction between "throw" and "throws" in Jav
 
 On the other hand, the "throws" keyword is employed in method signatures to declare the types of exceptions that a method may throw during execution, providing a mechanism for the caller to handle potential exceptions appropriately. By grasping the nuances between "throw" and "throws," Java developers can enhance the robustness and reliability of their code by implementing precise exception handling strategies tailored to their specific requirements.
 
+# Difference between final, finally and finalize
+
+The final, finally, and finalize are keywords in Java that are used in exception handling. Each of these keywords has a different functionality. The basic difference between final, finally and finalize is that the final is an access modifier, finally is the block in Exception Handling and finalize is the method of object class.
+
+Along with this, there are many differences between final, finally and finalize. A list of differences between final, finally and finalize are given below:
 
 
+## Definition
+
+final is the keyword and access modifier which is used to apply restrictions on a class, method or variable.
+
+finally is the block in Java Exception Handling to execute the important code whether the exception occurs or not.
+
+finalize is the method in Java which is used to perform clean up processing just before object is garbage collected.
+
+
+## Applicable to
+
+Final keyword is used with the classes, methods and variables
+.
+Finally block is always related to the try and catch block in exception handling.
+
+finalize() method is used with the objects.
+
+## Functionality
+
+(1) Once declared, final variable becomes constant and cannot be modified.
+
+(2) final method cannot be overridden by sub class.
+
+(3) final class cannot be inherited.
+
+(1) finally block runs the important code even if exception occurs or not.
+
+(2) finally block cleans up all the resources used in try block
+
+finalize method performs the cleaning activities with respect to the object before its destruction.
+
+## Execution
+
+Final method is executed only when we call it.
+Finally block is executed as soon as the try-catch block is executed.
+It's execution is not dependant on the exception.
+
+finalize method is executed just before the object is destroyed.
+
+## Java finalize Example
+
+FinalizeExample.java
+```
+public class FinalizeExample {    
+     public static void main(String[] args)     
+    {     
+        FinalizeExample obj = new FinalizeExample();        
+        // printing the hashcode   
+        System.out.println("Hashcode is: " + obj.hashCode());           
+        obj = null;    
+        // calling the garbage collector using gc()   
+        System.gc();     
+        System.out.println("End of the garbage collection");     
+    }     
+   // defining the finalize method   
+    protected void finalize()     
+    {     
+        System.out.println("Called the finalize() method");     
+    }     
+}    
+```
+Output:
+
+Java finalize Example
+FinalizeExample.java
+
+public class FinalizeExample {    
+     public static void main(String[] args)     
+    {     
+        FinalizeExample obj = new FinalizeExample();        
+        // printing the hashcode   
+        System.out.println("Hashcode is: " + obj.hashCode());           
+        obj = null;    
+        // calling the garbage collector using gc()   
+        System.gc();     
+        System.out.println("End of the garbage collection");     
+    }     
+   // defining the finalize method   
+    protected void finalize()     
+    {     
+        System.out.println("Called the finalize() method");     
+    }     
+}    
+Output:
+
+Java finalize Example
+FinalizeExample.java
+
+public class FinalizeExample {    
+     public static void main(String[] args)     
+    {     
+        FinalizeExample obj = new FinalizeExample();        
+        // printing the hashcode   
+        System.out.println("Hashcode is: " + obj.hashCode());           
+        obj = null;    
+        // calling the garbage collector using gc()   
+        System.gc();     
+        System.out.println("End of the garbage collection");     
+    }     
+   // defining the finalize method   
+    protected void finalize()     
+    {     
+        System.out.println("Called the finalize() method");     
+    }     
+}    
+Output:
+
+![image](https://github.com/user-attachments/assets/29e16e21-b76b-4be9-83d6-30b3cd78ea48)
 
 
