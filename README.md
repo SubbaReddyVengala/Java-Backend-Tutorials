@@ -5609,4 +5609,73 @@ public class NestedTryBlock{
 Output:
 ![image](https://github.com/user-attachments/assets/e670dfce-dc54-4eca-9534-71448f13c47e)
 
+# Java finally block
+
+Java finally block is a block used to execute important code such as closing the connection, etc.
+
+Java finally block is always executed whether an exception is handled or not. Therefore, it contains all the necessary statements that need to be printed regardless of the exception occurs or not.
+
+The finally block follows the try-catch block.
+
+## Flowchart of finally block
+
+![image](https://github.com/user-attachments/assets/0897fe83-7b4a-48d9-973f-c424392cfdd4)
+
+### Note: 
+```
+If you don't handle the exception, before terminating the program, JVM executes finally block (if any).
+```
+
+### Why use Java finally block?
+
+finally block in Java can be used to put "cleanup" code such as closing a file, closing connection, etc.
+
+The important statements to be printed can be placed in the finally block.
+
+### Usage of Java finally
+
+Let's see the different cases where Java finally block can be used.
+
+### Case 1: When an exception does not occur
+
+Let's see the below example where the Java program does not throw any exception, and the finally block is executed after the try block.
+
+TestFinallyBlock.java
+
+```
+class TestFinallyBlock {    
+  public static void main(String args[]){    
+  try{    
+//below code do not throw any exception  
+   int data=25/5;    
+   System.out.println(data);    
+  }    
+//catch won't be executed  
+  catch(NullPointerException e){  
+System.out.println(e);  
+}    
+//executed regardless of exception occurred or not  
+ finally {  
+System.out.println("finally block is always executed");  
+}    
+    
+System.out.println("rest of phe code...");    
+  }    
+}
+```
+
+Output:
+
+![image](https://github.com/user-attachments/assets/d234d4f8-79f2-4594-95c7-16b9966d92a0)
+
+### Rule: 
+```
+For each try block there can be zero or more catch blocks, but only one finally block.
+
+```
+
+### Note: 
+```
+The finally block will not be executed if the program exits (either by calling System.exit() or by causing a fatal error that causes the process to abort).
+```
 
