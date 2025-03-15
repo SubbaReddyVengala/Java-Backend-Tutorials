@@ -7612,4 +7612,98 @@ Output:
 ```
 Kava is a programming language. Kava is a platform. Kava is an Island.
 ```
+# Java StringBuffer Class
+Java StringBuffer class is used to create mutable (modifiable) String objects. The StringBuffer class in Java is the same as String class except it is mutable i.e. it can be changed.
+
+### Note:
+```
+Java StringBuffer class is thread-safe i.e. multiple threads cannot access it simultaneously. So it is safe and will result in an order.
+
+```
+## What is a mutable String?
+A String that can be modified or changed is known as mutable String. StringBuffer and StringBuilder classes are used for creating mutable strings.
+
+1) StringBuffer Class append() Method
+The append() method concatenates the given argument with this String.
+
+StringBufferExample.java
+```
+class StringBufferExample{  
+public static void main(String args[]){  
+StringBuffer sb=new StringBuffer("Hello ");  
+sb.append("Java");//now original string is changed  
+System.out.println(sb);//prints Hello Java  
+}  
+}
+```
+
+2) StringBuffer insert() Method
+The insert() method inserts the given String with this string at the given position.
+
+StringBufferExample2.java
+```
+class StringBufferExample2{  
+public static void main(String args[]){  
+StringBuffer sb=new StringBuffer("Hello ");  
+sb.insert(1,"Java");//now original string is changed  
+System.out.println(sb);//prints HJavaello  
+}  
+}
+
+```
+
+## 3) StringBuffer replace() Method
+   
+The replace() method replaces the given String from the specified beginIndex and endIndex.
+
+StringBufferExample3.java
+```
+class StringBufferExample3{  
+public static void main(String args[]){  
+StringBuffer sb=new StringBuffer("Hello");  
+sb.replace(1,3,"Java");  
+System.out.println(sb);//prints HJavalo  
+}  
+}  
+```
+## 4) StringBuffer delete() Method
+The delete() method of the StringBuffer class deletes the String from the specified beginIndex to endIndex.
+
+StringBufferExample4.java
+```
+class StringBufferExample4{  
+public static void main(String args[]){  
+StringBuffer sb=new StringBuffer("Hello");  
+sb.delete(1,3);  
+System.out.println(sb);//prints Hlo  
+}  
+}
+```
+## 5) StringBuffer reverse() Method
+The reverse() method of the StringBuilder class reverses the current String.
+
+StringBufferExample5.java
+```
+class StringBufferExample5{  
+public static void main(String args[]){  
+StringBuffer sb=new StringBuffer("Hello");  
+sb.reverse();  
+System.out.println(sb);//prints olleH  
+}  
+}
+```
+
+# Java StringBuilder Class
+
+Java StringBuilder class is used to create mutable (modifiable) String. The Java StringBuilder class is same as StringBuffer class except that it is non-synchronized. It is available since JDK 1.5.
+
+```
+class StringBuilderExample{  
+public static void main(String args[]){  
+StringBuilder sb=new StringBuilder("Hello ");  
+sb.append("Java");//now original string is changed  
+System.out.println(sb);//prints Hello Java  
+}  
+}
+```
 
