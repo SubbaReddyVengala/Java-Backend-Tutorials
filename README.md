@@ -6255,4 +6255,202 @@ Output:
 
 ![image](https://github.com/user-attachments/assets/29e16e21-b76b-4be9-83d6-30b3cd78ea48)
 
+# Java Custom Exception
+
+In Java, we can create our own exceptions that are derived classes of the Exception class. Creating our own Exception is known as custom exception or user-defined exception. Basically, Java custom exceptions are used to customize the exception according to user need.
+
+Consider the example 1 in which InvalidAgeException class extends the Exception class.
+
+Using the custom exception, we can have your own exception and message. Here, we have passed a string to the constructor of superclass i.e. Exception class that can be obtained using getMessage() method on the object we have created.
+
+## Why use custom exceptions?
+Java exceptions cover almost all the general type of exceptions that may occur in the programming. However, we sometimes need to create custom exceptions.
+
+Following are few of the reasons to use custom exceptions:
+
+To catch and provide specific treatment to a subset of existing Java exceptions.
+Business logic exceptions: These are the exceptions related to business logic and workflow. It is useful for the application users or the developers to understand the exact problem.
+In order to create custom exception, we need to extend Exception class that belongs to java.lang package.
+
+Consider the following example, where we create a custom exception named WrongFileNameException:
+```
+public class WrongFileNameException extends Exception {  
+    public WrongFileNameException(String errorMessage) {  
+    super(errorMessage);  
+    }  
+}
+```
+### Note: 
+```
+We need to write the constructor that takes the String as the error message and it is called parent class constructor.
+```
+
+Let's see a simple example of Java custom exception. In the following code, constructor of InvalidAgeException takes a string as an argument. This string is passed to constructor of parent class Exception using the super() method. Also the constructor of Exception class can be called without using a parameter and calling super() method is not mandatory.
+
+TestCustomException1.java
+```
+// class representing custom exception  
+class InvalidAgeException  extends Exception  
+{  
+    public InvalidAgeException (String str)  
+    {  
+        // calling the constructor of parent Exception  
+        super(str);  
+    }  
+}  
+    
+// class that uses custom exception InvalidAgeException  
+public class TestCustomException1  
+{  
+  
+    // method to check the age  
+    static void validate (int age) throws InvalidAgeException{    
+       if(age < 18){  
+  
+        // throw an object of user defined exception  
+        throw new InvalidAgeException("age is not valid to vote");    
+    }  
+       else {   
+        System.out.println("welcome to vote");   
+        }   
+     }    
+  
+    // main method  
+    public static void main(String args[])  
+    {  
+        try  
+        {  
+            // calling the method   
+            validate(13);  
+        }  
+        catch (InvalidAgeException ex)  
+        {  
+            System.out.println("Caught the exception");  
+    
+            // printing the message from InvalidAgeException object  
+            System.out.println("Exception occured: " + ex);  
+        }  
+  
+        System.out.println("rest of the code...");    
+    }  
+} 
+```
+Output:
+![image](https://github.com/user-attachments/assets/99088d92-66e7-4f01-ae9b-8438cdfc007a)
+
+TestCustomException2.java
+```
+// class representing custom exception  
+class MyCustomException extends Exception  
+{  
+    
+}  
+    
+// class that uses custom exception MyCustomException  
+public class TestCustomException2  
+{  
+    // main method  
+    public static void main(String args[])  
+    {  
+        try  
+        {  
+            // throw an object of user defined exception  
+            throw new MyCustomException();  
+        }  
+        catch (MyCustomException ex)  
+        {  
+            System.out.println("Caught the exception");  
+            System.out.println(ex.getMessage());  
+        }  
+  
+        System.out.println("rest of the code...");    
+    }  
+}  
+```
+Output:
+
+![image](https://github.com/user-attachments/assets/925ba83f-dca3-47eb-888b-1330f9632792)
+
+# Java Regex
+
+The Java Regex or Regular Expression is an API to define a pattern for searching or manipulating strings.
+
+It is widely used to define the constraint on strings such as password and email validation. After learning Java regex tutorial, you will be able to test your regular expressions by the Java Regex Tester Tool.
+
+Java Regex API provides 1 interface and 3 classes in java.util.regex package.
+
+java.util.regex package
+The Matcher and Pattern classes provide the facility of Java regular expression. The java.util.regex package provides following classes and interfaces for regular expressions.
+
+MatchResult interface
+Matcher class
+Pattern class
+PatternSyntaxException class
+
+![image](https://github.com/user-attachments/assets/32a2ba99-637f-4bff-bc81-d74f1ad4d7b0)
+
+## Matcher class
+
+It implements the MatchResult interface. It is a regex engine which is used to perform match operations on a character sequence.
+
+Example of Java Regular Expressions
+There are three ways to write the regex example in Java.
+```
+mport java.util.regex.*;  
+public class RegexExample1{  
+public static void main(String args[]){  
+//1st way  
+Pattern p = Pattern.compile(".s");//. represents single character  
+Matcher m = p.matcher("as");  
+boolean b = m.matches();  
+  
+//2nd way  
+boolean b2=Pattern.compile(".s").matcher("as").matches();  
+  
+//3rd way  
+boolean b3 = Pattern.matches(".s", "as");  
+  
+System.out.println(b+" "+b2+" "+b3);  
+}}  
+```
+Output
+```
+true true true
+```
+![image](https://github.com/user-attachments/assets/0feef58a-eb39-4c32-8153-707406bcaf94)
+```
+Regular Expression Character classes Example
+import java.util.regex.*;  
+class RegexExample3{  
+public static void main(String args[]){  
+System.out.println(Pattern.matches("[amn]", "abcd"));//false (not a or m or n)  
+System.out.println(Pattern.matches("[amn]", "a"));//true (among a or m or n)  
+System.out.println(Pattern.matches("[amn]", "ammmna"));//false (m and a comes more than once)  
+}}
+```
+![image](https://github.com/user-attachments/assets/451a77e6-c041-4d1a-8740-afc96f9133fe)
+
+Regular Expression Character classes and Quantifiers Example
+```
+import java.util.regex.*;  
+class RegexExample4{  
+public static void main(String args[]){  
+System.out.println("? quantifier ....");  
+System.out.println(Pattern.matches("[amn]?", "a"));//true (a or m or n comes one time)  
+System.out.println(Pattern.matches("[amn]?", "aaa"));//false (a comes more than one time)  
+System.out.println(Pattern.matches("[amn]?", "aammmnn"));//false (a m and n comes more than one time)  
+System.out.println(Pattern.matches("[amn]?", "aazzta"));//false (a comes more than one time)  
+System.out.println(Pattern.matches("[amn]?", "am"));//false (a or m or n must come one time)  
+  
+System.out.println("+ quantifier ....");  
+System.out.println(Pattern.matches("[amn]+", "a"));//true (a or m or n once or more times)  
+System.out.println(Pattern.matches("[amn]+", "aaa"));//true (a comes more than one time)  
+System.out.println(Pattern.matches("[amn]+", "aammmnn"));//true (a or m or n comes more than once)  
+System.out.println(Pattern.matches("[amn]+", "aazzta"));//false (z and t are not matching pattern)  
+  
+System.out.println("* quantifier ....");  
+System.out.println(Pattern.matches("[amn]*", "ammmna"));//true (a or m or n may come zero or more times)  
+  
+}}  
+```
 
