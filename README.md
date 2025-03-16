@@ -8611,4 +8611,206 @@ java.lang.IllegalArgumentException: timeout value is negative
 Conclusion
 In conclusion, the Thread.sleep() method is a powerful yet straightforward tool for pausing thread execution in Java. It serves various purposes, from simulating delays in testing environments to implementing rate limiting and periodic checks. However, it must be used judiciously, with proper handling of interruptions and consideration of alternative synchronization mechanisms. By understanding its usage, limitations, and best practices, developers can effectively utilize Thread.sleep() to manage thread timing and control in their Java applications.
 
+Can we start a thread twice
+No. After starting a thread, it can never be started again. If you does so, an IllegalThreadStateException is thrown. In such case, thread will run once but for second time, it will throw exception.
 
+Let's understand it by the example given below:
+```
+public class TestThreadTwice1 extends Thread{  
+ public void run(){  
+   System.out.println("running...");  
+ }  
+ public static void main(String args[]){  
+  TestThreadTwice1 t1=new TestThreadTwice1();  
+  t1.start();  
+  t1.start();  
+ }  
+}
+```
+Output
+```
+running
+Exception in thread "main" java.lang.IllegalThreadStateException
+```
+
+## What if we call Java run() method directly instead start() method?
+Each thread starts in a separate call stack.
+Invoking the run() method from the main thread, the run() method goes onto the current call stack rather than at the beginning of a new call stack.
+
+FileName: TestCallRun1.java
+```
+class TestCallRun1 extends Thread{  
+ public void run(){  
+   System.out.println("running...");  
+ }  
+ public static void main(String args[]){  
+  TestCallRun1 t1=new TestCallRun1();  
+  t1.run();//fine, but does not start a separate call stack  
+ }  
+}
+```
+Output:
+```
+running...
+```
+![image](https://github.com/user-attachments/assets/8c69c314-9da4-4c9e-bd5d-ee61c224162b)
+
+Problem if you direct call run() method
+
+FileName: TestCallRun2.java
+```
+class TestCallRun2 extends Thread{  
+ public void run(){  
+  for(int i=1;i<5;i++){  
+    try{Thread.sleep(500);}catch(InterruptedException e){System.out.println(e);}  
+    System.out.println(i);  
+  }  
+ }  
+ public static void main(String args[]){  
+  TestCallRun2 t1=new TestCallRun2();  
+  TestCallRun2 t2=new TestCallRun2();  
+   
+  t1.run();  
+  t2.run();  
+ }  
+}  
+```
+output
+```
+1
+2
+3
+4
+1
+2
+3
+4
+```
+As we can see in the above program that there is no context-switching because here t1 and t2 will be treated as normal object not thread object.
+
+# Java join() method
+
+The join() method in Java is provided by the java.lang.Thread class that permits one thread to wait until the other thread to finish its execution. Suppose th be the object the class Thread whose thread is doing its execution currently, then the th.join(); statement ensures that th is finished before the program does the execution of the next statement. When there are more than one thread invoking the join() method, then it leads to overloading on the join() method that permits the developer or programmer to mention the waiting period. However, similar to the sleep() method in Java, the join() method is also dependent on the operating system for the timing, so we should not assume that the join() method waits equal to the time we mention in the parameters. The following are the three overloaded join() methods.
+
+### Description of The Overloaded join() Method
+
+join(): When the join() method is invoked, the current thread stops its execution and the thread goes into the wait state. The current thread remains in the wait state until the thread on which the join() method is invoked has achieved its dead state. If interruption of the thread occurs, then it throws the InterruptedException.
+
+Syntax:
+
+```
+public final void join() throws InterruptedException
+```
+join(long mls): When the join() method is invoked, the current thread stops its execution and the thread goes into the wait state. The current thread remains in the wait state until the thread on which the join() method is invoked called is dead or the wait for the specified time frame(in milliseconds) is over.
+
+Syntax:
+```
+public final synchronized void join(long mls) throws InterruptedException, where mls is in milliseconds
+```
+
+Example of join() Method in Java
+The following program shows the usage of the join() method.
+
+FileName: ThreadJoinExample.java
+```
+// A Java program for understanding   
+// the joining of threads  
+  
+// import statement  
+import java.io.*;  
+  
+// The ThreadJoin class is the child class of the class Thread  
+class ThreadJoin extends Thread  
+{  
+// overriding the run method  
+public void run()  
+{  
+for (int j = 0; j < 2; j++)  
+{  
+try  
+{  
+// sleeping the thread for 300 milli seconds  
+Thread.sleep(300);  
+System.out.println("The current thread name is: " + Thread.currentThread().getName());  
+}  
+// catch block for catching the raised exception  
+catch(Exception e)  
+{  
+System.out.println("The exception has been caught: " + e);  
+}  
+System.out.println( j );  
+}  
+}  
+}  
+  
+public class ThreadJoinExample  
+{  
+// main method  
+public static void main (String argvs[])  
+{  
+  
+// creating 3 threads  
+ThreadJoin th1 = new ThreadJoin();  
+ThreadJoin th2 = new ThreadJoin();  
+ThreadJoin th3 = new ThreadJoin();  
+  
+// thread th1 starts  
+th1.start();  
+  
+// starting the second thread after when  
+// the first thread th1 has ended or died.  
+try  
+{  
+System.out.println("The current thread name is: "+ Thread.currentThread().getName());  
+  
+// invoking the join() method  
+th1.join();  
+}  
+  
+// catch block for catching the raised exception  
+catch(Exception e)  
+{  
+System.out.println("The exception has been caught " + e);  
+}  
+  
+// thread th2 starts  
+th2.start();  
+  
+// starting the th3 thread after when the thread th2 has ended or died.  
+try  
+{  
+System.out.println("The current thread name is: " + Thread.currentThread().getName());  
+th2.join();  
+}  
+  
+// catch block for catching the raised exception  
+catch(Exception e)  
+{  
+System.out.println("The exception has been caught " + e);  
+}  
+  
+// thread th3 starts  
+th3.start();  
+}  
+}  
+```
+Output:
+
+```
+The current thread name is: main
+The current thread name is: Thread - 0
+0
+The current thread name is: Thread - 0
+1
+The current thread name is: main
+The current thread name is: Thread - 1
+0
+The current thread name is: Thread - 1
+1
+The current thread name is: Thread - 2
+0
+The current thread name is: Thread - 2
+1
+```
+
+Explanation: The above program shows that the second thread th2 begins after the first thread th1 has ended, and the thread th3 starts its work after the second thread th2 has ended or died
