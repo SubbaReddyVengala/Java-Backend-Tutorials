@@ -9096,3 +9096,4 @@ Priority of the thread th1 is : 7
 ```
 
 Explanation: If there are two threads that have the same priority, then one can not predict which thread will get the chance to execute first. The execution then is dependent on the thread scheduler's algorithm (First Come First Serve, Round-Robin, etc.)
+
