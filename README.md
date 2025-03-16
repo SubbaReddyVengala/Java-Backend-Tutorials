@@ -9269,3 +9269,604 @@ A thread is allowed to access information about its own thread group, but it can
 
 ![image](https://github.com/user-attachments/assets/fa5f1a58-4e35-404a-98fb-a59f47b4c258)
 
+# Serialization and Deserialization in Java
+Serialization in Java is a mechanism for writing an object's state into a byte stream. It is mainly used in Hibernate, RMI, JPA, EJB, and JMS technologies.
+
+The reverse operation of serialization is called deserialization, where the byte stream is converted into an object. The serialization and deserialization process is platform-independent. It means we can serialize an object on one platform and deserialize it on a different platform.
+
+For serializing the object, we call the writeObject() method of the ObjectOutputStream class, and for deserialization, we call the readObject() method of the ObjectInputStream class.
+
+Java's serialization feature transforms an object into a stream of bytes, making it easier to store or send over a network. Many different technologies, including Hibernate, RMI (Remote Method Invocation), JPA (Java Persistence API), EJB (Enterprise JavaBeans), and JMS (Java Message Service), heavily utilize this method.
+
+We must implement the Serializable interface for serializing the object.
+
+## Advantages of Java Serialization
+It is mainly used to travel object's state on the network (that is known as marshalling).
+
+![image](https://github.com/user-attachments/assets/f2550ebc-b5a5-4f81-a8b5-a772824096c5)
+
+# Java transient Keyword
+In Java, Serialization is used to convert an object into a stream of the byte. The byte stream consists of the data of the instance as well as the type of data stored in that instance. Deserialization performs exactly opposite operation. It converts the byte sequence into original object data. During the serialization, when we do not want an object to be serialized we can use a transient keyword.
+
+## Why to use the transient keyword?
+The transient keyword can be used with the data members of a class in order to avoid their serialization. For example, if a program accepts a user's login details and password. But we don't want to store the original password in the file. Here, we can use transient keyword and when JVM reads the transient keyword it ignores the original value of the object and instead stores the default value of the object.
+
+Syntax:
+
+private transient <member variable>;  
+
+## When to use the transient keyword?
+
+The transient modifier can be used where there are data members derived from the other data members within the same instance of the class.
+
+This transient keyword can be used with the data members which do not depict the state of the object.
+
+The data members of a non-serialized object or class can use a transient modifier.
+
+## Example of Java Transient Keyword
+Let's take an example, we have declared a class as Student, it has three data members id, name and age. If you serialize the object, all the values will be serialized but we don't want to serialize one value, e.g. age then we can declare the age data member as transient.
+
+# Synchronization in Java
+
+Synchronization in Java is a critical concept in concurrent programming that ensures multiple threads can interact with shared resources safely. In a nutshell, synchronization prevents race conditions, where the outcome of operations depends on the timing of thread execution. It is the capability to control the access of multiple threads to any shared resource. Synchronization is a better option where we want to allow only one thread to access the shared resource.
+
+## Understanding Threads and Shared Resources
+Thread represents an independent path of execution within a program. When multiple threads access shared resources concurrently, problems may arise due to unpredictable interleaving of operations. Consider a scenario where two threads increment a shared variable concurrently:
+
+Introducing Synchronization
+Synchronization in Java tackles these problems through the capacity of a single thread to have exclusive access to either a synchronized block of code or a synchronized method associated with an object in question at a time. There are two primary mechanisms for synchronization in Java: synchronized blocks and synchronized methods.
+
+Synchronized Blocks
+
+Synchronized block provides exclusive access to shared resources, and only one thread is allowed to execute it in the same time frame. It's structured as follows:
+
+synchronized (object) {  
+    // Synchronized code block  
+}  
+This monitor object or lock is the subject. While only one thread can be holding a lock on a monitor object at one instance. Other threads that want to go into the synchronized blocks with this object must wait till the lock becomes available.
+
+Synchronized Methods
+
+In Java, you can declare entire methods as synchronized which prevent multiple threads from accessing the method simultaneously. With this, synchronization becomes a simpler process because the mechanism is applied to all invocations of the synchronized method automatically.
+
+Example: Synchronized Counter
+```
+class SynchronizedCounter {  
+    private int count = 0;      
+    public synchronized void increment() {  
+        count++;  
+    }      
+    public synchronized int getCount() {  
+        return count;  
+    }  
+}
+```
+If two threads execute increment() simultaneously, they might read the current value of count, increment it, and write it back concurrently. This can result in lost updates or incorrect final values due to race conditions.
+
+## Introducing Synchronization
+Synchronization in Java tackles these problems through the capacity of a single thread to have exclusive access to either a synchronized block of code or a synchronized method associated with an object in question at a time. There are two primary mechanisms for synchronization in Java: synchronized blocks and synchronized methods.
+
+# Synchronized Blocks
+
+Synchronized block provides exclusive access to shared resources, and only one thread is allowed to execute it in the same time frame. It's structured as follows:
+```
+synchronized (object) {  
+    // Synchronized code block  
+}
+```
+This monitor object or lock is the subject. While only one thread can be holding a lock on a monitor object at one instance. Other threads that want to go into the synchronized blocks with this object must wait till the lock becomes available.
+
+Synchronized Methods
+
+In Java, you can declare entire methods as synchronized which prevent multiple threads from accessing the method simultaneously. With this, synchronization becomes a simpler process because the mechanism is applied to all invocations of the synchronized method automatically.
+
+Example: Synchronized Counter
+```
+class SynchronizedCounter {  
+    private int count = 0;      
+    public synchronized void increment() {  
+        count++;  
+    }      
+    public synchronized int getCount() {  
+        return count;  
+    }  
+}
+```
+With this modification, concurrent calls to increment() or getCount() will be synchronized, preventing race conditions.
+
+# Thread Synchronization
+There are two types of thread synchronization mutual exclusive and inter-thread communication.
+
+Mutual Exclusive
+Synchronized method.
+Synchronized block.
+Static synchronization.
+Cooperation (Inter-thread communication in Java)
+Mutual Exclusive
+Mutual Exclusive helps keep threads from interfering with one another while sharing data. It can be achieved by using the following three ways:
+
+By Using Synchronized Method
+By Using Synchronized Block
+By Using Static Synchronization
+
+## Concept of Lock in Java
+Synchronization is built around an internal entity known as the lock or monitor. Every object has a lock associated with it. By convention, a thread that needs consistent access to an object's fields has to acquire the object's lock before accessing them, and then release the lock when it's done with them.
+
+From Java 5 the package java.util.concurrent.locks contains several lock implementations.
+
+Understanding The Problem Without Synchronization
+In this example, there is no synchronization, so output is inconsistent. Let's see the example:
+
+TestSynchronization1.java
+```
+class Table {  
+    // Method to print the table, not synchronized  
+    void printTable(int n) {  
+        for(int i = 1; i <= 5; i++) {  
+            // Print the multiplication result  
+            System.out.println(n * i);  
+            try {  
+                // Pause execution for 400 milliseconds  
+                Thread.sleep(400);  
+            } catch(Exception e) {  
+                // Handle any exceptions  
+                System.out.println(e);  
+            }  
+        }  
+    }  
+}  
+class MyThread1 extends Thread {  
+    Table t;  
+    // Constructor to initialize Table object  
+    MyThread1(Table t) {  
+        this.t = t;  
+    }  
+    // Run method to execute thread  
+    public void run() {  
+        // Call printTable method with argument 5  
+        t.printTable(5);  
+    }  
+}  
+class MyThread2 extends Thread {  
+    Table t;  
+    // Constructor to initialize Table object  
+    MyThread2(Table t) {  
+        this.t = t;  
+    }  
+    // Run method to execute thread  
+    public void run() {  
+        // Call printTable method with argument 100  
+        t.printTable(100);  
+    }  
+}  
+class TestSynchronization1 {  
+    public static void main(String args[]) {  
+        // Create a Table object  
+        Table obj = new Table();  
+        // Create MyThread1 and MyThread2 objects with the same Table object  
+        MyThread1 t1 = new MyThread1(obj);  
+        MyThread2 t2 = new MyThread2(obj);  
+        // Start both threads  
+        t1.start();  
+        t2.start();  
+    }  
+}  
+```
+Output:
+```
+5
+100
+10
+200
+15
+300
+20
+400
+25
+500
+```
+# Java Synchronized Method
+If you declare any method as synchronized, it is known as synchronized method.
+
+Synchronized method is used to lock an object for any shared resource.
+
+When a thread invokes a synchronized method, it automatically acquires the lock for that object and releases it when the thread completes its task.
+
+TestSynchronization2.java
+```
+class Table {  
+    // Synchronized method to print the table  
+    synchronized void printTable(int n) {  
+        for(int i = 1; i <= 5; i++) {  
+            // Print the multiplication result  
+            System.out.println(n * i);  
+            try {  
+                // Pause execution for 400 milliseconds  
+                Thread.sleep(400);  
+            } catch(Exception e) {  
+                // Handle any exceptions  
+                System.out.println(e);  
+            }  
+        }  
+    }  
+}  
+class MyThread1 extends Thread {  
+    Table t;  
+    // Constructor to initialize Table object  
+    MyThread1(Table t) {  
+        this.t = t;  
+    }  
+    // Run method to execute thread  
+    public void run() {  
+        // Call synchronized method printTable with argument 5  
+        t.printTable(5);  
+    }  
+}  
+class MyThread2 extends Thread {  
+    Table t;  
+    // Constructor to initialize Table object  
+    MyThread2(Table t) {  
+        this.t = t;  
+    }  
+    // Run method to execute thread  
+    public void run() {  
+        // Call synchronized method printTable with argument 100  
+        t.printTable(100);  
+    }  
+}  
+public class TestSynchronization2 {  
+    public static void main(String args[]) {  
+        // Create a Table object  
+        Table obj = new Table();  
+        // Create MyThread1 and MyThread2 objects with the same Table object  
+        MyThread1 t1 = new MyThread1(obj);  
+        MyThread2 t2 = new MyThread2(obj);  
+        // Start both threads  
+        t1.start();  
+        t2.start();  
+    }  
+}  
+```
+Output:
+```
+5
+10
+15
+20
+25
+100
+200
+300
+400
+500
+```
+Example of Synchronized Method by Using Anonymous Class
+In this program, we have created the two threads by using the anonymous class, so less coding is required.
+
+TestSynchronization3.java
+```
+// Program of synchronized method by using anonymous class  
+class Table {  
+    // Synchronized method to print the table  
+    synchronized void printTable(int n) {  
+        for(int i = 1; i <= 5; i++) {  
+            // Print the multiplication result  
+            System.out.println(n * i);  
+            try {  
+                // Pause execution for 400 milliseconds  
+                Thread.sleep(400);  
+            } catch(Exception e) {  
+                // Handle any exceptions  
+                System.out.println(e);  
+            }  
+        }  
+    }  
+}  
+public class TestSynchronization3 {  
+    public static void main(String args[]) {  
+        // Create a Table object  
+        final Table obj = new Table(); // Only one object  
+        // Create thread t1 using anonymous class  
+        Thread t1 = new Thread() {  
+            public void run() {  
+                // Call synchronized method printTable with argument 5  
+                obj.printTable(5);  
+            }  
+        };  
+        // Create thread t2 using anonymous class  
+        Thread t2 = new Thread() {  
+            public void run() {  
+                // Call synchronized method printTable with argument 100  
+                obj.printTable(100);  
+            }  
+        };  
+        // Start both threads  
+        t1.start();  
+        t2.start();  
+    }  
+} 
+```
+Output:
+```
+5
+10
+15
+20
+25
+100
+200
+300
+400
+500
+```
+# Synchronized Block in Java
+Synchronized block can be used to perform synchronization on any specific resource of the method.
+
+Suppose we have 50 lines of code in our method, but we want to synchronize only 5 lines, in such cases, we can use synchronized block.
+
+If we put all the codes of the method in the synchronized block, it will work same as the synchronized method.
+
+### Points to Remember
+Synchronized block is used to lock an object for any shared resource.
+Scope of synchronized block is smaller than the method.
+A Java synchronized block doesn't allow more than one JVM, to provide access control to a shared resource.
+The system performance may degrade because of the slower working of synchronized keyword.
+Java synchronized block is more efficient than Java synchronized method.
+
+```
+synchronized (object reference expression) {     
+  //code block     
+}
+```
+Example of Synchronized Block
+Let's see the simple example of synchronized block.
+```
+TestSynchronizedBlock1.java
+
+class Table  
+{      
+ void printTable(int n){    
+   synchronized(this){//synchronized block    
+     for(int i=1;i<=5;i++){    
+      System.out.println(n*i);    
+      try{    
+       Thread.sleep(400);    
+      }catch(Exception e){System.out.println(e);}    
+     }    
+   }    
+ }//end of the method    
+}    
+    
+class MyThread1 extends Thread{    
+Table t;    
+MyThread1(Table t){    
+this.t=t;    
+}    
+public void run(){    
+t.printTable(5);    
+}    
+    
+}    
+class MyThread2 extends Thread{    
+Table t;    
+MyThread2(Table t){    
+this.t=t;    
+}    
+public void run(){    
+t.printTable(100);    
+}    
+}    
+    
+public class TestSynchronizedBlock1{    
+public static void main(String args[]){    
+Table obj = new Table();//only one object    
+MyThread1 t1=new MyThread1(obj);    
+MyThread2 t2=new MyThread2(obj);    
+t1.start();    
+t2.start();    
+}    
+}
+```
+Output:
+```
+5
+10
+15
+20
+25
+100
+200
+300
+400
+500
+``` 
+# Deadlock in Java
+
+Deadlock in Java is a part of multithreading. Deadlock can occur in a situation when a thread is waiting for an object lock, that is acquired by another thread and second thread is waiting for an object lock that is acquired by first thread. Since, both threads are waiting for each other to release the lock, the condition is called deadlock.
+
+![image](https://github.com/user-attachments/assets/ab74feb3-4a0f-40bb-b76d-f9c177fb67a7)
+
+```
+Example of Deadlock in Java
+TestDeadlockExample1.java
+
+public class TestDeadlockExample1 {  
+  public static void main(String[] args) {  
+    final String resource1 = "ratan jaiswal";  
+    final String resource2 = "vimal jaiswal";  
+    // t1 tries to lock resource1 then resource2  
+    Thread t1 = new Thread() {  
+      public void run() {  
+          synchronized (resource1) {  
+           System.out.println("Thread 1: locked resource 1");  
+  
+           try { Thread.sleep(100);} catch (Exception e) {}  
+  
+           synchronized (resource2) {  
+            System.out.println("Thread 1: locked resource 2");  
+           }  
+         }  
+      }  
+    };  
+  
+    // t2 tries to lock resource2 then resource1  
+    Thread t2 = new Thread() {  
+      public void run() {  
+        synchronized (resource2) {  
+          System.out.println("Thread 2: locked resource 2");  
+  
+          try { Thread.sleep(100);} catch (Exception e) {}  
+  
+          synchronized (resource1) {  
+            System.out.println("Thread 2: locked resource 1");  
+          }  
+        }  
+      }  
+    };  
+  
+      
+    t1.start();  
+    t2.start();  
+  }  
+}
+```     
+Output:
+```
+Thread 1: locked resource 1
+Thread 2: locked resource 2
+```
+
+More Complicated Deadlocks
+A deadlock may also include more than two threads. The reason is that it can be difficult to detect a deadlock. Here is an example in which four threads have deadlocked:
+
+Thread 1 locks A, waits for B
+
+Thread 2 locks B, waits for C
+
+Thread 3 locks C, waits for D
+
+Thread 4 locks D, waits for A
+
+Thread 1 waits for thread 2, thread 2 waits for thread 3, thread 3 waits for thread 4, and thread 4 waits for thread 1.
+
+How to avoid deadlock?
+A solution for a problem is found at its roots. In deadlock it is the pattern of accessing the resources A and B, is the main issue. To solve the issue we will have to simply re-order the statements where the code is accessing shared resources.
+
+DeadlockSolved.java
+```
+public class DeadlockSolved {  
+   
+    public static void main(String ar[]) {  
+        DeadlockSolved test = new DeadlockSolved();  
+   
+        final resource1 a = test.new resource1();  
+        final resource2 b = test.new resource2();  
+   
+   // Thread-1  
+Runnable b1 = new Runnable() {  
+    public void run() {  
+        synchronized (b) {  
+            try {  
+                /* Adding delay so that both threads can start trying to lock resources */  
+                Thread.sleep(100);  
+            } catch (InterruptedException e) {  
+                e.printStackTrace();  
+            }  
+            // Thread-1 have resource1 but need resource2 also  
+            synchronized (a) {  
+                System.out.println("In block 1");  
+            }  
+        }  
+    }  
+};  
+   
+// Thread-2  
+Runnable b2 = new Runnable() {  
+    public void run() {  
+        synchronized (b) {  
+            // Thread-2 have resource2 but need resource1 also  
+            synchronized (a) {  
+                System.out.println("In block 2");  
+            }  
+        }  
+    }  
+};  
+  
+   
+        new Thread(b1).start();  
+        new Thread(b2).start();  
+    }  
+   
+    // resource1  
+    private class resource1 {  
+        private int i = 10;  
+   
+        public int getI() {  
+            return i;  
+        }  
+   
+        public void setI(int i) {  
+            this.i = i;  
+        }  
+    }  
+   
+    // resource2  
+    private class resource2 {  
+        private int i = 20;  
+   
+        public int getI() {  
+            return i;  
+        }  
+   
+        public void setI(int i) {  
+            this.i = i;  
+        }  
+    }  
+}
+```
+Output:
+```
+In block 1
+In block 2
+```
+In the above code, class DeadlockSolved solves the deadlock kind of situation. It will help in avoiding deadlocks, and if encountered, in resolving them.
+
+### How to Avoid Deadlock in Java?
+Deadlocks cannot be completely resolved. But we can avoid them by following basic rules mentioned below:
+
+Avoid Nested Locks: We must avoid giving locks to multiple threads, this is the main reason for a deadlock condition. It normally happens when you give locks to multiple threads.
+Avoid Unnecessary Locks: The locks should be given to the important threads. Giving locks to the unnecessary threads that cause the deadlock condition.
+Using Thread Join: A deadlock usually happens when one thread is waiting for the other to finish. In this case, we can use join with a maximum time that a thread will take.
+
+The wait() method causes current thread to release the lock and wait until either another thread invokes the notify() method or the notifyAll() method for this object, or a specified amount of time has elapsed.
+
+The current thread must own this object's monitor, so it must be called from the synchronized method only otherwise it will throw exception.
+
+![image](https://github.com/user-attachments/assets/ae889b52-8c45-4e3e-860a-292c4cae5e8a)
+
+## 2) notify() method
+The notify() method wakes up a single thread that is waiting on this object's monitor. If any threads are waiting on this object, one of them is chosen to be awakened. The choice is arbitrary and occurs at the discretion of the implementation.
+
+Syntax:
+
+public final void notify()  
+## 3) notifyAll() method
+Wakes up all threads that are waiting on this object's monitor.
+
+Syntax:
+
+public final void notifyAll()  
+
+Understanding the process of inter-thread communication
+
+![image](https://github.com/user-attachments/assets/68139c97-a3a5-4ca1-b509-ef403c0f782a)
+
+The point to point explanation of the above diagram is as follows:
+
+Threads enter to acquire lock.
+Lock is acquired by on thread.
+Now thread goes to waiting state if you call wait() method on the object. Otherwise it releases the lock and exits.
+If you call notify() or notifyAll() method, thread moves to the notified state (runnable state).
+Now thread is available to acquire lock.
+After completion of the task, thread releases the lock and exits the monitor state of the object.
+
