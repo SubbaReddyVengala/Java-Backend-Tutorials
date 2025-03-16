@@ -9870,3 +9870,4 @@ If you call notify() or notifyAll() method, thread moves to the notified state (
 Now thread is available to acquire lock.
 After completion of the task, thread releases the lock and exits the monitor state of the object.
 
+
