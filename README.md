@@ -8347,3 +8347,51 @@ My new thread
 Now the thread is running ...
 ```
 
+# Thread Scheduler in Java
+A component of Java that decides which thread to run or execute and which thread to wait is called a thread scheduler in Java. In Java, a thread is only chosen by a thread scheduler if it is in the runnable state. However, if there is more than one thread in the runnable state, it is up to the thread scheduler to pick one of the threads and ignore the other ones. There are some criteria that decide which thread will execute first. There are two factors for scheduling a thread i.e. Priority and Time of arrival.
+
+## Priority: 
+Priority of each thread lies between 1 to 10. If a thread has a higher priority, it means that thread has got a better chance of getting picked up by the thread scheduler.
+
+Time of Arrival: Suppose two threads of the same priority enter the runnable state, then priority cannot be the factor to pick a thread from these two threads. In such a case, arrival time of thread is considered by the thread scheduler. A thread that arrived first gets the preference over the other threads.
+
+Thread Scheduler Algorithms
+
+On the basis of the above-mentioned factors, the scheduling algorithm is followed by a Java thread scheduler.
+
+## First Come First Serve Scheduling:
+In this scheduling algorithm, the scheduler picks the threads thar arrive first in the runnable queue. Observe the following table:
+
+![image](https://github.com/user-attachments/assets/d3aea9a9-070d-4b7a-a9e9-db073bbb6fec)
+
+In the above table, we can see that Thread t1 has arrived first, then Thread t2, then t3, and at last t4, and the order in which the threads will be processed is according to the time of arrival of threads.
+
+![image](https://github.com/user-attachments/assets/33c32841-77b3-406f-be5d-77f97b917096)
+
+Hence, Thread t1 will be processed first, and Thread t4 will be processed last.
+
+## Time-slicing scheduling:
+
+Usually, the First Come First Serve algorithm is non-preemptive, which is bad as it may lead to infinite blocking (also known as starvation). To avoid that, some time-slices are provided to the threads so that after some time, the running thread has to give up the CPU. Thus, the other waiting threads also get time to run their job.
+
+![image](https://github.com/user-attachments/assets/db9b65b2-d652-47dc-81b2-d2173e55f848)
+
+In the above diagram, each thread is given a time slice of 2 seconds. Thus, after 2 seconds, the first thread leaves the CPU, and the CPU is then captured by Thread2. The same process repeats for the other threads too.
+
+## Preemptive-Priority Scheduling:
+
+The name of the scheduling algorithm denotes that the algorithm is related to the priority of the threads.
+
+![image](https://github.com/user-attachments/assets/54fbea00-8ae6-4f9c-b39a-89c6cfdfe427)
+
+Suppose there are multiple threads available in the runnable state. The thread scheduler picks that thread that has the highest priority. Since the algorithm is also preemptive, therefore, time slices are also provided to the threads to avoid starvation. Thus, after some time, even if the highest priority thread has not completed its job, it has to release the CPU because of preemption.
+
+## Working of the Java Thread Scheduler
+
+![image](https://github.com/user-attachments/assets/3d7b188d-5ff4-4eea-a698-f73560f0e314)
+
+Let's understand the working of the Java thread scheduler. Suppose, there are five threads that have different arrival times and different priorities. Now, it is the responsibility of the thread scheduler to decide which thread will get the CPU first.
+
+The thread scheduler selects the thread that has the highest priority, and the thread begins the execution of the job. If a thread is already in runnable state and another thread (that has higher priority) reaches in the runnable state, then the current thread is pre-empted from the processor, and the arrived thread with higher priority gets the CPU time.
+
+When two threads (Thread 2 and Thread 3) having the same priorities and arrival time, the scheduling will be decided on the basis of FCFS algorithm. Thus, the thread that arrives first gets the opportunity to execute first.
