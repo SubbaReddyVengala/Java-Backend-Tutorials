@@ -9257,4 +9257,15 @@ pool-1-thread-3 (End)
 pool-1-thread-5 (End)
 Finished all threads
 ```
+# ThreadGroup in Java
+Java provides a convenient way to group multiple threads in a single object. In such a way, we can suspend, resume or interrupt a group of threads by a single method call.
+
+Note: Now suspend(), resume() and stop() methods are deprecated.
+Java thread group is implemented by java.lang.ThreadGroup class.
+
+A ThreadGroup represents a set of threads. A thread group can also include the other thread group. The thread group creates a tree in which every thread group except the initial thread group has a parent.
+
+A thread is allowed to access information about its own thread group, but it cannot access the information about its thread group's parent thread group or any other thread groups.
+
+![image](https://github.com/user-attachments/assets/fa5f1a58-4e35-404a-98fb-a59f47b4c258)
 
