@@ -8395,3 +8395,220 @@ Let's understand the working of the Java thread scheduler. Suppose, there are fi
 The thread scheduler selects the thread that has the highest priority, and the thread begins the execution of the job. If a thread is already in runnable state and another thread (that has higher priority) reaches in the runnable state, then the current thread is pre-empted from the processor, and the arrived thread with higher priority gets the CPU time.
 
 When two threads (Thread 2 and Thread 3) having the same priorities and arrival time, the scheduling will be decided on the basis of FCFS algorithm. Thus, the thread that arrives first gets the opportunity to execute first.
+
+# Thread.sleep() in Java with Examples
+The Java Thread class provides the two variants of the sleep() method. First one accepts only an argument, whereas the other variant accepts two arguments. The method sleep() is being used to halt the working of a thread for a given amount of time. The time up to which the thread remains in the sleeping state is known as the sleeping time of the thread. After the sleeping time is over, the thread starts its execution from where it has left.
+
+## What is Thread.sleep()?
+The Thread.sleep() method is a static method of the Thread class that causes the currently executing thread to sleep (pause its execution) for a specified number of milliseconds.
+
+### The sleep() Method Syntax:
+Following are the syntax of the sleep() method.
+
+```
+public static void sleep(long mls) throws InterruptedException   
+public static void sleep(long mls, int n) throws InterruptedException
+```
+The method sleep() with the one parameter is the native method, and the implementation of the native method is accomplished in another programming language. The other methods having the two parameters are not the native method. That is, its implementation is accomplished in Java. We can access the sleep() methods with the help of the Thread class, as the signature of the sleep() methods contain the static keyword. The native, as well as the non-native method, throw a checked Exception. Therefore, either try-catch block or the throws keyword can work here.
+
+The Thread.sleep() method can be used with any thread. It means any other thread or the main thread can invoke the sleep() method.
+
+## Parameters:
+
+The following are the parameters used in the sleep() method.
+
+mls: The time in milliseconds is represented by the parameter mls. The duration for which the thread will sleep is given by the method sleep().
+
+n: It shows the additional time up to which the programmer or developer wants the thread to be in the sleeping state. The range of n is from 0 to 999999.
+
+The method does not return anything.
+
+### Points to Remember
+Whenever the Thread.sleep() methods execute, it always halts the execution of the current thread.
+
+Whenever another thread does interruption while the current thread is already in the sleep mode, then the InterruptedException is thrown.
+
+If the system that is executing the threads is busy, then the actual sleeping time of the thread is generally more as compared to the time passed in arguments. However, if the system executing the sleep() method has less load, then the actual sleeping time of the thread is almost equal to the time passed in the argument.
+
+### Basic Usage of Thread.sleep() Method
+
+File Name: SleepExample.java
+```
+public class SleepExample {  
+    public static void main(String[] args) {  
+        System.out.println("Start");  
+        try {  
+            Thread.sleep(2000); // Pause for 2000 milliseconds (2 seconds)  
+        } catch (InterruptedException e) {  
+            System.out.println("Thread interrupted");  
+        }  
+        System.out.println("End");  
+    }  
+} 
+ ```
+Output:
+```
+Start
+End
+```
+ In this example, the main thread prints "Start", pauses for 2 seconds, and then prints "End".
+
+## Handling InterruptedException
+One important aspect of using Thread.sleep() is handling the InterruptedException. This exception is thrown when another thread interrupts the sleeping thread. Proper handling of this exception is crucial for maintaining the robustness of your application. Here's an example:
+
+File Name: InterruptHandling.java
+```
+public class InterruptHandling {  
+    public static void main(String[] args) {  
+        Thread thread = new Thread(() -> {  
+            try {  
+                System.out.println("Thread will sleep for 5 seconds.");  
+                Thread.sleep(5000);  
+                System.out.println("Thread woke up after sleep.");  
+            } catch (InterruptedException e) {  
+                System.out.println("Thread was interrupted during sleep.");  
+            }  
+        });  
+        thread.start();  
+        try {  
+            Thread.sleep(2000); // Main thread sleeps for 2 seconds  
+            thread.interrupt(); // Interrupt the sleeping thread  
+        } catch (InterruptedException e) {  
+            e.printStackTrace();  
+        }  
+    }  
+}
+``` 
+Output:
+```
+Thread will sleep for 5 seconds.
+Thread was interrupted during sleep.
+```
+
+In this code, the child thread sleeps for 5 seconds but gets interrupted by the main thread after 2 seconds. The catch block handles the interruption gracefully.
+
+Example of the sleep() method in Java : on the custom thread
+The following example shows how one can use the sleep() method on the custom thread.
+
+FileName: TestSleepMethod1.java
+```
+class TestSleepMethod1 extends Thread{    
+ public void run(){    
+  for(int i=1;i<5;i++){   
+  // the thread will sleep for the 500 milli seconds   
+    try{Thread.sleep(500);}catch(InterruptedException e){System.out.println(e);}    
+    System.out.println(i);    
+  }    
+ }    
+ public static void main(String args[]){    
+  TestSleepMethod1 t1=new TestSleepMethod1();    
+  TestSleepMethod1 t2=new TestSleepMethod1();    
+     
+  t1.start();    
+  t2.start();    
+ }    
+}    
+```
+
+Output:
+```
+1
+1
+2
+2
+3
+3
+4
+4
+```
+As  you know well that at a time only one thread is executed. If you sleep a thread for the specified time, the thread scheduler picks up another thread and so on.
+
+Example of the sleep() Method in Java : on the main thread
+FileName: TestSleepMethod2.java
+```
+// important import statements  
+import java.lang.Thread;  
+import java.io.*;  
+  
+  
+public class TestSleepMethod2  
+{  
+    // main method  
+public static void main(String argvs[])  
+{  
+  
+try {  
+for (int j = 0; j < 5; j++)  
+{  
+  
+// The main thread sleeps for the 1000 milliseconds, which is 1 sec  
+// whenever the loop runs  
+Thread.sleep(1000);  
+  
+// displaying the value of the variable  
+System.out.println(j);  
+}  
+}  
+catch (Exception expn)   
+{  
+// catching the exception  
+System.out.println(expn);  
+}  
+}  
+} 
+```
+Output:
+```
+0
+1
+2
+3
+4
+```
+xample of the sleep() Method in Java: When the sleeping time is -ive
+The following example throws the exception IllegalArguementException when the time for sleeping is negative.
+
+FileName: TestSleepMethod3.java
+```
+// important import statements  
+import java.lang.Thread;  
+import java.io.*;  
+  
+public class TestSleepMethod3  
+{  
+// main method  
+public static void main(String argvs[])  
+{  
+// we can also use throws keyword followed by  
+// exception name for throwing the exception  
+try   
+{  
+for (int j = 0; j < 5; j++)   
+{  
+  
+// it throws the exception IllegalArgumentException  
+// as the time is -ive which is -100  
+Thread.sleep(-100);  
+  
+// displaying the variable's value  
+System.out.println(j);  
+}  
+}  
+catch (Exception expn)   
+{  
+  
+// the exception iscaught here   
+System.out.println(expn);  
+}  
+}  
+}  
+```
+Output:
+```
+java.lang.IllegalArgumentException: timeout value is negative
+```
+
+Conclusion
+In conclusion, the Thread.sleep() method is a powerful yet straightforward tool for pausing thread execution in Java. It serves various purposes, from simulating delays in testing environments to implementing rate limiting and periodic checks. However, it must be used judiciously, with proper handling of interruptions and consideration of alternative synchronization mechanisms. By understanding its usage, limitations, and best practices, developers can effectively utilize Thread.sleep() to manage thread timing and control in their Java applications.
+
+
