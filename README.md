@@ -9871,3 +9871,40 @@ Now thread is available to acquire lock.
 After completion of the task, thread releases the lock and exits the monitor state of the object.
 
 
+# SPRING FRAMEWORK IN JAVA
+
+![image](https://github.com/user-attachments/assets/613c5dac-86a8-45f9-af06-6b978f8c46eb)
+
+![image](https://github.com/user-attachments/assets/c63a6841-7bfd-4aec-a76b-9833f62a4fee)
+
+## Programming Language vs. Framework
+
+![image](https://github.com/user-attachments/assets/8d9420be-12aa-4b53-ac23-a9d7a95d9d58)
+
+### Analogy
+
+Programming Language: Like raw materials (wood, nails, tools) used to build a house.
+Framework: Like a prefabricated house structure, where you just need to assemble parts according to a given structure.
+
+![image](https://github.com/user-attachments/assets/5cfaa390-2028-4102-b267-f60ca6561ab0)
+
+![image](https://github.com/user-attachments/assets/6369adb1-f861-4926-916b-e76bd8a80dd6)
+
+![image](https://github.com/user-attachments/assets/d3005c4a-3965-4f29-8284-c58427b9b21f)
+
+![image](https://github.com/user-attachments/assets/e88c53a9-a47f-4f4d-a4d2-2e90735cf605)
+
+![image](https://github.com/user-attachments/assets/0a82dddb-2253-4f55-a43f-db08e86614f4)
+
+![image](https://github.com/user-attachments/assets/84fde339-8bb2-4b25-a6ae-c12f4507687f)
+
+![image](https://github.com/user-attachments/assets/9fa53836-765e-4d98-acf4-1509cdc13974)
+
+![image](https://github.com/user-attachments/assets/a34ba62a-f6eb-474d-8887-3c2d9fdbdb4e)
+
+![image](https://github.com/user-attachments/assets/1483d7bc-bc8b-4319-a046-7e45efc03676)
+
+![image](https://github.com/user-attachments/assets/723b9913-1b26-4c34-a41a-fb1def3da209)
+
+
+
