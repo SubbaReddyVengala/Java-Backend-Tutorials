@@ -9906,5 +9906,110 @@ Framework: Like a prefabricated house structure, where you just need to assemble
 
 ![image](https://github.com/user-attachments/assets/723b9913-1b26-4c34-a41a-fb1def3da209)
 
+# Spring Core Module - Overview
 
+The Spring Core module is the foundation of the Spring Framework. It provides the essential features such as dependency injection (DI) and inversion of control (IoC), which allow for loosely coupled and easily testable applications.
+
+## Key Features of Spring Core Module
+### 1️⃣ Inversion of Control (IoC)
+
+IoC is a design principle that helps manage object creation and dependency management.
+
+Spring uses IoC containers to automatically create and inject dependencies.
+
+### 2️⃣ Dependency Injection (DI)
+
+DI is a mechanism that allows objects to get their dependencies from an external source rather than creating them manually.
+
+It supports:
+
+Constructor Injection
+Setter Injection
+Field Injection (via @Autowired annotation)
+
+![image](https://github.com/user-attachments/assets/ce4ece05-67d0-4e07-9faf-5f60bd3d7f0b)
+
+# Dependency Injection (DI) in Spring
+
+## What is Dependency Injection?
+
+Dependency Injection (DI) is a design pattern that allows an object’s dependencies to be injected from an external source rather than creating them internally. This promotes loose coupling, making the code easier to manage, test, and maintain.
+
+### Types of Dependency Injection in Spring
+
+Spring supports three types of dependency injection:
+
+1️⃣ Constructor Injection – Injects dependencies via a class constructor.
+
+2️⃣ Setter Injection – Injects dependencies using setter methods.
+
+3️⃣ Field Injection – Injects dependencies directly into fields using @Autowired.
+
+## 1️⃣ Constructor Injection
+
+Recommended for mandatory dependencies.
+
+Ensures that the object is always created with all its required dependencies.
+
+### Example of Constructor Injection
+
+```
+import org.springframework.stereotype.Component;
+
+@Component
+public class Engine {
+    public void start() {
+        System.out.println("Engine started...");
+    }
+}
+```
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+    private final Engine engine;
+
+    @Autowired
+    public Car(Engine engine) {  // Injecting Engine via Constructor
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is moving...");
+    }
+}
+
+```
+## 2️⃣ Setter Injection
+
+Useful when dependencies are optional.
+Allows modifying dependencies after object creation.
+
+### Example of Setter Injection
+
+```
+import org.springframework.stereotype.Component;
+
+@Component
+public class Engine {
+    public void start() {
+        System.out.println("Engine started...");
+    }
+}
+
+```
+```
+
+
+
+![image](https://github.com/user-attachments/assets/9384b62b-cda9-4e06-b232-c62368a3c1a7)
+
+![image](https://github.com/user-attachments/assets/d586ac7b-d8d4-45ef-bcea-39cae0f15a43)
+
+![image](https://github.com/user-attachments/assets/8fa25680-029c-4b28-95b3-4e06ada197bd)
+
+![image](https://github.com/user-attachments/assets/2ef6268b-93b6-4bd8-880e-0296f3f30077)
 
