@@ -10001,9 +10001,122 @@ public class Engine {
 }
 
 ```
+
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+    private Engine engine;
+
+    @Autowired
+    public void setEngine(Engine engine) {  // Injecting Engine via Setter
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is moving...");
+    }
+}
+
+```
+## 3️⃣ Field Injection (Using @Autowired)
+
+Simplest but not recommended for complex applications.
+Harder to test as dependencies are hidden.
+
+### Example of Field Injection
+
+```
+import org.springframework.stereotype.Component;
+
+@Component
+public class Engine {
+    public void start() {
+        System.out.println("Engine started...");
+    }
+}
+```
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+    @Autowired  // Injecting dependency directly into field
+    private Engine engine;
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is moving...");
+    }
+}
+
+
+```
+# Configuring Dependency Injection in Spring
+## 1️⃣ XML-based Configuration (Old Approach)
+
+```
+<bean id="engine" class="com.example.Engine"/>
+<bean id="car" class="com.example.Car">
+    <constructor-arg ref="engine"/>
+</bean>
+
 ```
 
+## 2️⃣ Java-based Configuration (Recommended)
+```
+@Configuration
+public class AppConfig {
+    @Bean
+    public Engine engine() {
+        return new Engine();
+    }
 
+    @Bean
+    public Car car() {
+        return new Car(engine());
+    }
+}
+
+```
+## 3️⃣ Annotation-based Configuration (Modern Approach)
+```
+@ComponentScan("com.example")
+@Configuration
+public class AppConfig {
+}
+```
+## Which DI Method Should You Use?
+![image](https://github.com/user-attachments/assets/0329c3af-e3d2-46da-96bb-2736a3d23ca0)
+
+## Advantages of Dependency Injection
+
+✅ Loose Coupling – Classes are not tightly dependent on each other.
+✅ Better Testability – Dependencies can be easily mocked.
+✅ Easier Maintenance – Dependencies can be changed without modifying the core logic.
+✅ Improved Code Readability – Follows SOLID principles, making code more maintainable
+
+## Example: Running Dependency Injection in a Spring Boot Application
+```
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class MainApp {
+    public static void main(String[] args) {
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        Car car = context.getBean(Car.class);
+        car.drive();
+    }
+}
+```
+### Conclusion
+Constructor Injection is preferred for mandatory dependencies.
+Setter Injection is good for optional dependencies.
+Field Injection is simple but should be avoided in large applications.
 
 ![image](https://github.com/user-attachments/assets/9384b62b-cda9-4e06-b232-c62368a3c1a7)
 
@@ -10012,4 +10125,292 @@ public class Engine {
 ![image](https://github.com/user-attachments/assets/8fa25680-029c-4b28-95b3-4e06ada197bd)
 
 ![image](https://github.com/user-attachments/assets/2ef6268b-93b6-4bd8-880e-0296f3f30077)
+
+![image](https://github.com/user-attachments/assets/2d46ebaa-4118-480e-ab39-e5458f5170c1)
+
+![image](https://github.com/user-attachments/assets/cef101c4-f5d4-4088-ada3-d4286843dd9c)
+
+![image](https://github.com/user-attachments/assets/ae8b6a9c-69b8-41ac-97c2-19ad1acb2362)
+
+![image](https://github.com/user-attachments/assets/52078813-5ba2-4261-a8af-8d58923acbea)
+
+![image](https://github.com/user-attachments/assets/7e15c35c-e46d-40c9-b829-f9b9a9fae2ef)
+
+![image](https://github.com/user-attachments/assets/3b9eb1a1-942f-454e-a974-b7b96ac04aa5)
+
+![image](https://github.com/user-attachments/assets/539d7960-2ef1-436b-aa39-1955ecffa537)
+
+# Inversion of Control (IoC) in Spring
+
+## What is Inversion of Control (IoC)?
+
+Inversion of Control (IoC) is a design principle in which the control of object creation and dependency management is transferred from the developer to the Spring IoC container.
+
+## Traditional Approach (Without IoC)
+Before IoC, we manually created objects using the new keyword, which resulted in tightly coupled code.
+
+```
+public class Car {
+    private Engine engine;
+
+    public Car() {
+        this.engine = new Engine();  // Tight coupling
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is moving...");
+    }
+}
+
+```
+### 🔴 Problem: 
+The Car class is directly responsible for creating the Engine object, making it hard to test and maintain.
+
+## How Spring Uses IoC?
+With IoC, we let Spring manage object creation and dependencies, leading to loosely coupled code.
+
+## IoC in Action (Spring Example)
+
+## Step 1: Define Components
+```
+import org.springframework.stereotype.Component;
+
+@Component  // Marks this as a Spring-managed bean
+public class Engine {
+    public void start() {
+        System.out.println("Engine started...");
+    }
+}
+
+```
+
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+    private final Engine engine;
+
+    @Autowired  // IoC - Spring injects the dependency
+    public Car(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is moving...");
+    }
+}
+
+```
+## Step 2: Use Application Context
+
+```
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class MainApp {
+    public static void main(String[] args) {
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        Car car = context.getBean(Car.class);
+        car.drive();
+    }
+}
+```
+✅ Spring IoC Container automatically creates Car and Engine objects and injects dependencies.
+
+# ApplicationContext in Spring
+
+## What is ApplicationContext?
+
+ApplicationContext is an advanced IoC (Inversion of Control) container in Spring that manages beans, their lifecycle, and dependency injection. It is an extension of BeanFactory with additional features like event handling, internationalization, and environment management.
+
+## Why Use ApplicationContext?
+🔹 Manages Spring Beans: Automatically creates and injects dependencies.
+🔹 Supports Bean Life Cycle: Calls initialization and destruction methods.
+🔹 Provides More Features: Event propagation, annotation processing, etc.
+
+## Types of ApplicationContext Implementations
+Spring provides different implementations of ApplicationContext:
+
+![image](https://github.com/user-attachments/assets/f6f27bb4-d747-4cb7-a70d-ae064d3a448f)
+
+## Which ApplicationContext Should You Use?
+
+![image](https://github.com/user-attachments/assets/91e28e7a-6818-4ba2-a490-ea83f701bf10)
+
+# How Does IoC Work in Spring?
+
+Spring provides IoC Containers to manage dependencies:
+
+## 1️⃣ BeanFactory (Lightweight)
+
+Basic IoC container.
+Suitable for simple applications.
+Example:
+```
+BeanFactory factory = new ClassPathXmlApplicationContext("beans.xml");
+Car car = factory.getBean(Car.class);
+```
+# BeanFactory in Spring 
+
+## What is BeanFactory?
+
+BeanFactory is the core IoC (Inversion of Control) container in Spring, responsible for creating and managing Spring beans. It is a lightweight container that lazily loads beans, meaning objects are created only when needed.
+
+### BeanFactory vs ApplicationContext
+
+![image](https://github.com/user-attachments/assets/9b8453b7-6ab4-4fc9-89ea-feaa6ee062f1)
+
+## How to Use BeanFactory?
+### 1️⃣ XML-Based Configuration (Using ClassPathXmlApplicationContext)
+Step 1: Define Beans in beans.xml
+
+```
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="engine" class="com.example.Engine"/>
+    <bean id="car" class="com.example.Car">
+        <constructor-arg ref="engine"/>
+    </bean>
+</beans>
+
+
+```
+
+## Step 2: Java Code Using BeanFactory
+
+```
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.ClassPathResource;
+
+public class MainApp {
+    public static void main(String[] args) {
+        BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
+
+        Car car = (Car) factory.getBean("car");
+        car.drive();
+    }
+}
+```
+✅ Spring will create Car and inject Engine only when getBean("car") is called.
+
+## Why Is BeanFactory Less Common Today?
+Since Spring 3.0, BeanFactory is mostly replaced by ApplicationContext.
+ApplicationContext provides more features like:
+Event handling (publishEvent)
+Internationalization support (getMessage)
+Better integration with Spring Boot.
+
+### When Should You Use BeanFactory?
+✔ When memory efficiency is crucial (e.g., IoT devices, mobile apps).
+✔ When using simple dependency injection without extra features.
+✔ When needing lazy loading of beans for performance optimization.
+
+For modern Spring applications, ApplicationContext is the preferred option.
+
+## 2️⃣ ApplicationContext (Advanced)
+
+Provides additional features like event handling, internationalization, and environment management.
+
+Common implementations:
+ClassPathXmlApplicationContext
+AnnotationConfigApplicationContext
+FileSystemXmlApplicationContext
+
+```
+ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+Car car = context.getBean(Car.class);
+```
+## Benefits of IoC
+✅ Loose Coupling – Improves flexibility and maintainability.
+✅ Better Testability – Dependencies can be easily mocked.
+✅ Easier Configuration – Supports both XML and Java-based configurations.
+✅ Improved Code Readability – Reduces clutter and boilerplate code.
+
+![image](https://github.com/user-attachments/assets/e567bd09-8315-431c-ac14-e71cfb05621c)
+
+![image](https://github.com/user-attachments/assets/6a81fa66-be88-4835-b3fe-d68646bc0b1f)
+
+![image](https://github.com/user-attachments/assets/df04ae8b-e891-442a-b213-7b5383787cef)
+
+![image](https://github.com/user-attachments/assets/202a5823-4776-4ad7-91a1-6e46f909ea3b)
+
+![image](https://github.com/user-attachments/assets/c9bbdd6e-1f07-4aef-ac82-e544d45ea0df)
+
+![image](https://github.com/user-attachments/assets/ca65ecb6-6515-429d-b49d-125725fa35a0)
+
+![image](https://github.com/user-attachments/assets/0a44cb34-dc67-4e00-b434-72ac6af8a130)
+
+![image](https://github.com/user-attachments/assets/a371d425-e9c0-4055-8b97-1ae8bac8f378)
+
+![image](https://github.com/user-attachments/assets/79a802ab-5e74-4f55-bb55-4c1dc6ce754f)
+
+![image](https://github.com/user-attachments/assets/7a1b6f4f-3045-4ccc-ae84-2d3e66578bf3)
+
+![image](https://github.com/user-attachments/assets/352b0585-1ed6-4483-a8b8-cb021e8bda9b)
+
+![image](https://github.com/user-attachments/assets/cb9f4f0f-8ad8-4fd9-a821-c25e88462496)
+
+![image](https://github.com/user-attachments/assets/0780f838-19a9-420c-83c7-24961c4f43d3)
+
+![image](https://github.com/user-attachments/assets/ade47459-632f-4c98-b94e-356cc34a9d4b)
+
+![image](https://github.com/user-attachments/assets/992db1d6-ba7f-4598-896c-2d616ba41f92)
+
+![image](https://github.com/user-attachments/assets/fd74fa20-9f60-4ca0-93fa-660be7ab75a6)
+
+![image](https://github.com/user-attachments/assets/d65b3aec-4522-45d6-8028-c89197d2c585)
+
+![image](https://github.com/user-attachments/assets/b3fb3be1-aa9b-4f6b-87ef-50d791a85a6c)
+
+![image](https://github.com/user-attachments/assets/63deccc0-09d5-4bc5-99d4-6ca011f9db91)
+
+![image](https://github.com/user-attachments/assets/c0599b51-64f6-43ba-8192-728ab6c2cf01)
+
+![image](https://github.com/user-attachments/assets/82298256-339e-4ff5-a535-904eb134ea1f)
+
+![image](https://github.com/user-attachments/assets/11c626ba-427a-4665-b04f-d456ce9d1670)
+
+![image](https://github.com/user-attachments/assets/74d82339-076a-4830-97fb-cb7df19d1176)
+
+![image](https://github.com/user-attachments/assets/add24505-c7d0-4f8e-a70b-c2ab24df1c88)
+
+![image](https://github.com/user-attachments/assets/2e8e5c7a-7194-422b-9fff-e3ca5bb2a4b7)
+
+![image](https://github.com/user-attachments/assets/97e590d6-1bcb-4f2e-aa31-4892064351a0)
+
+![image](https://github.com/user-attachments/assets/929220f2-86d5-46eb-b58a-49ad886d54a8)
+
+![image](https://github.com/user-attachments/assets/8b44234b-616e-418f-b8b0-c2b0ea247c2c)
+
+![image](https://github.com/user-attachments/assets/821f366a-573d-4449-bad4-6239ed3e1d59)
+
+![image](https://github.com/user-attachments/assets/edaabd84-e425-4934-8188-0bc18ffd8c6d)
+
+![image](https://github.com/user-attachments/assets/c70ade1f-403a-4c7c-b68e-693bb8f88ec1)
+
+![image](https://github.com/user-attachments/assets/0487188a-ea2a-4fb7-bbb2-44a8323b7bf2)
+
+![image](https://github.com/user-attachments/assets/ab5b4ef0-51fc-4e71-953c-a1b9a995494a)
+
+![image](https://github.com/user-attachments/assets/8282bee6-b3b2-4c66-b478-e7fe3c46c5db)
+
+![image](https://github.com/user-attachments/assets/9adba08e-a4f0-44f7-a5bb-871debbc17da)
+
+![image](https://github.com/user-attachments/assets/1a916b1a-9729-4819-9343-f72fbd9f0b5f)
+
+![image](https://github.com/user-attachments/assets/94467a1b-afe1-4265-a54b-848e4e409dfd)
+
+![image](https://github.com/user-attachments/assets/f44914f4-cc6a-4512-9a1b-cbb3546a4dd4)
+
+![image](https://github.com/user-attachments/assets/f40ec9b0-ed91-48a9-b06c-51ddbad2dc98)
+
+![image](https://github.com/user-attachments/assets/48c5f81f-911d-49e3-9553-b11cc4a9c91b)
 
