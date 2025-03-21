@@ -10440,3 +10440,349 @@ Car car = context.getBean(Car.class);
 
 ![image](https://github.com/user-attachments/assets/61edbccc-97c5-4a9f-81a0-4f8e8ca1f690)
 
+# Annonation Config
+# Spring Configuration Classes (@Configuration in Spring)
+
+## What are Configuration Classes in Spring?
+Spring Configuration Classes use the @Configuration annotation to define beans instead of XML files. These classes act as Java-based configuration replacements for beans.xml.
+
+✅ Benefits of Configuration Classes:
+✔ No need for XML (beans.xml).
+✔ Type-safe and easier to maintain.
+✔ Fully supports Dependency Injection.
+
+## How to Use @Configuration?
+
+## 1️⃣ Create a Java Configuration Class (@Configuration)
+
+```
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration  // Marks this as a configuration class
+public class AppConfig {
+
+    @Bean  // Defines a bean named "engine"
+    public Engine engine() {
+        return new Engine();
+    }
+
+    @Bean  // Defines a bean named "car"
+    public Car car() {
+        return new Car(engine()); // Injecting dependency manually
+    }
+}
+```
+## 2️⃣ Define the Dependent Classes
+
+```
+public class Engine {
+    public void start() {
+        System.out.println("Engine started...");
+    }
+}
+
+public class Car {
+    private final Engine engine;
+
+    public Car(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is moving...");
+    }
+}
+
+```
+## 3️⃣ Load the Configuration in MainApp
+
+```
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class MainApp {
+    public static void main(String[] args) {
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+        Car car = context.getBean(Car.class);
+        car.drive();
+    }
+}
+```
+✅ Spring will automatically create and inject Engine into Car!
+
+![image](https://github.com/user-attachments/assets/38c8cf74-e2e4-45ed-93a7-4d9f4e69bdbf)
+
+![image](https://github.com/user-attachments/assets/5fe82a32-a6bd-40a0-9522-ec24c07f0fbb)
+
+![image](https://github.com/user-attachments/assets/2b54749c-4b3e-4fa0-86ff-8d789a5bc9a4)
+
+![image](https://github.com/user-attachments/assets/694b7ec1-46be-4d85-a4a4-22bf644a7191)
+
+![image](https://github.com/user-attachments/assets/790fb1c4-876c-4e7c-a6ec-9d6f864ac795)
+
+![image](https://github.com/user-attachments/assets/c110af81-a7eb-4622-a532-e3541412aff2)
+
+![image](https://github.com/user-attachments/assets/b40332e7-0132-493b-91b3-9591a2d33e95)
+
+![image](https://github.com/user-attachments/assets/4817f974-787c-4d09-82ea-0386368b477f)
+
+![image](https://github.com/user-attachments/assets/11eb0f89-f341-4d4c-ab17-2608902e421d)
+
+![image](https://github.com/user-attachments/assets/5ccb1659-b1f5-4919-8b25-3ea8631d2484)
+
+![image](https://github.com/user-attachments/assets/5f890473-c305-46ef-befd-11db1d7aa358)
+
+![image](https://github.com/user-attachments/assets/4d2e7bd0-5150-4dfe-9788-5949a4e3dc16)
+
+![image](https://github.com/user-attachments/assets/4084b9eb-2cfd-4645-babb-6432704876b6)
+
+![image](https://github.com/user-attachments/assets/0c3b6bf1-3cd4-46c8-a47c-36ea58244791)
+
+![image](https://github.com/user-attachments/assets/d1333880-62fc-49d8-a2a0-f37f083ab852)
+
+![image](https://github.com/user-attachments/assets/1cb356a3-48aa-4083-9704-bc2cabdb0a1b)
+
+# Component Class 
+# Alternative: Using @Component Instead of @Bean
+
+Instead of manually defining beans in @Configuration, you can use @Component along with @ComponentScan.
+
+## 1️⃣ Use @Component for Auto-Detection
+
+```
+import org.springframework.stereotype.Component;
+
+@Component  // Automatically registers this bean
+public class Engine {
+    public void start() {
+        System.out.println("Engine started...");
+    }
+}
+
+@Component
+public class Car {
+    private final Engine engine;
+
+    public Car(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is moving...");
+    }
+}
+```
+## 2️⃣ Create a @Configuration Class with @ComponentScan
+
+```
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan("com.example")  // Scans the package for @Component classes
+public class AppConfig {
+}
+```
+
+## 3️⃣ Load Configuration in MainApp
+
+```
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class MainApp {
+    public static void main(String[] args) {
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        Car car = context.getBean(Car.class);
+        car.drive();
+    }
+}
+```
+
+✅ Spring will automatically detect @Component classes and manage dependencies.
+
+## Key Differences: @Bean vs @Component
+
+![image](https://github.com/user-attachments/assets/9cf11ea8-3ee1-4037-9d61-d204b00f02fb)
+
+## When to Use @Configuration?
+✔ When you want fully Java-based configuration (no XML).
+✔ When integrating third-party libraries (e.g., DataSource, RestTemplate).
+✔ When using complex bean initialization logic.
+
+
+![image](https://github.com/user-attachments/assets/c107d669-f0fa-4f7f-8492-27ffe1fb10cf)
+
+![image](https://github.com/user-attachments/assets/06cd4f44-a2a8-4a13-8b8d-143058b28520)
+
+![image](https://github.com/user-attachments/assets/e2b5799e-3078-42d7-835f-b58d070624b4)
+
+
+# @ComponentScan in Spring
+
+## What is @ComponentScan?
+
+@ComponentScan is a Spring annotation used to automatically detect and register Spring beans (classes annotated with @Component, @Service, @Repository, or @Controller).
+
+🔹 Instead of defining beans manually in @Configuration with @Bean, @ComponentScan scans a package and registers all components automatically.
+
+## How @ComponentScan Works?
+It tells Spring which package(s) to scan for components.
+It finds classes with stereotype annotations (@Component, @Service, @Repository, @Controller) and registers them as beans.
+
+# Example: Using @ComponentScan
+## 1️⃣ Create Component Classes
+Engine.java
+```
+import org.springframework.stereotype.Component;
+
+@Component  // Marks this class as a Spring-managed bean
+public class Engine {
+    public void start() {
+        System.out.println("Engine started...");
+    }
+}
+```
+
+Car.java
+```
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+    private final Engine engine;
+
+    public Car(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is moving...");
+    }
+}
+```
+
+## 2️⃣ Create Configuration Class
+AppConfig.java
+```
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan("com.example")  // Scans the package "com.example" for components
+public class AppConfig {
+}
+```
+🔹 Spring will scan com.example and automatically register Engine and Car beans.
+
+## 3️⃣ Load the Context in MainApp
+MainApp.java
+
+```
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class MainApp {
+    public static void main(String[] args) {
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+        Car car = context.getBean(Car.class);
+        car.drive();
+    }
+}
+```
+✅ Spring automatically detects and injects dependencies without @Bean methods!
+
+## How Does @ComponentScan Work Internally?
+
+1️⃣ Spring searches for classes in the specified package (com.example).
+2️⃣ It registers all classes annotated with @Component, @Service, @Repository, or @Controller.
+3️⃣ Spring injects dependencies automatically using @Autowired.
+
+# Different Ways to Use @ComponentScan
+## 1️⃣ Scan a Specific Package (Recommended)
+
+```
+@ComponentScan("com.example.services")
+```
+✅ Only scans com.example.services package.
+
+## 2️⃣ Scan Multiple Packages
+
+```
+@ComponentScan({"com.example.services", "com.example.repositories"})
+```
+
+✅ Scans the package where the class is defined.
+
+## 4️⃣ Use basePackages Attribute
+
+```
+@ComponentScan(basePackages = "com.example")
+```
+
+✅ Same as @ComponentScan("com.example").
+
+When to Use @ComponentScan?
+
+✔ If you use @Component, @Service, @Repository, @Controller.
+✔ If you want automatic bean detection (no need to define @Bean manually).
+✔ If you have a large project with multiple packages.
+
+## Key Differences: @ComponentScan vs @Bean
+
+![image](https://github.com/user-attachments/assets/ad61128f-7d27-4f5f-b3cf-b566e2429516)
+
+![image](https://github.com/user-attachments/assets/a54f9908-c2cb-4d94-82c0-ffc99b51f711)
+
+![image](https://github.com/user-attachments/assets/0ed72112-61fa-43b7-b732-a0a476600cc9)
+
+![image](https://github.com/user-attachments/assets/f53f86f4-e3dd-481f-b65e-90020e4a4453)
+
+![image](https://github.com/user-attachments/assets/bb3d5014-6e98-4798-84cc-aa4a9895cda4)
+
+![image](https://github.com/user-attachments/assets/dd97b299-f330-41a6-ae01-2b01e9b5837f)
+
+![image](https://github.com/user-attachments/assets/5fec3f04-8d01-49d3-bea8-8af32acead31)
+
+![image](https://github.com/user-attachments/assets/21d8d4ed-6cf0-4657-af13-7a065cd9883a)
+
+![image](https://github.com/user-attachments/assets/90dbf7e1-4808-4c0d-abbf-4a2a47afb9c5)
+
+![image](https://github.com/user-attachments/assets/fafa3f78-7abc-462c-8fa0-c48f969749a3)
+
+![image](https://github.com/user-attachments/assets/c82c9910-50e5-4226-870a-bb6932f3a6d3)
+
+![image](https://github.com/user-attachments/assets/77d7ae93-ef4f-4405-8b4c-4f62f6f3d8f3)
+
+![image](https://github.com/user-attachments/assets/5f7a07c2-e91d-42b7-b43a-e796fd9d14e8)
+
+![image](https://github.com/user-attachments/assets/014854ab-fb9b-4c95-9a0c-0b78d47cc319)
+
+![image](https://github.com/user-attachments/assets/15624a32-b183-4782-be14-80772b78584f)
+
+![image](https://github.com/user-attachments/assets/db2740f1-337f-4c05-b9e0-5f6b74382486)
+
+![image](https://github.com/user-attachments/assets/fd53c02b-210c-478c-b9b1-4e697f9bfa85)
+
+![image](https://github.com/user-attachments/assets/675ebc28-9789-4905-ac05-67c4aeabacd1)
+
+![image](https://github.com/user-attachments/assets/5a1d2921-e5fa-45a1-8501-5132d79eb5f0)
+
+![image](https://github.com/user-attachments/assets/fed7ec22-f802-4111-8616-62464b77026b)
+
+![image](https://github.com/user-attachments/assets/b838e6a9-6526-4a1a-a92c-4c73a5b70f86)
+
+![image](https://github.com/user-attachments/assets/00f02f8e-ca40-413c-8596-78d09da4043f)
+
+![image](https://github.com/user-attachments/assets/fa93519e-1db4-4342-b8cb-20b2dbb2bb27)
+
+![image](https://github.com/user-attachments/assets/dd7e902c-3053-4c31-9380-d7f4290c8704)
+
+![image](https://github.com/user-attachments/assets/a0f514c6-50bf-4158-b51d-1213ac1ea9aa)
+
