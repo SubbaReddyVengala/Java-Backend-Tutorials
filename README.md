@@ -9873,9 +9873,6 @@ After completion of the task, thread releases the lock and exits the monitor sta
 
 # SPRING FRAMEWORK IN JAVA
 
-![image](https://github.com/user-attachments/assets/613c5dac-86a8-45f9-af06-6b978f8c46eb)
-
-![image](https://github.com/user-attachments/assets/c63a6841-7bfd-4aec-a76b-9833f62a4fee)
 
 ## Programming Language vs. Framework
 
@@ -9885,26 +9882,6 @@ After completion of the task, thread releases the lock and exits the monitor sta
 
 Programming Language: Like raw materials (wood, nails, tools) used to build a house.
 Framework: Like a prefabricated house structure, where you just need to assemble parts according to a given structure.
-
-![image](https://github.com/user-attachments/assets/5cfaa390-2028-4102-b267-f60ca6561ab0)
-
-![image](https://github.com/user-attachments/assets/6369adb1-f861-4926-916b-e76bd8a80dd6)
-
-![image](https://github.com/user-attachments/assets/d3005c4a-3965-4f29-8284-c58427b9b21f)
-
-![image](https://github.com/user-attachments/assets/e88c53a9-a47f-4f4d-a4d2-2e90735cf605)
-
-![image](https://github.com/user-attachments/assets/0a82dddb-2253-4f55-a43f-db08e86614f4)
-
-![image](https://github.com/user-attachments/assets/84fde339-8bb2-4b25-a6ae-c12f4507687f)
-
-![image](https://github.com/user-attachments/assets/9fa53836-765e-4d98-acf4-1509cdc13974)
-
-![image](https://github.com/user-attachments/assets/a34ba62a-f6eb-474d-8887-3c2d9fdbdb4e)
-
-![image](https://github.com/user-attachments/assets/1483d7bc-bc8b-4319-a046-7e45efc03676)
-
-![image](https://github.com/user-attachments/assets/723b9913-1b26-4c34-a41a-fb1def3da209)
 
 # Spring Core Module - Overview
 
@@ -10118,29 +10095,7 @@ Constructor Injection is preferred for mandatory dependencies.
 Setter Injection is good for optional dependencies.
 Field Injection is simple but should be avoided in large applications.
 
-![image](https://github.com/user-attachments/assets/9384b62b-cda9-4e06-b232-c62368a3c1a7)
-
-![image](https://github.com/user-attachments/assets/d586ac7b-d8d4-45ef-bcea-39cae0f15a43)
-
-![image](https://github.com/user-attachments/assets/8fa25680-029c-4b28-95b3-4e06ada197bd)
-
-![image](https://github.com/user-attachments/assets/2ef6268b-93b6-4bd8-880e-0296f3f30077)
-
-![image](https://github.com/user-attachments/assets/2d46ebaa-4118-480e-ab39-e5458f5170c1)
-
-![image](https://github.com/user-attachments/assets/cef101c4-f5d4-4088-ada3-d4286843dd9c)
-
-![image](https://github.com/user-attachments/assets/ae8b6a9c-69b8-41ac-97c2-19ad1acb2362)
-
-![image](https://github.com/user-attachments/assets/52078813-5ba2-4261-a8af-8d58923acbea)
-
-![image](https://github.com/user-attachments/assets/7e15c35c-e46d-40c9-b829-f9b9a9fae2ef)
-
-![image](https://github.com/user-attachments/assets/3b9eb1a1-942f-454e-a974-b7b96ac04aa5)
-
-![image](https://github.com/user-attachments/assets/539d7960-2ef1-436b-aa39-1955ecffa537)
-
-# Inversion of Control (IoC) in Spring
+#  Inversion of Control (IoC) in Spring
 
 ## What is Inversion of Control (IoC)?
 
@@ -10334,112 +10289,6 @@ Car car = context.getBean(Car.class);
 ✅ Easier Configuration – Supports both XML and Java-based configurations.
 ✅ Improved Code Readability – Reduces clutter and boilerplate code.
 
-![image](https://github.com/user-attachments/assets/e567bd09-8315-431c-ac14-e71cfb05621c)
-
-![image](https://github.com/user-attachments/assets/6a81fa66-be88-4835-b3fe-d68646bc0b1f)
-
-![image](https://github.com/user-attachments/assets/df04ae8b-e891-442a-b213-7b5383787cef)
-
-![image](https://github.com/user-attachments/assets/202a5823-4776-4ad7-91a1-6e46f909ea3b)
-
-![image](https://github.com/user-attachments/assets/c9bbdd6e-1f07-4aef-ac82-e544d45ea0df)
-
-![image](https://github.com/user-attachments/assets/ca65ecb6-6515-429d-b49d-125725fa35a0)
-
-![image](https://github.com/user-attachments/assets/0a44cb34-dc67-4e00-b434-72ac6af8a130)
-
-![image](https://github.com/user-attachments/assets/a371d425-e9c0-4055-8b97-1ae8bac8f378)
-
-![image](https://github.com/user-attachments/assets/79a802ab-5e74-4f55-bb55-4c1dc6ce754f)
-
-![image](https://github.com/user-attachments/assets/7a1b6f4f-3045-4ccc-ae84-2d3e66578bf3)
-
-![image](https://github.com/user-attachments/assets/352b0585-1ed6-4483-a8b8-cb021e8bda9b)
-
-![image](https://github.com/user-attachments/assets/cb9f4f0f-8ad8-4fd9-a821-c25e88462496)
-
-![image](https://github.com/user-attachments/assets/0780f838-19a9-420c-83c7-24961c4f43d3)
-
-![image](https://github.com/user-attachments/assets/ade47459-632f-4c98-b94e-356cc34a9d4b)
-
-![image](https://github.com/user-attachments/assets/992db1d6-ba7f-4598-896c-2d616ba41f92)
-
-![image](https://github.com/user-attachments/assets/fd74fa20-9f60-4ca0-93fa-660be7ab75a6)
-
-![image](https://github.com/user-attachments/assets/d65b3aec-4522-45d6-8028-c89197d2c585)
-
-![image](https://github.com/user-attachments/assets/b3fb3be1-aa9b-4f6b-87ef-50d791a85a6c)
-
-![image](https://github.com/user-attachments/assets/63deccc0-09d5-4bc5-99d4-6ca011f9db91)
-
-![image](https://github.com/user-attachments/assets/c0599b51-64f6-43ba-8192-728ab6c2cf01)
-
-![image](https://github.com/user-attachments/assets/82298256-339e-4ff5-a535-904eb134ea1f)
-
-![image](https://github.com/user-attachments/assets/11c626ba-427a-4665-b04f-d456ce9d1670)
-
-![image](https://github.com/user-attachments/assets/74d82339-076a-4830-97fb-cb7df19d1176)
-
-![image](https://github.com/user-attachments/assets/add24505-c7d0-4f8e-a70b-c2ab24df1c88)
-
-![image](https://github.com/user-attachments/assets/2e8e5c7a-7194-422b-9fff-e3ca5bb2a4b7)
-
-![image](https://github.com/user-attachments/assets/97e590d6-1bcb-4f2e-aa31-4892064351a0)
-
-![image](https://github.com/user-attachments/assets/929220f2-86d5-46eb-b58a-49ad886d54a8)
-
-![image](https://github.com/user-attachments/assets/8b44234b-616e-418f-b8b0-c2b0ea247c2c)
-
-![image](https://github.com/user-attachments/assets/821f366a-573d-4449-bad4-6239ed3e1d59)
-
-![image](https://github.com/user-attachments/assets/edaabd84-e425-4934-8188-0bc18ffd8c6d)
-
-![image](https://github.com/user-attachments/assets/c70ade1f-403a-4c7c-b68e-693bb8f88ec1)
-
-![image](https://github.com/user-attachments/assets/0487188a-ea2a-4fb7-bbb2-44a8323b7bf2)
-
-![image](https://github.com/user-attachments/assets/ab5b4ef0-51fc-4e71-953c-a1b9a995494a)
-
-![image](https://github.com/user-attachments/assets/8282bee6-b3b2-4c66-b478-e7fe3c46c5db)
-
-![image](https://github.com/user-attachments/assets/9adba08e-a4f0-44f7-a5bb-871debbc17da)
-
-![image](https://github.com/user-attachments/assets/1a916b1a-9729-4819-9343-f72fbd9f0b5f)
-
-![image](https://github.com/user-attachments/assets/94467a1b-afe1-4265-a54b-848e4e409dfd)
-
-![image](https://github.com/user-attachments/assets/f44914f4-cc6a-4512-9a1b-cbb3546a4dd4)
-
-![image](https://github.com/user-attachments/assets/f40ec9b0-ed91-48a9-b06c-51ddbad2dc98)
-
-![image](https://github.com/user-attachments/assets/48c5f81f-911d-49e3-9553-b11cc4a9c91b)
-
-![image](https://github.com/user-attachments/assets/144c661e-7e56-44fa-8920-e4a8a23a8689)
-
-![image](https://github.com/user-attachments/assets/b5830211-69f6-4492-892a-32c12d3a2cae)
-
-![image](https://github.com/user-attachments/assets/a97037e9-7cdc-4bd2-a8bc-1f99cb95ef6e)
-
-![image](https://github.com/user-attachments/assets/ccbfb1ef-c1a2-4e9a-b0bb-c7cc30840263)
-
-![image](https://github.com/user-attachments/assets/a9612009-12a8-4674-bbff-508059ca55fd)
-
-![image](https://github.com/user-attachments/assets/1e0739ab-4692-45b4-b024-0b37ca914a76)
-
-![image](https://github.com/user-attachments/assets/6e320e24-824e-4799-abf0-2998faaeb612)
-
-![image](https://github.com/user-attachments/assets/608cbd02-2c28-4b23-9ff3-e48b5ec639c5)
-
-![image](https://github.com/user-attachments/assets/acf440a3-f6f7-4b9d-b049-1becd3cdb37b)
-
-![image](https://github.com/user-attachments/assets/91f943d6-4930-4f6f-94d8-751bf6cb7643)
-
-![image](https://github.com/user-attachments/assets/ea79c285-0940-4b9e-ae4f-9664b95aa520)
-
-![image](https://github.com/user-attachments/assets/d6640207-045f-48ec-9217-2e50dbb09b9e)
-
-![image](https://github.com/user-attachments/assets/61edbccc-97c5-4a9f-81a0-4f8e8ca1f690)
-
 # Annonation Config
 # Spring Configuration Classes (@Configuration in Spring)
 
@@ -10513,37 +10362,6 @@ public class MainApp {
 ```
 ✅ Spring will automatically create and inject Engine into Car!
 
-![image](https://github.com/user-attachments/assets/38c8cf74-e2e4-45ed-93a7-4d9f4e69bdbf)
-
-![image](https://github.com/user-attachments/assets/5fe82a32-a6bd-40a0-9522-ec24c07f0fbb)
-
-![image](https://github.com/user-attachments/assets/2b54749c-4b3e-4fa0-86ff-8d789a5bc9a4)
-
-![image](https://github.com/user-attachments/assets/694b7ec1-46be-4d85-a4a4-22bf644a7191)
-
-![image](https://github.com/user-attachments/assets/790fb1c4-876c-4e7c-a6ec-9d6f864ac795)
-
-![image](https://github.com/user-attachments/assets/c110af81-a7eb-4622-a532-e3541412aff2)
-
-![image](https://github.com/user-attachments/assets/b40332e7-0132-493b-91b3-9591a2d33e95)
-
-![image](https://github.com/user-attachments/assets/4817f974-787c-4d09-82ea-0386368b477f)
-
-![image](https://github.com/user-attachments/assets/11eb0f89-f341-4d4c-ab17-2608902e421d)
-
-![image](https://github.com/user-attachments/assets/5ccb1659-b1f5-4919-8b25-3ea8631d2484)
-
-![image](https://github.com/user-attachments/assets/5f890473-c305-46ef-befd-11db1d7aa358)
-
-![image](https://github.com/user-attachments/assets/4d2e7bd0-5150-4dfe-9788-5949a4e3dc16)
-
-![image](https://github.com/user-attachments/assets/4084b9eb-2cfd-4645-babb-6432704876b6)
-
-![image](https://github.com/user-attachments/assets/0c3b6bf1-3cd4-46c8-a47c-36ea58244791)
-
-![image](https://github.com/user-attachments/assets/d1333880-62fc-49d8-a2a0-f37f083ab852)
-
-![image](https://github.com/user-attachments/assets/1cb356a3-48aa-4083-9704-bc2cabdb0a1b)
 
 # Component Class 
 # Alternative: Using @Component Instead of @Bean
@@ -10613,13 +10431,6 @@ public class MainApp {
 ✔ When you want fully Java-based configuration (no XML).
 ✔ When integrating third-party libraries (e.g., DataSource, RestTemplate).
 ✔ When using complex bean initialization logic.
-
-
-![image](https://github.com/user-attachments/assets/c107d669-f0fa-4f7f-8492-27ffe1fb10cf)
-
-![image](https://github.com/user-attachments/assets/06cd4f44-a2a8-4a13-8b8d-143058b28520)
-
-![image](https://github.com/user-attachments/assets/e2b5799e-3078-42d7-835f-b58d070624b4)
 
 
 # @ComponentScan in Spring
@@ -10738,51 +10549,4 @@ When to Use @ComponentScan?
 
 ![image](https://github.com/user-attachments/assets/ad61128f-7d27-4f5f-b3cf-b566e2429516)
 
-![image](https://github.com/user-attachments/assets/a54f9908-c2cb-4d94-82c0-ffc99b51f711)
-
-![image](https://github.com/user-attachments/assets/0ed72112-61fa-43b7-b732-a0a476600cc9)
-
-![image](https://github.com/user-attachments/assets/f53f86f4-e3dd-481f-b65e-90020e4a4453)
-
-![image](https://github.com/user-attachments/assets/bb3d5014-6e98-4798-84cc-aa4a9895cda4)
-
-![image](https://github.com/user-attachments/assets/dd97b299-f330-41a6-ae01-2b01e9b5837f)
-
-![image](https://github.com/user-attachments/assets/5fec3f04-8d01-49d3-bea8-8af32acead31)
-
-![image](https://github.com/user-attachments/assets/21d8d4ed-6cf0-4657-af13-7a065cd9883a)
-
-![image](https://github.com/user-attachments/assets/90dbf7e1-4808-4c0d-abbf-4a2a47afb9c5)
-
-![image](https://github.com/user-attachments/assets/fafa3f78-7abc-462c-8fa0-c48f969749a3)
-
-![image](https://github.com/user-attachments/assets/c82c9910-50e5-4226-870a-bb6932f3a6d3)
-
-![image](https://github.com/user-attachments/assets/77d7ae93-ef4f-4405-8b4c-4f62f6f3d8f3)
-
-![image](https://github.com/user-attachments/assets/5f7a07c2-e91d-42b7-b43a-e796fd9d14e8)
-
-![image](https://github.com/user-attachments/assets/014854ab-fb9b-4c95-9a0c-0b78d47cc319)
-
-![image](https://github.com/user-attachments/assets/15624a32-b183-4782-be14-80772b78584f)
-
-![image](https://github.com/user-attachments/assets/db2740f1-337f-4c05-b9e0-5f6b74382486)
-
-![image](https://github.com/user-attachments/assets/fd53c02b-210c-478c-b9b1-4e697f9bfa85)
-
-![image](https://github.com/user-attachments/assets/675ebc28-9789-4905-ac05-67c4aeabacd1)
-
-![image](https://github.com/user-attachments/assets/5a1d2921-e5fa-45a1-8501-5132d79eb5f0)
-
-![image](https://github.com/user-attachments/assets/fed7ec22-f802-4111-8616-62464b77026b)
-
-![image](https://github.com/user-attachments/assets/b838e6a9-6526-4a1a-a92c-4c73a5b70f86)
-
-![image](https://github.com/user-attachments/assets/00f02f8e-ca40-413c-8596-78d09da4043f)
-
-![image](https://github.com/user-attachments/assets/fa93519e-1db4-4342-b8cb-20b2dbb2bb27)
-
-![image](https://github.com/user-attachments/assets/dd7e902c-3053-4c31-9380-d7f4290c8704)
-
-![image](https://github.com/user-attachments/assets/a0f514c6-50bf-4158-b51d-1213ac1ea9aa)
 
