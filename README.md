@@ -10550,3 +10550,138 @@ When to Use @ComponentScan?
 ![image](https://github.com/user-attachments/assets/ad61128f-7d27-4f5f-b3cf-b566e2429516)
 
 
+![image](https://github.com/user-attachments/assets/d64c70f0-cb2f-4bcf-9f87-f1a6039be283)
+
+## 1️⃣ Field/Property Level Injection (@Autowired on Field)
+
+Directly injects dependencies into fields.
+Avoided in modern applications due to difficulty in unit testing.
+Example
+
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+
+    @Autowired  // Field injection (not recommended)
+    private Engine engine;
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is moving...");
+    }
+}
+```
+
+🔹 Drawback: Cannot be tested easily (cannot mock engine in unit tests).
+
+## 2️⃣ Setter Injection (@Autowired on Setter Method)
+
+Provides more flexibility and allows unit testing.
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+
+    private Engine engine;
+
+    @Autowired  // Setter Injection
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is moving...");
+    }
+}
+```
+
+✅ Better than field injection because it allows mocking engine in tests.
+
+## 3️⃣ Constructor Injection (@Autowired on Constructor)
+
+Recommended approach (Spring 4.3+ automatically injects dependencies).
+Ensures mandatory dependencies.
+
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+
+    private final Engine engine;
+
+    @Autowired  // Constructor Injection (Recommended)
+    public Car(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is moving...");
+    }
+}
+```
+### ✅ Best approach because:
+
+It ensures immutability (final fields).
+Makes unit testing easy (no need for reflection or setters).
+
+## Comparison Table
+![image](https://github.com/user-attachments/assets/0831f1cb-84ce-4453-bb11-6fa442533d32)
+
+### Final Recommendation
+✔ Use Constructor Injection for required dependencies.
+✔ Use Setter Injection for optional dependencies.
+✔ Avoid Field Injection unless absolutely necessary.
+
+![image](https://github.com/user-attachments/assets/6d5834a4-c1cc-4069-b872-0ceffb989f0b)
+
+![image](https://github.com/user-attachments/assets/832359c4-99c5-4d2c-aece-875bf27be354)
+
+# @Autowired in Spring
+## What is @Autowired?
+@Autowired is a Spring annotation used for dependency injection. It allows Spring to automatically inject beans without manually instantiating them.
+
+## How @Autowired Works?
+Spring scans the ApplicationContext, finds the required bean, and injects it automatically.
+
+@Autowired can be applied to fields, constructors, or setter methods.
+If multiple beans exist, use @Qualifier to specify which one to inject.
+
+# Types of Injection Using @Autowired
+
+## 1️⃣ Field Injection (@Autowired on Fields) ❌ (Not Recommended)
+
+Directly injects a dependency into a field.
+
+🔴 Not recommended because it's hard to unit test (you can't mock the dependency easily).
+
+# What If There Are Multiple Beans? (@Qualifier)
+If multiple beans exist, use @Qualifier to specify which one to inject.
+
+Example
+
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+
+    private final Engine engine;
+
+    @Autowired
+    public Car(@Qualifier("dieselEngine") Engine engine) {  // Choosing "dieselEngine" bean
+        this.engine = engine;
+    }
+}
+```
+
