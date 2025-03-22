@@ -10887,3 +10887,268 @@ private Engine engine;
 
 ![image](https://github.com/user-attachments/assets/354ffa57-be4c-49d7-a459-3fcce0147aeb)
 
+# Spring Bean Scopes
+
+What is a Bean Scope?
+
+A Bean Scope defines how and when a Spring Bean is created and how long it lives in the Spring Container.
+
+## Types of Bean Scopes in Spring
+Spring provides 5 core scopes, but only two are commonly used:
+
+1. Singleton (Default)
+2. Prototype
+3. Request (For Web Applications)
+4. Session (For Web Applications)
+5. Application (For Web Applications)
+
+## 1️⃣ Singleton Scope (Default)
+
+Only one instance per Spring container (shared across the application).
+Best for stateless beans (e.g., service classes).
+Default scope in Spring (no need to explicitly define).
+
+```
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+@Component
+@Scope("singleton")  // Optional since Singleton is default
+public class SingletonBean {
+    public SingletonBean() {
+        System.out.println("SingletonBean Instance Created");
+    }
+}
+```
+
+### Behavior
+
+```
+ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+SingletonBean bean1 = context.getBean(SingletonBean.class);
+SingletonBean bean2 = context.getBean(SingletonBean.class);
+
+System.out.println(bean1 == bean2);  // Output: true (Same instance)
+```
+✅ Best for: Services, controllers, and repositories.
+
+## 2️⃣ Prototype Scope
+
+Creates a new instance every time getBean() is called.
+
+Best for stateful beans or objects that need to be modified independently.
+
+```
+@Component
+@Scope("prototype")  // New instance each time
+public class PrototypeBean {
+    public PrototypeBean() {
+        System.out.println("PrototypeBean Instance Created");
+    }
+}
+```
+
+### Behaviour
+
+```
+ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+PrototypeBean bean1 = context.getBean(PrototypeBean.class);
+PrototypeBean bean2 = context.getBean(PrototypeBean.class);
+
+System.out.println(bean1 == bean2);  // Output: false (Different instances)
+```
+✅ Best for: Stateful objects like user preferences, session-based data.
+
+## 3️⃣ Request Scope (For Web Applications)
+
+Creates a new instance for each HTTP request.
+Used in Web Applications (Spring MVC).
+
+```
+@Component
+@Scope("request")
+public class RequestBean {
+    public RequestBean() {
+        System.out.println("RequestBean Instance Created");
+    }
+}
+```
+🔹 Each HTTP request gets a new instance of RequestBean.
+
+✅ Best for: Request-specific data like request tracking or security context.
+
+## 4️⃣ Session Scope (For Web Applications)
+
+Creates a new instance for each HTTP session.
+Bean lives as long as the session is active.
+
+```
+@Component
+@Scope("session")
+public class SessionBean {
+    public SessionBean() {
+        System.out.println("SessionBean Instance Created");
+    }
+}
+```
+🔹 Each user session gets its own instance.
+
+✅ Best for: User session data like shopping carts.
+
+## 5️⃣ Application Scope (For Web Applications)
+
+Creates a single instance per ServletContext (entire web application).
+Similar to Singleton but tied to the Web Application.
+
+```
+@Component
+@Scope("application")
+public class ApplicationBean {
+    public ApplicationBean() {
+        System.out.println("ApplicationBean Instance Created");
+    }
+}
+```
+🔹 One instance shared across all users in the application.
+
+✅ Best for: Caching global data, configurations.
+
+## Comparing Bean Scopes
+![image](https://github.com/user-attachments/assets/f18aa4ce-8289-45ed-9cb1-ed81d561348a)
+
+## Singleton vs. Prototype: When to Use?
+![image](https://github.com/user-attachments/assets/c0aa3ff0-8481-46d0-9f7a-1b003b8f45d3)
+
+## Key Takeaways
+✔ Singleton is the default scope (recommended for most cases).
+✔ Prototype is useful for independent objects (not shared).
+✔ Request, Session, and Application scopes are for web applications.
+✔ Prototype beans are not managed like Singleton beans (Spring does not destroy them).
+
+![image](https://github.com/user-attachments/assets/dd142dcc-081a-4bdd-a1f5-92d93870b276)
+
+![image](https://github.com/user-attachments/assets/32dd729e-ce39-49a3-ae6e-dd3b36e41dc7)
+
+![image](https://github.com/user-attachments/assets/5ce35e2c-cb35-46ba-beee-95841b5bc775)
+
+![image](https://github.com/user-attachments/assets/2addff0d-9877-4cbe-a324-2e4c06514fdf)
+
+![image](https://github.com/user-attachments/assets/7d51db09-ef9f-49ce-bf2f-480ebc9ef449)
+
+![image](https://github.com/user-attachments/assets/6231bb7d-b45e-4106-a4c0-4fb3ec55f6d3)
+
+![image](https://github.com/user-attachments/assets/2994e531-f4f1-4657-aeec-0e1cf1db0d6f)
+
+# Autowiring Modes in Spring
+
+Autowiring in Spring automatically injects dependencies into a bean without explicitly specifying them in the XML configuration or constructor.
+
+## Types of Autowiring Modes in Spring
+
+### Spring provides five autowiring modes:
+
+1️⃣ No Autowiring (no) (Default mode)
+2️⃣ By Type (byType)
+3️⃣ By Name (byName)
+4️⃣ Constructor (constructor)
+5️⃣ Autodetect (autodetect) (Deprecated in Spring 3.0)
+
+## 1️⃣ no (Default Mode)
+
+No autowiring is performed.
+Dependencies must be explicitly defined in XML or Java configuration.
+Example: Manual Dependency Injection (No Autowiring)
+```
+<bean id="engine" class="com.example.Engine" />
+<bean id="car" class="com.example.Car">
+    <property name="engine" ref="engine" />
+</bean>
+```
+✔ Best for: Full manual control over dependencies.
+
+## 2️⃣ byType (Autowiring by Type)
+
+Spring matches the property type and injects a bean of the same type.
+If multiple beans of the same type exist, it throws an error.
+
+```
+<bean id="engine" class="com.example.Engine" />
+<bean id="car" class="com.example.Car" autowire="byType" />
+```
+
+### Equivalent Java Code
+```
+@Component
+public class Car {
+    @Autowired  // By Type
+    private Engine engine;
+}
+```
+✔ Best for: Unique types (e.g., a single Engine bean).
+❌ Issue: Fails if multiple beans of the same type exist.
+
+## 3️⃣ byName (Autowiring by Property Name)
+
+Spring matches the property name with a bean ID and injects it.
+If no matching bean name is found, it fails.
+
+```
+<bean id="engine" class="com.example.Engine" />
+<bean id="car" class="com.example.Car" autowire="byName" />
+```
+🔹 The bean ID (engine) matches the Car class property engine.
+
+### Equivalent Java Code
+
+```
+@Component
+public class Car {
+    @Autowired
+    @Qualifier("engine")  // By Name
+    private Engine engine;
+}
+```
+✔ Best for: Cases where bean names are meaningful.
+❌ Issue: Requires bean names to match property names.
+
+## 4️⃣ constructor (Autowiring by Constructor)
+
+Injects dependencies via constructor arguments.
+If multiple beans of the same type exist, it throws an error.
+
+```
+<bean id="engine" class="com.example.Engine" />
+<bean id="car" class="com.example.Car" autowire="constructor" />
+```
+### Equivalent Java Code
+```
+@Component
+public class Car {
+    private final Engine engine;
+
+    @Autowired
+    public Car(Engine engine) {  // Constructor Injection
+        this.engine = engine;
+    }
+}
+
+```
+
+## 5️⃣ autodetect (Deprecated in Spring 3.0)
+
+Spring first tries constructor autowiring, then falls back to byType if no constructor is found.
+Deprecated because constructor and byType are preferred
+
+## Comparison of Autowiring Modes
+![image](https://github.com/user-attachments/assets/c84e1b61-0566-403c-964f-38cf3462577c)
+
+## Best Practices for Autowiring
+
+✔ Use @Autowired over XML-based autowiring.
+✔ Use @Qualifier if multiple beans of the same type exist.
+✔ Use Constructor Injection for mandatory dependencies.
+✔ Use Setter/Field Injection for optional dependencies.
+
+
+
+![image](https://github.com/user-attachments/assets/dbaefb0d-6915-4ea0-95a2-701be5f31d44)
