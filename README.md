@@ -10684,4 +10684,206 @@ public class Car {
     }
 }
 ```
+# @Qualifier in Spring (Handling Multiple Beans)
+
+## What is @Qualifier?
+@Qualifier is a Spring annotation used when multiple beans of the same type exist in the Spring container. It helps Spring decide which specific bean to inject when @Autowired is used.
+
+By default, Spring throws an error if multiple beans of the same type exist and @Qualifier is not used.
+
+## Why Do We Need @Qualifier?
+Imagine we have two beans of type Engine:
+
+1. PetrolEngine
+2. DieselEngine
+   
+If we use @Autowired without @Qualifier, Spring won’t know which bean to inject and will throw an ambiguous dependency error.
+
+## Example Without @Qualifier (Error Scenario)
+Define Multiple Beans
+```
+import org.springframework.stereotype.Component;
+
+@Component
+public class PetrolEngine implements Engine {
+    @Override
+    public void start() {
+        System.out.println("Petrol Engine started...");
+    }
+}
+
+@Component
+public class DieselEngine implements Engine {
+    @Override
+    public void start() {
+        System.out.println("Diesel Engine started...");
+    }
+}
+```
+
+## Autowired Without @Qualifier (Ambiguous Dependency Error)
+
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+    private final Engine engine;
+
+    @Autowired  // ERROR: Multiple beans of type Engine exist
+    public Car(Engine engine) {
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is moving...");
+    }
+}
+
+```
+## ❌ Spring Error:
+```
+No qualifying bean of type 'Engine' available: expected single matching bean but found 2: petrolEngine,dieselEngine
+```
+
+## Solution: Use @Qualifier to Specify the Bean
+We explicitly tell Spring which bean to inject by using @Qualifier("beanName").
+
+### Fix the Issue Using @Qualifier
+
+```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Car {
+    private final Engine engine;
+
+    @Autowired
+    public Car(@Qualifier("dieselEngine") Engine engine) {  // Selecting DieselEngine
+        this.engine = engine;
+    }
+
+    public void drive() {
+        engine.start();
+        System.out.println("Car is moving...");
+    }
+}
+```
+
+✅ Now Spring injects DieselEngine without any ambiguity.
+
+### How Does @Qualifier Work Internally?
+
+Spring scans all beans of the required type (Engine).
+It checks the bean names registered in the Spring container.
+If @Qualifier("dieselEngine") is present, it injects only that bean
+
+## Alternative: Custom Bean Names with @Component
+By default, the bean name is the class name in lowercase (petrolEngine, dieselEngine).
+We can change the bean name using @Component("customBeanName").
+
+### Example: Define Custom Bean Names
+```
+@Component("petrol")  // Custom bean name
+public class PetrolEngine implements Engine {
+    @Override
+    public void start() {
+        System.out.println("Petrol Engine started...");
+    }
+}
+
+@Component("diesel")  // Custom bean name
+public class DieselEngine implements Engine {
+    @Override
+    public void start() {
+        System.out.println("Diesel Engine started...");
+    }
+}
+
+```
+## Use @Qualifier with Custom Bean Name
+
+```
+@Autowired
+public Car(@Qualifier("diesel") Engine engine) {  // Using "diesel" instead of "dieselEngine"
+    this.engine = engine;
+}
+```
+
+✅ Spring now injects DieselEngine based on the custom name.
+
+## Using @Primary Instead of @Qualifier
+If you want a default bean to be injected without using @Qualifier, use @Primary.
+
+### Example: Mark One Bean as @Primary
+
+```
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
+
+@Primary  // Makes this the default bean
+@Component
+public class PetrolEngine implements Engine {
+    @Override
+    public void start() {
+        System.out.println("Petrol Engine started...");
+    }
+}
+
+@Component
+public class DieselEngine implements Engine {
+    @Override
+    public void start() {
+        System.out.println("Diesel Engine started...");
+    }
+}
+```
+### Now, No Need for @Qualifier
+
+```
+@Autowired  // Injects PetrolEngine by default
+private Engine engine;
+
+```
+
+✅ If multiple beans exist, Spring injects PetrolEngine because it is marked as @Primary.
+
+## Using @Qualifier in Setter Injection
+
+```
+@Autowired
+public void setEngine(@Qualifier("dieselEngine") Engine engine) {
+    this.engine = engine;
+}
+```
+# Using @Qualifier in Field Injection
+```
+@Autowired
+@Qualifier("petrolEngine")  // Selecting PetrolEngine
+private Engine engine;
+
+```
+## Final Best Practices
+
+![image](https://github.com/user-attachments/assets/9ededd29-7757-4f25-a8d9-3b3f004f0d4b)
+
+## Summary
+✔ Use @Qualifier when multiple beans exist to select the right one.
+✔ Use @Primary when a bean should be injected by default.
+✔ Use custom bean names for better clarity.
+
+
+![image](https://github.com/user-attachments/assets/57de116c-4857-4f11-a637-773ae8039c10)
+
+![image](https://github.com/user-attachments/assets/9908e6c6-3dd0-4627-b30c-040e2c3f7ebb)
+
+![image](https://github.com/user-attachments/assets/93e2b5d1-1ee6-49c8-b6e0-9894b67b4239)
+
+![image](https://github.com/user-attachments/assets/97877e30-6cfe-4113-bb41-beef41a8188e)
+
+![image](https://github.com/user-attachments/assets/354ffa57-be4c-49d7-a459-3fcce0147aeb)
 
