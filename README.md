@@ -11583,5 +11583,185 @@ Useful in Beans, Security, AOP, and Event Handling.
 
 Makes Spring Boot applications more predictable and structured.
 
+# Runners in Spring Boot (CommandLineRunner & ApplicationRunner)
+
+## What are Runners in Spring Boot?
+
+Spring Boot provides two interfaces, CommandLineRunner and ApplicationRunner, to execute code after the Spring application context is initialized. These are useful for:
+
+✅ Running startup logic
+
+✅ Initializing data
+
+✅ Performing post-initialization tasks
+
+✅ Running background tasks
+
+## Types of Runners in Spring Boot
+
+1️⃣ CommandLineRunner → Runs with raw command-line arguments (String array).
+
+2️⃣ ApplicationRunner → Provides additional parsing via ApplicationArguments.
+
+## 1️⃣ CommandLineRunner Example
+
+Executes code after the Spring Boot application starts.
+
+### Example: Running Startup Logic
+
+```
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MyCommandLineRunner implements CommandLineRunner {
+    @Override
+    public void run(String... args) throws Exception {
+        System.out.println("Application started with CommandLineRunner");
+        for (String arg : args) {
+            System.out.println("Arg: " + arg);
+        }
+    }
+}
+```
+### Running the Application with Arguments
+```
+mvn spring-boot:run --spring-boot.run.arguments=arg1,arg2,arg3
+```
+### Expected Output
+```
+Application started with CommandLineRunner
+Arg: arg1
+Arg: arg2
+Arg: arg3
+```
+## 2️⃣ ApplicationRunner Example
+
+Provides better argument handling via ApplicationArguments.
+
+### Example: Parsing Arguments
+
+```
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MyApplicationRunner implements ApplicationRunner {
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        System.out.println("Application started with ApplicationRunner");
+
+        System.out.println("Non-Option Arguments: " + args.getNonOptionArgs());
+        System.out.println("Option Names: " + args.getOptionNames());
+
+        for (String name : args.getOptionNames()) {
+            System.out.println("Option " + name + ": " + args.getOptionValues(name));
+        }
+    }
+}
+```
+### Running the Application with Named Arguments
+```
+mvn spring-boot:run --spring-boot.run.arguments="--mode=dev --debug=true file.txt"
+```
+
+### Expected Output
+```
+Application started with ApplicationRunner
+Non-Option Arguments: [file.txt]
+Option Names: [mode, debug]
+Option mode: [dev]
+Option debug: [true]
+```
+## Difference Between CommandLineRunner & ApplicationRunner
+
+![image](https://github.com/user-attachments/assets/7deac62b-a2af-4fff-bc61-585397726a19)
+
+## 3️⃣ Running Multiple Runners with @Order
+
+If multiple runners exist, use @Order to control execution priority.
+
+```
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+import org.springframework.boot.CommandLineRunner;
+
+@Component
+@Order(2) // Runs second
+public class SecondRunner implements CommandLineRunner {
+    @Override
+    public void run(String... args) {
+        System.out.println("Second Runner Executed");
+    }
+}
+
+@Component
+@Order(1) // Runs first
+public class FirstRunner implements CommandLineRunner {
+    @Override
+    public void run(String... args) {
+        System.out.println("First Runner Executed");
+    }
+}
+```
+### Expected Output
+```
+First Runner Executed
+Second Runner Executed
+```
+## 4️⃣ Using Runners in SpringApplication.run()
+
+Instead of creating @Component runners, you can define them in SpringApplication.run().
+
+```
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args).getBean(CommandLineRunner.class).run(args);
+    }
+
+    public CommandLineRunner runner() {
+        return args -> System.out.println("Runner inside SpringApplication.run()");
+    }
+}
+
+```
+## 5️⃣ Disabling Runners
+If you want to disable runners for testing, use Spring Profiles.
+
+### Example: Disable in application.properties
+```
+spring.main.banner-mode=off
+spring.main.lazy-initialization=true
+```
+
+OR
+### Annotate the runner with a profile:
+
+```
+@Component
+@Profile("!test") // Runs only if profile is NOT 'test'
+public class MyRunner implements CommandLineRunner {
+    public void run(String... args) {
+        System.out.println("Runner executed");
+    }
+}
+```
+## Conclusion
+
+✅ CommandLineRunner → Good for simple command-line arguments
+
+✅ ApplicationRunner → Better for advanced argument parsing
+
+✅ Multiple Runners can be controlled using @Order
+
+✅ Custom Runners can be created inside SpringApplication.run()
+
+✅ Runners can be disabled using profiles
 
 
