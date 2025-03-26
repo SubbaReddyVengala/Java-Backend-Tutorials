@@ -11764,4 +11764,241 @@ public class MyRunner implements CommandLineRunner {
 
 ✅ Runners can be disabled using profiles
 
+# Project Lombok in Spring Boot 🚀
+
+## What is Lombok?
+
+Project Lombok is a Java library that automates boilerplate code such as:
+
+✅ Getters & Setters
+
+✅ toString(), equals(), hashCode()
+
+✅ Constructor generation
+
+✅ Logging
+
+✅ Thread safety
+
+### 💡 Why use Lombok?
+
+✔ Reduces boilerplate code
+
+✔ Improves readability & maintainability
+
+✔ Increases developer productivity
+
+## 1️⃣ Adding Lombok to a Spring Boot Project
+
+For Maven (pom.xml)
+```
+<dependencies>
+    <!-- Lombok -->
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
+```
+
+## 2️⃣ Lombok Annotations & Example
+
+✅ @Getter and @Setter
+
+Generates getter and setter methods automatically.
+
+```
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.stereotype.Component;
+
+@Getter
+@Setter
+@Component
+public class User {
+    private String name;
+    private int age;
+}
+```
+### Equivalent to:
+```
+public class User {
+    private String name;
+    private int age;
+    
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public int getAge() { return age; }
+    public void setAge(int age) { this.age = age; }
+}
+```
+### ✅ @ToString
+Generates toString() method.
+```
+import lombok.ToString;
+
+@ToString
+public class User {
+    private String name;
+    private int age;
+}
+```
+📌 Generated toString() Output:
+
+```
+User(name=John, age=25)
+```
+## ✅ @EqualsAndHashCode
+Generates equals() and hashCode() methods.
+```
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
+public class User {
+    private String name;
+    private int age;
+}
+```
+## ✅ @NoArgsConstructor, @AllArgsConstructor, @RequiredArgsConstructor
+Generates different types of constructors.
+```
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
+@NoArgsConstructor      // Empty constructor
+@AllArgsConstructor     // Constructor with all fields
+@RequiredArgsConstructor // Constructor with final fields
+public class User {
+    private String name;
+    private int age;
+}
+```
+## ✅ @Data (Combination of multiple Lombok annotations)
+@Data = @Getter + @Setter + @ToString + @EqualsAndHashCode + @RequiredArgsConstructor
+```
+import lombok.Data;
+
+@Data
+public class User {
+    private String name;
+    private int age;
+}
+```
+## ✅ @Builder (Fluent Builder Pattern)
+Generates a builder pattern for object creation.
+```
+import lombok.Builder;
+
+@Builder
+public class User {
+    private String name;
+    private int age;
+}
+```
+### 📌 Usage:
+```
+User user = User.builder()
+    .name("Alice")
+    .age(30)
+    .build();
+```
+## ✅ @Value (Immutable Class)
+Creates an immutable class (like final fields).
+```
+import lombok.Value;
+
+@Value
+public class User {
+    String name;
+    int age;
+}
+```
+### 📌 Effect:
+
+❌ No setters
+❌ All fields are final
+
+## ✅ @Slf4j (Logging)
+Provides a logger instance for logging.
+```
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+@Slf4j
+@Service
+public class UserService {
+    public void process() {
+        log.info("Processing user data...");
+    }
+}
+```
+### 📌 Generated logger usage:
+```
+private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(UserService.class);
+```
+
+## 3️⃣ Lombok in a Complete Spring Boot Project
+
+### Controller Example
+
+```
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    
+    @GetMapping("/{name}")
+    public User getUser(@PathVariable String name) {
+        return new User(name, 25);
+    }
+}
+
+@Data
+@AllArgsConstructor
+class User {
+    private String name;
+    private int age;
+}
+```
+### 📌 Calling API (GET /users/John)
+### 🔹 Response:
+```
+{
+    "name": "John",
+    "age": 25
+}
+```
+## 4️⃣ Pros & Cons of Using Lombok
+
+✅ Pros
+
+✔ Reduces boilerplate code
+
+✔ Increases code readability
+
+✔ Saves development time
+
+❌ Cons
+
+⚠ IDE must support annotation processing
+
+⚠ Debugging generated code can be tricky
+
+## 5️⃣ Conclusion
+
+Lombok simplifies getter/setter, constructors, toString, logging, and more.
+
+Use @Data for full encapsulation, @Builder for object creation, and @Slf4j for logging.
+
+Works great in Spring Boot applications.
+
+
+
+
+
 
