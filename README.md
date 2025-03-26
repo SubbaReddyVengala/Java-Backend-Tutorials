@@ -11253,4 +11253,125 @@ This automatically includes all required dependencies for a Spring MVC web appli
 ### Conclusion
 Spring Boot Starters make project setup fast and hassle-free by providing pre-configured dependency bundles. They help developers focus on business logic instead of manually managing dependencies.
 
- 
+ # @Value Annotation in Spring Boot
+
+ The @Value annotation in Spring Boot is used to inject values into fields from properties files, system properties, environment variables, or inline values. It is commonly used for configuration management.
+
+ ## 1. Injecting Values from application.properties
+
+ You can use @Value to inject values from the application.properties or application.yml file.
+
+### Example: application.properties
+
+```
+app.name=Spring Boot Application
+app.version=1.0.0
+```
+
+### Example: Using @Value in Java Class
+
+```
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
+public class AppConfig {
+
+    @Value("${app.name}")
+    private String appName;
+
+    @Value("${app.version}")
+    private String appVersion;
+
+    public void printAppDetails() {
+        System.out.println("App Name: " + appName);
+        System.out.println("App Version: " + appVersion);
+    }
+}
+
+```
+## 2. Injecting Default Values
+If the property is missing, you can specify a default value using the : operator.
+
+### Example: Using Default Values
+
+```
+@Value("${app.description:Default Description}")
+private String appDescription;
+```
+
+If app.description is not present in application.properties, it will default to "Default Description".
+
+## 3. Injecting System Properties & Environment Variables
+
+@Value can also fetch values from system properties and environment variables.
+
+### Example: Injecting System Property
+```
+@Value("${user.home}")
+private String userHome;
+```
+
+This will inject the user's home directory path.
+
+### Example: Injecting Environment Variable
+
+```
+@Value("${JAVA_HOME}")
+private String javaHome;
+```
+This will inject the value of the JAVA_HOME environment variable.
+
+## 4. Injecting Lists and Arrays
+@Value can be used to inject lists and arrays from comma-separated values.
+
+### Example: application.properties
+```
+app.supported-languages=English,Spanish,French
+```
+
+### Example: Injecting List
+```
+@Value("${app.supported-languages}")
+private String[] languages;
+```
+## 5. Using @Value with SpEL (Spring Expression Language)
+
+Spring Expression Language (SpEL) can be used to perform operations inside @Value.
+
+### Example: Concatenation
+```
+@Value("Hello, ${app.name}!")
+private String welcomeMessage;
+```
+### Example: Mathematical Operations
+```
+@Value("#{10 + 20}")
+private int sum;  // sum = 30
+```
+
+## 6. Using @Value in Constructor Injection
+
+You can inject values directly into the constructor.
+
+```
+@Component
+public class AppConfig {
+
+    private final String appName;
+
+    public AppConfig(@Value("${app.name}") String appName) {
+        this.appName = appName;
+    }
+}
+```
+
+## Conclusion
+
+@Value is useful for injecting configuration properties.
+
+Supports default values, environment variables, system properties, and SpEL expressions.
+
+Works with fields, method parameters, and constructor injection.
+
+
