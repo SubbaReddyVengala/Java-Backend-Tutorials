@@ -11374,4 +11374,214 @@ Supports default values, environment variables, system properties, and SpEL expr
 
 Works with fields, method parameters, and constructor injection.
 
+# @Order Annotation in Spring Boot
+
+## What is @Order Annotation?
+
+The @Order annotation in Spring Boot is used to define the execution priority of components like beans, filters, aspects, and event listeners. A lower value means higher priority (i.e., @Order(1) runs before @Order(2)).
+
+## Where Can We Use @Order?
+
+Spring Beans – To specify the order of execution in a collection of beans.
+
+Spring Security Filters – To determine the order of security filters.
+
+Aspect-Oriented Programming (AOP) – To set execution priority for aspects.
+
+Event Listeners – To control the order of event processing.
+
+## 1️⃣ Using @Order with Spring Beans
+
+When multiple beans implement the same interface, @Order controls which one gets selected first.
+
+```
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
+interface MyService {
+    void execute();
+}
+
+@Component
+@Order(2)
+class ServiceA implements MyService {
+    public void execute() {
+        System.out.println("Executing Service A");
+    }
+}
+
+@Component
+@Order(1) // This will execute first
+class ServiceB implements MyService {
+    public void execute() {
+        System.out.println("Executing Service B");
+    }
+}
+```
+### Testing in a Runner
+```
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+import java.util.List;
+
+@Component
+public class OrderDemoRunner implements CommandLineRunner {
+    private final List<MyService> services;
+
+    public OrderDemoRunner(List<MyService> services) {
+        this.services = services;
+    }
+
+    @Override
+    public void run(String... args) {
+        services.forEach(MyService::execute);
+    }
+}
+```
+### Expected Output
+```
+Executing Service B
+Executing Service A
+
+```
+Since ServiceB has @Order(1), it executes before ServiceA (@Order(2)).
+
+## 2️⃣ Using @Order in Spring Security Filters
+
+In Spring Security, filters execute in a specific order. You can use @Order to define priority.
+
+```
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+import javax.servlet.*;
+import java.io.IOException;
+
+@Component
+@Order(1) // This filter will execute first
+public class FirstFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        System.out.println("First Filter Executed");
+        chain.doFilter(request, response);
+    }
+}
+
+@Component
+@Order(2) // This filter will execute after FirstFilter
+public class SecondFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        System.out.println("Second Filter Executed");
+        chain.doFilter(request, response);
+    }
+}
+```
+### Expected Output (When hitting any API)
+```
+First Filter Executed
+Second Filter Executed
+```
+Since FirstFilter has @Order(1), it runs before SecondFilter (@Order(2)).
+
+## 3️⃣ Using @Order in AOP (Aspect-Oriented Programming)
+
+In Spring AOP, you can apply @Order to aspects to control their execution order.
+
+```
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+@Order(2)
+class LoggingAspect {
+    @Before("execution(* com.example.service.*.*(..))")
+    public void logBefore() {
+        System.out.println("Logging Aspect Executed");
+    }
+}
+
+@Aspect
+@Component
+@Order(1) // This will execute before LoggingAspect
+class SecurityAspect {
+    @Before("execution(* com.example.service.*.*(..))")
+    public void securityCheck() {
+        System.out.println("Security Check Aspect Executed");
+    }
+}
+```
+### Expected Output
+
+```
+Security Check Aspect Executed
+Logging Aspect Executed
+```
+Since SecurityAspect has @Order(1), it executes before LoggingAspect (@Order(2)).
+
+## 4️⃣ Using @Order in Event Listeners
+
+If multiple listeners handle the same event, @Order determines the order of execution.
+```
+import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
+@Component
+public class EventListeners {
+
+    @EventListener
+    @Order(2)
+    public void handleEventSecond(String event) {
+        System.out.println("Handling Event in Second Listener: " + event);
+    }
+
+    @EventListener
+    @Order(1) // Executes first
+    public void handleEventFirst(String event) {
+        System.out.println("Handling Event in First Listener: " + event);
+    }
+}
+```
+### Publishing an Event
+```
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Component;
+
+@Component
+public class EventPublisher implements CommandLineRunner {
+    private final ApplicationEventPublisher eventPublisher;
+
+    public EventPublisher(ApplicationEventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
+    }
+
+    @Override
+    public void run(String... args) {
+        eventPublisher.publishEvent("Custom Event Triggered!");
+    }
+}
+```
+### Expected Output
+```
+Handling Event in First Listener: Custom Event Triggered!
+Handling Event in Second Listener: Custom Event Triggered!
+```
+Since handleEventFirst has @Order(1), it executes before handleEventSecond (@Order(2)).
+
+## 🔹 Summary
+![image](https://github.com/user-attachments/assets/4ab1ff93-6e31-416b-847e-14b530622d8d)
+
+## Conclusion
+
+Lower @Order value = Higher priority execution (@Order(1) runs before @Order(2)).
+
+Useful in Beans, Security, AOP, and Event Handling.
+
+Makes Spring Boot applications more predictable and structured.
+
+
 
