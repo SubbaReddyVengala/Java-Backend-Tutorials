@@ -11199,3 +11199,58 @@ Spring Boot is a framework built on top of the Spring Framework that simplifies 
 
 Spring Boot makes Java application development faster and easier by providing built-in tools, reducing configuration, and enabling microservices-based development. It is widely used for building modern web applications and cloud-based services.
 
+# Difference Between Spring and Spring Boot
+
+![image](https://github.com/user-attachments/assets/245a471c-7ac1-40d1-bb9b-b09f97534305)
+
+Use Spring Framework when you need full control over configurations and prefer a modular approach.
+
+Use Spring Boot when you want to develop applications quickly with minimal setup and built-in features like auto-configuration and embedded servers.
+
+## Starters In Spring Boot:  
+
+### What Are Spring Boot Starters?
+
+Spring Boot Starters are a set of pre-configured dependencies that simplify project setup. They provide the necessary libraries and configurations for various functionalities, reducing boilerplate code and dependency management efforts.
+
+### Key Features of Spring Boot Starters
+
+Auto-Configures Dependencies – Automatically includes required dependencies.
+
+Reduces Boilerplate Code – No need to manually configure each dependency.
+
+Simplifies Project Setup – Just add the required starter dependency in pom.xml.
+
+Maintained by Spring – Ensures compatibility between dependencies.
+
+### Commonly Used Spring Boot Starters
+
+![image](https://github.com/user-attachments/assets/80581a47-3328-44b9-ade8-214d6e1df504)
+
+### How to Use a Spring Boot Starter?
+To use a Spring Boot Starter, simply add it to your pom.xml (for Maven projects):
+
+Example: Adding Spring Boot Web Starter
+
+```
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+</dependencies>
+```
+
+### For Gradle :
+
+```
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+}
+```
+This automatically includes all required dependencies for a Spring MVC web application, including Spring Web, Jackson, and an embedded Tomcat server.
+
+### Conclusion
+Spring Boot Starters make project setup fast and hassle-free by providing pre-configured dependency bundles. They help developers focus on business logic instead of manually managing dependencies.
+
+ 
