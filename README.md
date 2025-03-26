@@ -11152,3 +11152,50 @@ Deprecated because constructor and byType are preferred
 
 
 ![image](https://github.com/user-attachments/assets/dbaefb0d-6915-4ea0-95a2-701be5f31d44)
+
+# SPRING BOOT
+
+## Introduction to Spring Boot
+
+Spring Boot is a framework built on top of the Spring Framework that simplifies the process of developing Java-based web applications and microservices. It eliminates boilerplate configurations and provides built-in features for rapid development.
+
+## Why Spring Boot?
+
+1. Simplifies Development – Provides auto-configuration and minimizes the need for XML configuration.
+
+3. Standalone Applications – Can run without external servers like Tomcat or Jetty.
+ 
+5. Microservices-Friendly – Ideal for developing microservices-based architectures.
+ 
+7. Production-Ready – Includes built-in metrics, health checks, and logging support.
+   
+9. Embedded Servers – Comes with embedded Tomcat, Jetty, or Undertow, so no need to deploy separately.
+
+## Key Features of Spring Boot
+
+1. Spring Boot Starters – Predefined dependencies to simplify project setup.
+   
+3. Spring Boot Auto-Configuration – Automatically configures Spring components based on dependencies.
+   
+5. Spring Boot CLI – Allows running Spring Boot applications using command-line scripts.
+
+7. Spring Boot Actuator – Provides monitoring and management features.
+ 
+9. Spring Boot DevTools – Enables hot-reloading for faster development.
+
+## Spring Boot Architecture
+
+### Spring Boot follows a layered architecture:
+
+1. Presentation Layer – Handles HTTP requests (Controller classes).
+
+2. Service Layer – Contains business logic.
+
+3. Repository Layer (Persistence Layer) – Interacts with the database.
+
+4. Database Layer – Stores application data.
+
+## Conclusion
+
+Spring Boot makes Java application development faster and easier by providing built-in tools, reducing configuration, and enabling microservices-based development. It is widely used for building modern web applications and cloud-based services.
+
