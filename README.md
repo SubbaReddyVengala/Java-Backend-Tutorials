@@ -12324,8 +12324,281 @@ Add an Employee (POST /employees)
 
 ✔ For large-scale applications, consider JPA/Hibernate.
 
+# Spring Data JPA Module 🚀
 
+## 1️⃣ Introduction to Spring Data JPA
 
+Spring Data JPA is a part of Spring Data that simplifies database interactions using Java Persistence API (JPA). It helps in:
 
+✅ Reducing boilerplate code for database operations.
 
+✅ Providing an abstraction layer over JPA implementations like Hibernate.
 
+✅ Auto-generating queries using method names.
+
+✅ Enabling pagination & sorting easily.
+
+### Why Use Spring Data JPA Instead of JDBC?
+![image](https://github.com/user-attachments/assets/5bd6807c-f373-45b9-a6f5-5dda7117832d)
+
+## 2️⃣ Add Dependencies
+For MySQL (pom.xml)
+```
+<dependencies>
+    <!-- Spring Boot JPA -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+
+    <!-- MySQL Driver -->
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+
+    <!-- Hibernate Validator (Optional) -->
+    <dependency>
+        <groupId>org.hibernate.validator</groupId>
+        <artifactId>hibernate-validator</artifactId>
+    </dependency>
+</dependencies>
+```
+## 3️⃣ Configure Database Connection
+
+Set database properties in src/main/resources/application.properties:
+
+```
+# MySQL Configuration
+spring.datasource.url=jdbc:mysql://localhost:3306/mydatabase
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# JPA (Hibernate) Settings
+spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=update   # Values: update, create, validate, none
+```
+🔹 ddl-auto=update → Automatically updates schema changes.
+🔹 show-sql=true → Logs SQL queries.
+
+## 4️⃣ Define JPA Entity (Model Class)
+
+### Create Employee Entity
+
+```
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "employees")
+@Data   // Lombok for Getters, Setters, toString, etc.
+@AllArgsConstructor
+@NoArgsConstructor
+public class Employee {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Auto-increment ID
+    private Long id;
+    
+    @Column(nullable = false)
+    private String name;
+    
+    @Column(nullable = false)
+    private String department;
+}
+```
+🔹 @Entity – Marks the class as a JPA entity.
+
+🔹 @Table(name="employees") – Maps the entity to the employees table.
+
+🔹 @Id – Specifies the primary key.
+
+🔹 @GeneratedValue(strategy = GenerationType.IDENTITY) – Uses auto-increment ID.
+
+🔹 @Column(nullable = false) – Ensures non-null values.
+
+## 5️⃣ Create Repository Interface
+
+### Spring Data JPA Repository (EmployeeRepository)
+
+```
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+    Employee findByName(String name);  // Auto-generates query: SELECT * FROM employees WHERE name=?
+}
+```
+🔹 JpaRepository<Employee, Long> → Provides CRUD operations automatically.
+
+🔹 findByName(String name) → Uses query generation (SELECT * FROM employees WHERE name=?).
+
+## 6️⃣ Implement Service Layer
+
+```
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class EmployeeService {
+    private final EmployeeRepository employeeRepository;
+
+    public EmployeeService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
+
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
+    }
+
+    public Employee getEmployeeById(Long id) {
+        return employeeRepository.findById(id).orElse(null);
+    }
+
+    public Employee getEmployeeByName(String name) {
+        return employeeRepository.findByName(name);
+    }
+
+    public Employee saveEmployee(Employee employee) {
+        return employeeRepository.save(employee);
+    }
+
+    public void deleteEmployee(Long id) {
+        employeeRepository.deleteById(id);
+    }
+}
+```
+🔹 Uses findAll(), findById(), save(), deleteById().
+
+🔹 No SQL queries needed – Spring Data JPA handles them.
+
+## 7️⃣ Create REST API Controller
+
+```
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+    private final EmployeeService employeeService;
+
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
+
+    @GetMapping
+    public List<Employee> getAllEmployees() {
+        return employeeService.getAllEmployees();
+    }
+
+    @GetMapping("/{id}")
+    public Employee getEmployeeById(@PathVariable Long id) {
+        return employeeService.getEmployeeById(id);
+    }
+
+    @GetMapping("/name/{name}")
+    public Employee getEmployeeByName(@PathVariable String name) {
+        return employeeService.getEmployeeByName(name);
+    }
+
+    @PostMapping
+    public Employee addEmployee(@RequestBody Employee employee) {
+        return employeeService.saveEmployee(employee);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteEmployee(@PathVariable Long id) {
+        employeeService.deleteEmployee(id);
+        return "Employee deleted successfully!";
+    }
+}
+```
+## 8️⃣ Running & Testing the API
+
+Start the Spring Boot application and test using Postman or cURL.
+
+✔ Add an Employee (POST /employees)
+### 📌 Request Body
+```
+{
+    "name": "Alice",
+    "department": "HR"
+}
+```
+### 📌 Response
+```
+{
+    "id": 1,
+    "name": "Alice",
+    "department": "HR"
+}
+```
+### ✔ Get All Employees (GET /employees)
+📌 Response
+```
+[
+    {
+        "id": 1,
+        "name": "Alice",
+        "department": "HR"
+    }
+]
+```
+## ✔ Get Employee by Name (GET /employees/name/Alice)
+📌 Response
+```
+{
+    "id": 1,
+    "name": "Alice",
+    "department": "HR"
+}
+```
+## ✔ Delete Employee (DELETE /employees/1)
+📌 Response
+```
+"Employee deleted successfully!"
+```
+## 9️⃣ Custom Queries in Spring Data JPA
+
+### Using @Query Annotation
+```
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+    
+    @Query("SELECT e FROM Employee e WHERE e.department = :department")
+    List<Employee> findByDepartment(@Param("department") String department);
+}
+```
+🔹 JPQL (Java Persistence Query Language) queries database using entity names instead of table names.
+
+## 🔟 Pagination & Sorting
+
+### Enable Pagination
+```
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+    Page<Employee> findAll(Pageable pageable);
+}
+```
+### 📌 Usage
+```
+Pageable pageable = PageRequest.of(0, 5); // Page 1, 5 records per page
+Page<Employee> page = employeeRepository.findAll(pageable);
+```
+## ✅ Summary
+
+✔ Spring Data JPA removes boilerplate code for database operations.
+
+✔ Repositories auto-generate CRUD methods (save(), findById(), deleteById()).
+
+✔ Supports custom queries, pagination, and sorting easily.
