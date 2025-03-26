@@ -11918,6 +11918,7 @@ public class User {
 ### 📌 Effect:
 
 ❌ No setters
+
 ❌ All fields are final
 
 ## ✅ @Slf4j (Logging)
@@ -11996,6 +11997,332 @@ Lombok simplifies getter/setter, constructors, toString, logging, and more.
 Use @Data for full encapsulation, @Builder for object creation, and @Slf4j for logging.
 
 Works great in Spring Boot applications.
+
+# Spring Boot JDBC 🚀
+
+## 1️⃣ Introduction to Spring Boot JDBC
+
+Spring Boot provides JDBC (Java Database Connectivity) support to interact with relational databases like MySQL, PostgreSQL, Oracle, etc. using Spring JDBC API.
+
+### ✅ Why use JDBC in Spring Boot?
+
+✔️ Lightweight – Directly interacts with the database.
+
+✔️ Easy Configuration – Uses Spring Boot’s application.properties.
+
+✔️ Better Exception Handling – Converts SQLExceptions into DataAccessException.
+
+✔️ Simplified Database Access – Uses JdbcTemplate for querying databases.
+
+## 2️⃣ Add Dependencies
+
+### For MySQL (pom.xml):
+```
+<dependencies>
+    <!-- Spring Boot JDBC -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+
+    <!-- MySQL Driver -->
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+</dependencies>
+```
+
+## 3️⃣ Configure Database Connection
+
+Set database properties in src/main/resources/application.properties:
+```
+# MySQL Configuration
+spring.datasource.url=jdbc:mysql://localhost:3306/mydatabase
+spring.datasource.username=root
+spring.datasource.password=root
+
+# Driver Class
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# Connection Pool Settings (Optional)
+spring.datasource.hikari.maximum-pool-size=10
+spring.datasource.hikari.minimum-idle=2
+spring.datasource.hikari.idle-timeout=30000
+```
+### Connection Pool Settings in Spring Boot (HikariCP)
+
+Spring Boot automatically uses HikariCP as the default connection pool for databases. You can fine-tune its performance using application.properties.
+
+## 1️⃣ Explanation of HikariCP Properties
+![image](https://github.com/user-attachments/assets/1f014d9f-e258-49e5-bdd0-0be6d1707001)
+
+## 2️⃣ Recommended HikariCP Configuration
+```
+# Database Connection (MySQL Example)
+spring.datasource.url=jdbc:mysql://localhost:3306/mydatabase
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# HikariCP Connection Pool Settings
+spring.datasource.hikari.maximum-pool-size=10    # Max connections in the pool
+spring.datasource.hikari.minimum-idle=2          # Min idle connections
+spring.datasource.hikari.idle-timeout=30000      # Remove idle connections after 30 sec
+spring.datasource.hikari.connection-timeout=20000 # Max wait time for a connection (20 sec)
+spring.datasource.hikari.max-lifetime=1800000    # Max lifetime of a connection (30 min)
+spring.datasource.hikari.auto-commit=true        # Auto-commit transactions
+```
+## 3️⃣ Why Use HikariCP?
+
+🔹 Faster than Apache DBCP & Tomcat JDBC
+
+🔹 Lower memory consumption
+
+🔹 Better performance for high concurrency application
+
+## 4️⃣ Monitor Connection Pool Usage
+
+If you're using Spring Boot Actuator, enable metrics to monitor connection pool usage:
+```
+management.endpoint.metrics.enabled=true
+management.endpoints.web.exposure.include=metrics
+```
+Then, check HikariCP metrics via:
+👉 http://localhost:8080/actuator/metrics/hikaricp.connections
+
+## 5️⃣ When to Tune Connection Pool Settings?
+
+✅ High Traffic Apps – Increase maximum-pool-size.
+
+✅ Slow Queries – Adjust connection-timeout.
+
+✅ Frequent Idle Connections – Reduce idle-timeout.
+
+## 4️⃣ Using JdbcTemplate in Spring Boot
+
+Spring Boot provides JdbcTemplate to simplify database interactions.
+
+### Step 1: Create Model Class
+```
+public class Employee {
+    private int id;
+    private String name;
+    private String department;
+
+    // Constructors
+    public Employee() {}
+
+    public Employee(int id, String name, String department) {
+        this.id = id;
+        this.name = name;
+        this.department = department;
+    }
+
+    // Getters & Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getDepartment() { return department; }
+    public void setDepartment(String department) { this.department = department; }
+}
+```
+## Step 2: Create Repository (JdbcTemplate)
+```
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+
+@Repository
+public class EmployeeRepository {
+    private final JdbcTemplate jdbcTemplate;
+
+    // Constructor-based Dependency Injection
+    public EmployeeRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    // Insert Data
+    public int save(Employee employee) {
+        String sql = "INSERT INTO employees (id, name, department) VALUES (?, ?, ?)";
+        return jdbcTemplate.update(sql, employee.getId(), employee.getName(), employee.getDepartment());
+    }
+
+    // Get All Employees
+    public List<Employee> findAll() {
+        String sql = "SELECT * FROM employees";
+        return jdbcTemplate.query(sql, employeeRowMapper());
+    }
+
+    // Find Employee by ID
+    public Employee findById(int id) {
+        String sql = "SELECT * FROM employees WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, employeeRowMapper(), id);
+    }
+
+    // Delete Employee
+    public int delete(int id) {
+        String sql = "DELETE FROM employees WHERE id = ?";
+        return jdbcTemplate.update(sql, id);
+    }
+
+    // RowMapper for Mapping ResultSet to Employee Object
+    private RowMapper<Employee> employeeRowMapper() {
+        return (rs, rowNum) -> new Employee(rs.getInt("id"), rs.getString("name"), rs.getString("department"));
+    }
+}
+```
+## RowMapper in Spring Boot JDBC 
+
+### 1️⃣ What is RowMapper?
+
+RowMapper is an interface in Spring JDBC that maps database rows (ResultSet) to Java objects. It is useful when fetching data using JdbcTemplate.
+
+### ✅ Why use RowMapper?
+
+✔ Converts ResultSet into Java objects.
+
+✔ Avoids manual extraction of values from ResultSet.
+
+✔ Simplifies database query result processing.
+
+## Step 3: Create Service Layer
+
+```
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class EmployeeService {
+    private final EmployeeRepository employeeRepository;
+
+    public EmployeeService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
+
+    public Employee getEmployeeById(int id) {
+        return employeeRepository.findById(id);
+    }
+
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
+    }
+
+    public void saveEmployee(Employee employee) {
+        employeeRepository.save(employee);
+    }
+
+    public void deleteEmployee(int id) {
+        employeeRepository.delete(id);
+    }
+}
+```
+## Step 4: Create REST Controller
+```
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+    private final EmployeeService employeeService;
+
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
+
+    @GetMapping
+    public List<Employee> getAllEmployees() {
+        return employeeService.getAllEmployees();
+    }
+
+    @GetMapping("/{id}")
+    public Employee getEmployeeById(@PathVariable int id) {
+        return employeeService.getEmployeeById(id);
+    }
+
+    @PostMapping
+    public String addEmployee(@RequestBody Employee employee) {
+        employeeService.saveEmployee(employee);
+        return "Employee added successfully!";
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteEmployee(@PathVariable int id) {
+        employeeService.deleteEmployee(id);
+        return "Employee deleted successfully!";
+    }
+}
+```
+## 5️⃣ Running & Testing the API
+
+Start the Spring Boot application and test using Postman or cURL.
+
+Add an Employee (POST /employees)
+
+```
+{
+    "id": 101,
+    "name": "John Doe",
+    "department": "IT"
+}
+```
+### Get All Employees (GET /employees)
+🔹 Response
+```
+[
+    {
+        "id": 101,
+        "name": "John Doe",
+        "department": "IT"
+    }
+]
+```
+## Get Employee by ID (GET /employees/101)
+🔹 Response
+```
+{
+    "id": 101,
+    "name": "John Doe",
+    "department": "IT"
+}
+```
+## Delete Employee (DELETE /employees/101)
+🔹 Response
+```
+"Employee deleted successfully!"
+```
+## 6️⃣ Pros & Cons of Using JDBC in Spring Boot
+
+✅ Pros
+
+✔ Simple & Lightweight – No ORM overhead
+
+✔ Direct SQL Control – Full SQL flexibility
+
+✔ Fast Execution – Direct database interaction
+
+❌ Cons
+
+⚠ More Code Required – No ORM convenience
+
+⚠ No Auto-mapping – Unlike JPA, manual RowMapper is needed
+
+⚠ Database Dependent – SQL queries may change for different DBs
+
+## 7️⃣ Conclusion
+
+✔ JdbcTemplate simplifies database access in Spring Boot.
+
+✔ Works well for small applications or high-performance queries.
+
+✔ For large-scale applications, consider JPA/Hibernate.
 
 
 
