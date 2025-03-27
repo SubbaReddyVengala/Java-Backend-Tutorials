@@ -12895,4 +12895,213 @@ public class Employee {
 ### Explanation of @TableGenerator Parameters
 ![image](https://github.com/user-attachments/assets/d0ab5b91-4f84-4410-83cd-87d7c1fe4509)
 
+# Relationship Mapping with JPA in Spring Boot 🚀
+
+JPA (Java Persistence API) provides powerful relationship mapping features that allow you to define how entities (tables) are related to each other in a Spring Boot application.
+
+## 🔹 Types of Relationships in JPA
+![image](https://github.com/user-attachments/assets/5264b201-3ab7-4826-aff4-0a4acb3cc072)
+
+## 1️⃣ One-To-One Relationship (@OneToOne)
+A one-to-one relationship means one entity has exactly one related entity.
+
+## 🔹 Example: Employee ↔ IDCard
+Each Employee has exactly one IDCard.
+
+### Employee Entity
+```
+import jakarta.persistence.*;
+
+@Entity
+public class Employee {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_card_id") // Foreign key column
+    private IDCard idCard;
+
+    // Getters and Setters
+}
+```
+
+### IDCard Entity
+```
+import jakarta.persistence.*;
+
+@Entity
+public class IDCard {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String cardNumber;
+
+    @OneToOne(mappedBy = "idCard") // Reference in Employee entity
+    private Employee employee;
+
+    // Getters and Setters
+}
+```
+### 📌 Key Points:
+
+@OneToOne establishes a one-to-one relationship.
+
+@JoinColumn(name = "id_card_id") sets foreign key in the Employee table.
+
+mappedBy = "idCard" in IDCard refers to Employee's idCard field.
+
+## 2️⃣ One-To-Many Relationship (@OneToMany)
+A one-to-many relationship means one entity has multiple related entities.
+
+### 🔹 Example: Department ↔ Employees
+Each Department can have multiple Employees.
+
+### Department Entity
+
+```
+import jakarta.persistence.*;
+import java.util.List;
+
+@Entity
+public class Department {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
+    private List<Employee> employees;
+
+    // Getters and Setters
+}
+```
+### Employee Entity
+```
+import jakarta.persistence.*;
+
+@Entity
+public class Employee {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id") // Foreign key column
+    private Department department;
+
+    // Getters and Setters
+}
+```
+### 📌 Key Points:
+
+@OneToMany(mappedBy = "department") in Department references Employee.
+
+@ManyToOne in Employee links back to Department.
+
+The foreign key (department_id) is stored in the Employee table.
+
+## 3️⃣ Many-To-One Relationship (@ManyToOne)
+A many-to-one relationship is the reverse of one-to-many. Many entities relate to one entity.
+
+### 🔹 The same example (Employee ↔ Department) applies:
+
+@ManyToOne in Employee links it to Department.
+
+@OneToMany in Department maps back to Employee.
+
+✔ Many employees belong to one department.
+
+## 4️⃣ Many-To-Many Relationship (@ManyToMany)
+A many-to-many relationship means multiple records in one entity relate to multiple records in another entity.
+
+### 🔹 Example: Student ↔ Course
+Each Student can enroll in multiple Courses, and each Course can have multiple Students.
+
+### Student Entity
+```
+import jakarta.persistence.*;
+import java.util.List;
+
+@Entity
+public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @ManyToMany
+    @JoinTable(
+        name = "student_course", // Join table name
+        joinColumns = @JoinColumn(name = "student_id"), // Foreign key for Student
+        inverseJoinColumns = @JoinColumn(name = "course_id") // Foreign key for Course
+    )
+    private List<Course> courses;
+
+    // Getters and Setters
+}
+```
+### Course Entity
+```
+import jakarta.persistence.*;
+import java.util.List;
+
+@Entity
+public class Course {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String title;
+
+    @ManyToMany(mappedBy = "courses")
+    private List<Student> students;
+
+    // Getters and Setters
+}
+```
+### 📌 Key Points:
+
+@ManyToMany creates a junction table (student_course) automatically.
+
+@JoinTable defines the join table and foreign keys.
+
+mappedBy = "courses" in Course refers to List<Course> courses in Student.
+
+## 5️⃣ Cascade Types in JPA
+The cascade attribute defines what happens when the parent entity changes.
+
+![image](https://github.com/user-attachments/assets/9beb3492-934e-4976-ad8e-1c515bea2519)
+
+## 6️⃣ Fetch Types in JPA
+
+JPA loads relationships lazily or eagerly.
+
+![image](https://github.com/user-attachments/assets/9954c27e-0008-4490-93fc-de8e01247127)
+
+Example:
+```
+@OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+private List<Employee> employees;
+```
+📌 Lazy loading improves performance (recommended for collections).
+
+## ✅ Summary
+
+✔ One-To-One (@OneToOne) → Each entity is related to one other entity.
+
+✔ One-To-Many (@OneToMany) → One entity has multiple related entities.
+
+✔ Many-To-One (@ManyToOne) → Many entities relate to one entity.
+
+✔ Many-To-Many (@ManyToMany) → Many entities relate to many others.
+
+✔ Use cascade and fetch types to optimize performance.
 
