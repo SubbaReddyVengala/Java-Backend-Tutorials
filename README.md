@@ -13417,5 +13417,106 @@ spring:
 
 ![image](https://github.com/user-attachments/assets/18ec1447-ed3d-4b8f-9945-ff7436a36cbd)
 
+# 🚀 DispatcherServlet in Spring MVC
+
+## 1️⃣ What is DispatcherServlet?
+
+DispatcherServlet is the front controller in Spring MVC, responsible for handling all HTTP requests and responses. It acts as a request dispatcher that forwards requests to the appropriate controller, view, or resource.
+
+🔹 Key Role: Central request handler in the Spring Web MVC architecture.
+🔹 Automatically configured in Spring Boot (no manual setup required).
+
+## 2️⃣ DispatcherServlet Workflow
+
+When a request arrives, DispatcherServlet processes it using the following steps:
+
+1️⃣ Receives HTTP Request (from client).
+
+2️⃣ Maps the request to an appropriate controller using the HandlerMapping.
+
+3️⃣ Calls the Controller's method, which returns a ModelAndView (data + view).
+
+4️⃣ Selects a ViewResolver to determine the correct UI template (JSP, Thymeleaf, JSON, etc.).
+
+5️⃣ Renders the View and returns the response to the client.
+
+## 3️⃣ How DispatcherServlet Works in Spring MVC
+
+📌 Example: Handling a request using Spring Web MVC.
+
+### 🔹 Step 1: Create a Spring MVC Controller
+```
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class HomeController {
+
+    @GetMapping("/home")
+    public String homePage(Model model) {
+        model.addAttribute("message", "Welcome to Spring MVC!");
+        return "home";  // Returns the view name "home.html" (Thymeleaf or JSP)
+    }
+}
+```
+✅ DispatcherServlet will handle /home and map it to home.html.
+
+### 🔹 Step 2: View (home.html using Thymeleaf)
+
+```
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home Page</title>
+</head>
+<body>
+    <h1 th:text="${message}"></h1>
+</body>
+</html>
+```
+✅ DispatcherServlet selects home.html as the view and sends it as a response.
+
+## 4️⃣ DispatcherServlet in Spring Boot
+
+In Spring Boot, DispatcherServlet is auto-configured, and we don’t need to declare it manually.
+
+📌 However, we can customize it in application.properties:
+
+```
+spring.mvc.servlet.path=/api  # Changes DispatcherServlet mapping
+```
+
+## 5️⃣ Manually Configuring DispatcherServlet (Non-Spring Boot)
+
+If you're using Spring without Spring Boot, you need to manually define DispatcherServlet in web.xml:
+
+```
+<servlet>
+    <servlet-name>dispatcher</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/spring-servlet.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>dispatcher</servlet-name>
+    <url-pattern>/</url-pattern>
+</servlet-mapping>
+```
+✅ This configuration ensures that all requests are processed by DispatcherServlet.
+
+## 6️⃣ Summary
+
+🔹 DispatcherServlet is the front controller that handles all requests in Spring MVC.
+
+🔹 Spring Boot auto-configures DispatcherServlet, so no manual setup is needed.
+
+🔹 It maps requests to Controllers, processes responses, and selects views.
+
+🔹 Customization is possible via application.properties or Java-based configuration.
 
 
