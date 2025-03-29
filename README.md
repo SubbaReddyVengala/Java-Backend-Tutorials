@@ -13866,3 +13866,131 @@ Telecom Services & Messaging Systems
 
 ✅ If you are working on secure financial transactions or enterprise-level systems → Choose SOAP.
 
+# 🚀 How RESTful APIs Work?
+
+A RESTful API (Representational State Transfer API) allows communication between a client (browser, mobile app, or another server) and a server over the internet using HTTP methods. It follows REST (stateless) principles, making it lightweight, scalable, and flexible.
+
+
+## 📌 1. Basic Working of RESTful APIs
+
+Client sends an HTTP request to the API endpoint.
+
+Server processes the request and interacts with the database if needed.
+
+Server responds with a resource (data) in JSON or XML format.
+
+Client uses the response to update the UI or perform actions.
+
+### ✅ Example:
+A mobile app requests user data:
+```
+GET /users/1 HTTP/1.1
+Host: example.com
+```
+### 📌 Response from API (JSON format):
+```
+{
+  "id": 1,
+  "name": "John Doe",
+  "email": "john.doe@example.com"
+}
+```
+# 📌 REST API Response Components
+
+## 1. Status Line (HTTP Status Codes)
+
+The status line includes an HTTP version, a status code, and a status message.
+
+### ✅ Common HTTP Status Codes:
+
+### 2XX (Success Responses)
+
+200 OK → Generic success response
+
+201 Created → New resource successfully created (e.g., after a POST request)
+
+204 No Content → Successful request, but no content to return (e.g., DELETE request)
+
+### 3XX (Redirection Responses)
+
+301 Moved Permanently → The requested resource has a new URL
+
+302 Found → Temporary redirect
+
+304 Not Modified → Cached version should be used (saves bandwidth)
+
+### 4XX (Client Error Responses)
+
+400 Bad Request → Invalid request (wrong parameters, missing fields, etc.)
+
+401 Unauthorized → Authentication required
+
+403 Forbidden → Client lacks permission
+
+404 Not Found → Resource does not exist
+
+### 5XX (Server Error Responses)
+
+500 Internal Server Error → Unexpected error on the server
+
+502 Bad Gateway → Server acting as a gateway received an invalid response
+
+503 Service Unavailable → Server is down for maintenance
+
+### 2. Message Body (Data Representation)
+
+The response body contains the requested data.
+
+The server selects the appropriate format based on the request headers.
+
+Common formats: JSON (preferred) and XML.
+
+### ✅ Example JSON Response (User Details)
+
+```
+{
+  "name": "John",
+  "age": 30
+}
+```
+### ✅ Example XML Response (User Details)
+```
+<user>
+    <name>John</name>
+    <age>30</age>
+</user>
+```
+### 📌 How the format is selected?
+
+Clients specify their preferred response format in the request using headers:
+
+```
+Accept: application/json
+```
+or
+```
+Accept: application/xml
+```
+## 3. Headers (Metadata)
+
+The headers provide additional information about the response.
+
+### ✅ Common Response Headers:
+![image](https://github.com/user-attachments/assets/8ae752ac-b793-4090-b99a-2ae4730074a5)
+
+✅ Example Response Headers:
+```
+Content-Type: application/json
+Cache-Control: no-cache
+Authorization: Bearer <JWT_TOKEN>
+Date: Fri, 29 Mar 2025 12:00:00 GMT
+```
+## 📌 Conclusion
+✅ A REST API response contains status codes, headers, and a response body.
+
+✅ Status codes communicate success or failure.
+
+✅ Response body contains data in JSON/XML format.
+
+✅ Headers provide metadata like content type, caching, and authentication.
+
