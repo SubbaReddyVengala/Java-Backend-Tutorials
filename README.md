@@ -14310,3 +14310,128 @@ No need to use @ResponseBody for each method.
 Supports GET, POST, PUT, DELETE with annotations.
 
 Works with Jackson for JSON handling.
+
+
+# Path Variables in REST APIs 🌍
+
+## 1. What Are Path Variables?
+
+Path Variables (also called Path Parameters) are dynamic values embedded within the URL to send data in RESTful APIs. They are used to specify a particular resource within a collection.
+
+### Example API URL:
+
+```
+GET http://localhost:8080/api/students/{id}
+```
+Here, {id} is a path variable, which will be replaced with an actual value when making the request.
+
+## 2. How Path Variables Work?
+
+✅ Path variables help in retrieving, updating, or deleting a specific resource.
+
+✅ They are specified inside curly braces {} in the API endpoint.
+
+✅ The client provides the actual value while making the request.
+
+### Example: Replacing {id} in a Request
+Request:
+```
+GET http://localhost:8080/api/students/101
+```
+### Response (JSON):
+```
+{
+  "id": 101,
+  "name": "Alice Johnson",
+  "course": "Computer Science"
+}
+```
+Here, 101 replaces {id} in the API.
+
+## 3. Using Path Variables in Spring Boot REST API
+
+Spring Boot allows handling Path Variables using the @PathVariable annotation.
+
+### Example: Retrieve Student by ID
+```
+@RestController
+@RequestMapping("/api/students")
+public class StudentController {
+
+    @GetMapping("/{id}") 
+    public ResponseEntity<Student> getStudentById(@PathVariable int id) {
+        // Mock student data
+        Student student = new Student(id, "Alice Johnson", "Computer Science");
+        return ResponseEntity.ok(student);
+    }
+}
+```
+### Explanation:
+
+@GetMapping("/{id}") → Specifies {id} as a path variable in the URL.
+
+@PathVariable int id → Extracts the value from the URL.
+
+Returns a Student object as JSON.
+
+## 4. Handling Multiple Path Variables
+
+You can use multiple path variables in a URL.
+
+Example: Fetch Course Details for a Specific Student
+
+```
+@GetMapping("/{studentId}/courses/{courseId}")
+public ResponseEntity<String> getCourseDetails(
+    @PathVariable int studentId,
+    @PathVariable int courseId) {
+    
+    return ResponseEntity.ok("Student ID: " + studentId + ", Course ID: " + courseId);
+}
+```
+### Test URL:
+```
+GET http://localhost:8080/api/students/101/courses/5001
+```
+### Response:
+```
+Student ID: 101, Course ID: 5001
+```
+## 5. Path Variables vs Query Parameters
+
+![image](https://github.com/user-attachments/assets/453f7469-c0c4-4fdd-9ea3-514cbb56a57c)
+
+## 6. Using Path Variables in Postman
+### Steps to Test in Postman:
+Open Postman.
+
+Select GET request.
+
+Enter URL:
+```
+http://localhost:8080/api/students/101
+```
+Click Send → Check response.
+
+## Using Postman Path Variable Feature
+Instead of manually replacing {id}, use Postman Path Variables.
+
+Enter URL as:
+```
+http://localhost:8080/api/students/:id
+```
+Click Params → Enter Key as id and Value as 101.
+
+Click Send.
+
+## 7. Summary
+✅ Path Variables are used for identifying specific resources in REST APIs.
+
+✅ @PathVariable in Spring Boot extracts values from the URL.
+
+✅ Multiple path variables can be used in an API.
+
+✅ Postman supports path variables for dynamic testing.
+
+✅ Path Variables are different from Query Parameters.
+
