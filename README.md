@@ -13593,5 +13593,74 @@ public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
 ```
 📌 Request: DELETE /employees/1
 
+# 🚀 Web Services in Java (Spring Boot)
+
+## 1️⃣ What are Web Services?
+
+A web service is a standardized way for applications to communicate over the internet. It allows different systems to exchange data independently of platform and language.
+
+🔹 Used for: Data exchange, API integration, Microservices
+🔹 Types of Web Services:
+
+SOAP (Simple Object Access Protocol) Web Services
+
+REST (Representational State Transfer) Web Services
+
+## 2️⃣ Types of Web Services in Java
+
+### 📌 1. SOAP Web Services
+
+🔹 Uses XML for data exchange.
+
+🔹 More secure but slower due to XML processing.
+
+🔹 Follows strict standards (WSDL – Web Services Description Language).
+
+🔹 Uses HTTP, SMTP, or TCP for communication.
+
+### ✅ Example SOAP Request:
+```
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+   <soapenv:Body>
+      <getUserDetails>
+         <userId>123</userId>
+      </getUserDetails>
+   </soapenv:Body>
+</soapenv:Envelope>
+```
+### 📌 Implementation in Java:
+
+Spring provides Spring-WS for SOAP-based web services.
+
+## 📌 2. RESTful Web Services
+
+🔹 Uses JSON or XML for data exchange.
+
+🔹 Follows stateless communication.
+
+🔹 Uses HTTP methods (GET, POST, PUT, DELETE).
+
+🔹 Simpler, faster, and widely used in Microservices & Cloud applications.
+
+### ✅ Example REST API Request:
+```
+GET /users/123 HTTP/1.1
+Host: example.com
+````
+📌 Implementation in Java (Spring Boot):
+```
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable int id) {
+        return new User(id, "John Doe");
+    }
+}
+```
+## 3️⃣ Difference Between SOAP and REST
+
+![image](https://github.com/user-attachments/assets/d0f1f3f2-6dec-4219-8531-5db8b9ca76f7)
 
 
