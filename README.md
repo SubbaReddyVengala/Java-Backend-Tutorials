@@ -14141,3 +14141,172 @@ public ResponseEntity<String> createStudent(@RequestBody StudentInfo student) {
 Implementing RESTful web services in Spring MVC is straightforward with the help of Spring annotations and Jackson API for JSON parsing. Using @RestController, @RequestBody, and @ResponseBody ensures a seamless conversion between Java objects and JSON data, making Spring MVC a powerful choice for REST API development.
 
 By leveraging JSON's efficiency and Spring MVC's robust features, developers can build scalable and maintainable RESTful web services efficiently.
+
+# @RestController Annotation in Spring Boot
+
+The @RestController annotation in Spring Boot is a specialized version of the @Controller annotation. It is used to create RESTful web services by automatically serializing responses into JSON or XML
+
+## 1. Understanding @RestController
+
+It combines @Controller and @ResponseBody, meaning that every method in a @RestController class returns data instead of a view.
+
+The response is automatically converted to JSON or XML based on the request headers.
+
+It is typically used for RESTful APIs where clients interact with the server using HTTP methods (GET, POST, PUT, DELETE).
+
+## 2. Example Usage of @RestController
+
+Basic REST Controller Example
+
+```
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/students")
+public class StudentController {
+
+    @GetMapping("/{id}")
+    public Student getStudentById(@PathVariable int id) {
+        return new Student(id, "John Doe", "Computer Science");
+    }
+}
+```
+### Explanation:
+
+@RestController → Marks this class as a RESTful controller.
+
+@RequestMapping("/api/students") → Base path for all endpoints in this controller.
+
+@GetMapping("/{id}") → Handles HTTP GET requests for fetching a student by ID.
+
+Response Type → Since it's a @RestController, the response is automatically converted to JSON.
+
+### Sample JSON Response
+
+```
+{
+  "id": 1,
+  "name": "John Doe",
+  "course": "Computer Science"
+}
+```
+## 3. Difference Between @Controller and @RestController
+![image](https://github.com/user-attachments/assets/e2ab968c-8c03-4e0c-aedc-a5782566d959)
+```
+@Controller
+@RequestMapping("/students")
+public class StudentController {
+    
+    @GetMapping("/{id}")
+    @ResponseBody // Required to return JSON
+    public Student getStudentById(@PathVariable int id) {
+        return new Student(id, "John Doe", "Computer Science");
+    }
+}
+```
+In @Controller, we must explicitly add @ResponseBody to return JSON.
+
+In @RestController, @ResponseBody is not required because it's implicit.
+
+## 4. Handling HTTP Methods in @RestController
+
+Spring Boot supports all standard HTTP methods
+
+![image](https://github.com/user-attachments/assets/7eb5d009-310f-4869-aadf-bf97e5497d07)
+
+```
+@RestController
+@RequestMapping("/api/students")
+public class StudentController {
+
+    private List<Student> students = new ArrayList<>();
+
+    @PostMapping
+    public Student createStudent(@RequestBody Student student) {
+        students.add(student);
+        return student;
+    }
+
+    @GetMapping
+    public List<Student> getAllStudents() {
+        return students;
+    }
+
+    @PutMapping("/{id}")
+    public Student updateStudent(@PathVariable int id, @RequestBody Student student) {
+        students.set(id, student);
+        return student;
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteStudent(@PathVariable int id) {
+        students.remove(id);
+        return "Student removed successfully!";
+    }
+}
+```
+## 5. Exception Handling in @RestController
+To handle exceptions in REST APIs, use @ExceptionHandler with @RestControllerAdvice.
+
+### Global Exception Handling
+
+```
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(StudentNotFoundException.class)
+    public ResponseEntity<String> handleStudentNotFound(StudentNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+}
+```
+Benefit: Centralized exception handling for all REST controllers.
+
+## 6. JSON Serialization with @RestController
+
+Spring Boot uses Jackson for JSON serialization/deserialization.
+
+### Using @JsonProperty for Custom Field Names
+
+```
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class Student {
+    @JsonProperty("student_id")
+    private int id;
+    private String name;
+    private String course;
+    
+    // Getters and Setters
+}
+```
+```
+{
+  "student_id": 1,
+  "name": "John Doe",
+  "course": "Computer Science"
+}
+```
+## 7. Best Practices for Using @RestController
+
+✅ Use @RestController for APIs returning JSON/XML data.
+
+✅ Always return proper HTTP status codes (200 OK, 201 Created, 400 Bad Request, etc.).
+
+✅ Use DTO (Data Transfer Object) for request/response instead of exposing entity classes.
+
+✅ Implement exception handling with @RestControllerAdvice.
+
+✅ Use Swagger/OpenAPI to document REST APIs.
+
+## 8. Summary
+
+@RestController is used for building RESTful APIs.
+
+It automatically converts responses to JSON/XML.
+
+No need to use @ResponseBody for each method.
+
+Supports GET, POST, PUT, DELETE with annotations.
+
+Works with Jackson for JSON handling.
