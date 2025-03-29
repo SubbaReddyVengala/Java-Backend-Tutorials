@@ -14435,3 +14435,153 @@ Click Send.
 
 ✅ Path Variables are different from Query Parameters.
 
+# Query String & Query Parameters in REST APIs 🌍
+
+## 1. What Are Query Parameters?
+
+Query Parameters (or Query Strings) are used to send optional key-value pairs in the URL to filter or modify data in RESTful APIs.
+
+## Example API URL (With Query Parameters)
+```
+GET http://localhost:8080/api/students?name=John&course=Java
+```
+Here:
+
+name=John → Filters students by name
+
+course=Java → Filters students by course
+
+## 2. How Query Parameters Work?
+
+✅ Query parameters always appear after the ? in the URL.
+
+✅ Multiple parameters are separated by &.
+
+✅ They are optional (unlike Path Variables).
+
+✅ Used for search, filtering, sorting, or pagination.
+
+## 3. Query Parameters vs Path Variables
+
+![image](https://github.com/user-attachments/assets/5ba90d7e-12a8-4c50-bbd8-d272fe97cb48)
+
+## 4. Using Query Parameters in Spring Boot
+
+Spring Boot allows handling query parameters using the @RequestParam annotation.
+
+### Example: Fetch Students with Filters
+```
+@RestController
+@RequestMapping("/api/students")
+public class StudentController {
+
+    @GetMapping
+    public ResponseEntity<String> getStudents(
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) String course) {
+
+        String response = "Fetching students";
+        if (name != null) response += " with name: " + name;
+        if (course != null) response += " and course: " + course;
+        
+        return ResponseEntity.ok(response);
+    }
+}
+```
+### Test URLs & Responses
+
+✅ Without Query Parameters (Fetch All)
+```
+GET http://localhost:8080/api/students
+```
+## Response: "Fetching students"
+
+✅ With Name Filter
+
+```
+GET http://localhost:8080/api/students?name=John
+```
+### Response: "Fetching students with name: John"
+
+✅ With Multiple Filters
+```
+GET http://localhost:8080/api/students?name=John&course=Java
+```
+Response: "Fetching students with name: John and course: Java"
+
+## 5. Handling Default Values & Required Parameters
+
+If a query parameter is optional, it should have required = false.
+If it's required, setting required = true makes it mandatory.
+
+### Example: Default Values for Query Parameters
+
+```
+@GetMapping("/search")
+public ResponseEntity<String> searchStudents(
+    @RequestParam(defaultValue = "Unknown") String name,
+    @RequestParam(defaultValue = "All") String course) {
+
+    return ResponseEntity.ok("Searching for " + name + " in " + course);
+}
+```
+## Test URL & Response
+```
+GET http://localhost:8080/api/students/search
+```
+Response: "Searching for Unknown in All"
+
+## 6. Multiple Query Parameters in Spring Boot
+
+Example: Sorting & Pagination
+
+```
+@GetMapping("/list")
+public ResponseEntity<String> listStudents(
+    @RequestParam(defaultValue = "name") String sortBy,
+    @RequestParam(defaultValue = "10") int pageSize) {
+
+    return ResponseEntity.ok("Sorting by " + sortBy + " with page size " + pageSize);
+}
+```
+
+### Test URLs
+```
+GET http://localhost:8080/api/students/list
+```
+Response: "Sorting by name with page size 10"
+
+```
+GET http://localhost:8080/api/students/list?sortBy=age&pageSize=20
+```
+Response: "Sorting by age with page size 20"
+
+## 7. Query Parameters in Postman
+Steps to Test Query Parameters in Postman
+Open Postman.
+
+Select GET request.
+
+Enter URL:
+```
+http://localhost:8080/api/students?name=John&course=Java
+```
+Click Params → Enter Key as name, Value as John.
+
+Click Send.
+
+## 8. Summary
+
+✅ Query Parameters allow filtering or modifying API data.
+
+✅ @RequestParam in Spring Boot extracts values from the URL.
+
+✅ Default values can be provided to avoid errors.
+
+✅ Used for sorting, filtering, pagination, and optional data.
+
+### General Rule of Thumb
+
+✅ Use Path Variables (@PathVariable) → When you need to identify a specific resource.
+
+✅ Use Query Parameters (@RequestParam) → When you need to filter, sort, or paginate data.
