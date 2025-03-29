@@ -14985,3 +14985,235 @@ Something went wrong: NullPointerException
 
 ✅ Works well with Spring Boot exception handling.
 
+# 🔥 Request Body Validation in Spring Boot Using Validator Framework 🚀
+
+## 📌 Why Validate Request Body?
+
+Validating the request body ensures that only correct data enters the system, preventing bad requests, data corruption, and security vulnerabilities.
+
+Spring Boot provides powerful validation support using the Java Bean Validation API (javax.validation) with Hibernate Validator as the default implementation.
+
+## 📌 Step 1: Add Validation Dependencies
+
+If using Spring Boot with Spring Web, the required dependencies are already included. Otherwise, add:
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+
+
+```
+
+This enables @Valid and @Validated annotations for request validation.
+
+## 📌 Step 2: Create a DTO with Validation Annotations
+
+We use Jakarta Validation API annotations to enforce constraints.
+
+### 🎯 Example: Validating User Input
+
+```
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public class UserDTO {
+    
+    @NotBlank(message = "Name is required!")
+    @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters!")
+    private String name;
+
+    @Email(message = "Invalid email format!")
+    @NotBlank(message = "Email is required!")
+    private String email;
+
+    @Size(min = 6, max = 12, message = "Password must be between 6 and 12 characters!")
+    private String password;
+
+    // Getters and Setters
+}
+```
+### 🔹 Annotations Used:
+
+@NotBlank: Ensures the field is not empty or null.
+
+@Size(min, max): Restricts the length of a field.
+
+@Email: Validates email format.
+
+## 📌 Step 3: Apply @Valid in the Controller
+
+Use @Valid to enable validation in the request body.
+
+```
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/users")
+@Validated
+public class UserController {
+
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(@Valid @RequestBody UserDTO user) {
+        return ResponseEntity.ok("User registered successfully!");
+    }
+}
+```
+🔹 @Valid triggers validation when Spring Boot processes the request.
+
+🔹 If validation fails, Spring automatically returns a 400 Bad Request response.
+
+## 📌 Step 4: Handling Validation Errors
+
+By default, Spring Boot returns a generic validation error response.
+
+We can customize it using @ExceptionHandler.
+
+### 🎯 Global Exception Handler
+
+```
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error -> 
+            errors.put(error.getField(), error.getDefaultMessage())
+        );
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+}
+```
+### 🔹 Response When Validation Fails
+```
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+{
+    "name": "Name is required!",
+    "email": "Invalid email format!",
+    "password": "Password must be between 6 and 12 characters!"
+}
+```
+✅ Now, validation errors are formatted nicely instead of a generic error message.
+
+## 📌 Step 5: Advanced Validations
+
+### 🎯 Adding Custom Validation Using @Pattern
+
+```
+import jakarta.validation.constraints.Pattern;
+
+public class UserDTO {
+
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Name must contain only letters!")
+    private String name;
+
+    // Other fields...
+}
+```
+
+🚀 This ensures that the name contains only letters.
+
+### 🎯 Validating Lists (@Size & @NotEmpty)
+
+```
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+import java.util.List;
+
+public class CourseDTO {
+
+    @NotEmpty(message = "Course name cannot be empty!")
+    private String courseName;
+
+    @Size(min = 1, message = "At least one student is required!")
+    private List<String> students;
+
+    // Getters and Setters
+}
+```
+
+✅ Ensures that the students list is not empty.
+
+## 📌 Step 6: Custom Validator (When Built-in Ones Are Not Enough)
+
+Sometimes, built-in validators don’t meet business logic needs.
+In such cases, we create custom annotations.
+
+### 🎯 Example: Custom Validator for Strong Password
+
+### 1️⃣ Create Annotation
+
+```
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+import java.lang.annotation.*;
+
+@Documented
+@Constraint(validatedBy = PasswordValidator.class)
+@Target({ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface StrongPassword {
+    String message() default "Password must contain uppercase, lowercase, digit, and special character!";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
+}
+```
+### 2️⃣ Implement Validator Logic
+```
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+
+public class PasswordValidator implements ConstraintValidator<StrongPassword, String> {
+    
+    private static final String PASSWORD_PATTERN = 
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$";
+
+    @Override
+    public boolean isValid(String password, ConstraintValidatorContext context) {
+        return password != null && password.matches(PASSWORD_PATTERN);
+    }
+}
+```
+### 3️⃣ Use in DTO
+
+```
+public class UserDTO {
+    
+    @StrongPassword
+    private String password;
+
+    // Other fields...
+}
+```
+✅ Now, password must have uppercase, lowercase, digit, and special character.
+
+## 📌 Summary Table
+
+![image](https://github.com/user-attachments/assets/50d711a9-5bee-47bd-9427-331721c9cd28)
+
+## 🎯 Conclusion
+
+✅ Use @Valid in controllers to enforce validation.
+
+✅ Define constraints in DTOs using annotations like @NotBlank, @Size, @Email, etc.
+
+✅ Customize error handling using @ExceptionHandler for better API responses.
+
+✅ Use @Pattern and custom validators when built-in ones are insufficient.
