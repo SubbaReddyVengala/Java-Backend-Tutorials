@@ -14585,3 +14585,120 @@ Click Send.
 ✅ Use Path Variables (@PathVariable) → When you need to identify a specific resource.
 
 ✅ Use Query Parameters (@RequestParam) → When you need to filter, sort, or paginate data.
+
+## Swagger UI with Spring Boot Applications
+
+### 🚀 What is Swagger UI?
+
+Swagger UI is an interactive API documentation tool that allows developers to test RESTful web services. It provides a user-friendly interface to visualize and interact with the API's endpoints, request parameters, and responses without needing an external tool like Postman.
+
+## 🔹 Steps to Integrate Swagger UI in a Spring Boot Application
+
+Step 1: Add Dependencies
+
+You need to add Springdoc OpenAPI dependency to your pom.xml (for Spring Boot 3+).
+
+```
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.2.0</version>
+</dependency>
+```
+
+```
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-ui</artifactId>
+    <version>1.7.0</version>
+</dependency>
+```
+### Step 2: Enable Swagger Configuration (Optional)
+
+For most Spring Boot projects, no additional configuration is required. However, if you want to customize Swagger, you can create a configuration class:
+
+```
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class SwaggerConfig {
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+            .info(new Info()
+                .title("User Management API")
+                .version("1.0")
+                .description("API documentation for User Management"));
+    }
+}
+```
+
+### Step 3: Create a REST Controller
+
+Example of a simple UserController with Swagger annotations
+
+```
+import org.springframework.web.bind.annotation.*;
+import java.util.Arrays;
+import java.util.List;
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    @GetMapping
+    public List<String> getAllUsers() {
+        return Arrays.asList("John", "Jane", "Doe");
+    }
+
+    @GetMapping("/{id}")
+    public String getUserById(@PathVariable int id) {
+        return "User " + id;
+    }
+
+    @PostMapping
+    public String createUser(@RequestBody String name) {
+        return "User " + name + " created!";
+    }
+}
+```
+### Step 4: Run the Application and Access Swagger UI
+
+Start your Spring Boot application (mvn spring-boot:run).
+
+Open your browser and go to:
+
+```
+http://localhost:8080/swagger-ui.html
+```
+This will show all available APIs with request methods (GET, POST, etc.).
+
+You can test APIs directly from the Swagger UI.
+
+### 💡 Additional Features
+Access OpenAPI JSON/YAML Documentation
+
+JSON: http://localhost:8080/v3/api-docs
+
+YAML: http://localhost:8080/v3/api-docs.yaml
+
+Customize API Documentation
+
+```
+You can add descriptions to API methods using annotations like:
+```
+@Operation(summary = "Get all users", description = "Retrieves a list of all users.")
+@ApiResponses(value = {
+    @ApiResponse(responseCode = "200", description = "Success"),
+    @ApiResponse(responseCode = "500", description = "Internal Server Error")
+})
+@GetMapping
+public List<String> getAllUsers() {
+    return Arrays.asList("John", "Jane", "Doe");
+}
+```
+
+
