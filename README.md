@@ -13994,3 +13994,150 @@ Date: Fri, 29 Mar 2025 12:00:00 GMT
 
 ✅ Headers provide metadata like content type, caching, and authentication.
 
+# REST Services Implementation in Spring MVC
+Spring MVC is a widely used framework for developing web applications in Java. It supports the implementation of RESTful web services that adhere to REST architectural principles, facilitating communication between software systems over HTTP.
+
+RESTful services use standard HTTP methods such as GET, POST, PUT, and DELETE to perform operations on resources. These services focus on simplicity, scalability, and statelessness.
+
+## Data Representation in REST Services
+
+RESTful services primarily represent data in JSON (JavaScript Object Notation) and XML formats, with JSON being the most popular due to its lightweight and human-readable nature.
+
+### JSON Overview
+
+JSON is a widely used data format for storing and exchanging data between applications. It follows a structured notation consisting of:
+
+Name/Value pairs
+
+Curly braces {} for objects
+
+Square brackets [] for arrays
+
+Example of JSON Representation:
+```
+{
+   "name": "John",
+   "age": 30,
+   "car": null
+}
+```
+### JSON vs XML
+
+Both JSON and XML can be used for RESTful responses, but JSON is preferred for its simplicity.
+
+### JSON Example:
+```
+{
+  "employees": [
+    { "firstName": "John", "lastName": "Doe" },
+    { "firstName": "Anna", "lastName": "Smith" }
+  ]
+}
+```
+### Equivalent XML Example:
+```
+<employees>
+  <employee>
+    <firstName>John</firstName>
+    <lastName>Doe</lastName>
+  </employee>
+  <employee>
+    <firstName>Anna</firstName>
+    <lastName>Smith</lastName>
+  </employee>
+</employees>
+```
+### Key Differences Between JSON and XML:
+
+JSON is lighter and faster than XML.
+
+JSON uses key-value pairs, while XML uses tags.
+
+JSON parsing is simpler than XML parsing.
+
+JSON to Java Object Conversion in Spring MVC
+
+Spring MVC provides built-in support for JSON to Java object conversion using Jackson API. The @RequestBody annotation is used to map JSON request bodies to Java objects.
+
+###Example: Converting JSON to Java Object
+```
+JSON Payload:
+
+{
+  "student": [
+    { "firstName": "Dilip", "lastName": "Singh", "mobile": 88888 },
+    { "firstName": "Naresh", "lastName": "It", "mobile": 232323 }
+  ]
+}
+```
+### Java POJO Class:
+```
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
+
+public class StudentInfo {
+    private String firstName;
+    private String lastName;
+    private long mobile;
+
+    @JsonProperty("emailID")
+    private String email;
+
+    // Getters and Setters
+}
+```
+### Using @JsonProperty for Field Mapping
+
+The @JsonProperty annotation allows mapping JSON property names to different field names in Java classes.
+```
+public class Person {
+    @JsonProperty("first_name")
+    private String firstName;
+
+    @JsonProperty("last_name")
+    private String lastName;
+
+    @JsonProperty
+    private int age;
+}
+```
+
+## Implementing REST Services in Spring MVC
+
+In Spring MVC, RESTful web services are implemented using the @RestController annotation. This annotation combines @Controller and @ResponseBody, ensuring that methods return JSON responses directly.
+
+Example: RESTful Web Service
+```
+@RestController
+@RequestMapping("/api")
+public class StudentController {
+    
+    @GetMapping("/students")
+    public List<StudentInfo> getStudents() {
+        return List.of(
+            new StudentInfo("Dilip", "Singh", 88888),
+            new StudentInfo("Naresh", "It", 232323)
+        );
+    }
+}
+```
+### Handling JSON Requests and Responses
+
+@RequestBody: Maps incoming JSON data to Java objects.
+
+@ResponseBody: Converts Java objects into JSON responses.
+
+@RestController: A combination of @Controller and @ResponseBody.
+
+Example: Accepting JSON Request
+```
+@PostMapping("/students")
+public ResponseEntity<String> createStudent(@RequestBody StudentInfo student) {
+    return ResponseEntity.ok("Student created: " + student.getFirstName());
+}
+```
+## Conclusion
+
+Implementing RESTful web services in Spring MVC is straightforward with the help of Spring annotations and Jackson API for JSON parsing. Using @RestController, @RequestBody, and @ResponseBody ensures a seamless conversion between Java objects and JSON data, making Spring MVC a powerful choice for REST API development.
+
+By leveraging JSON's efficiency and Spring MVC's robust features, developers can build scalable and maintainable RESTful web services efficiently.
