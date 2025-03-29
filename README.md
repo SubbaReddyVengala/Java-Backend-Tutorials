@@ -13519,4 +13519,79 @@ If you're using Spring without Spring Boot, you need to manually define Dispatch
 
 🔹 Customization is possible via application.properties or Java-based configuration.
 
+# 🚀 CRUD Operations vs HTTP Methods in REST APIs
+
+## 1️⃣ What is CRUD?
+
+CRUD stands for Create, Read, Update, Delete, which are the four basic operations used in data management.
+
+![image](https://github.com/user-attachments/assets/a9448361-21bd-4841-ad9e-4e279a5bb27a)
+
+## 2️⃣ Mapping CRUD Operations to HTTP Methods
+
+In RESTful APIs, CRUD operations are mapped to HTTP methods:
+
+![image](https://github.com/user-attachments/assets/4ee3b318-6bbb-4f38-873e-bdfa62700291)
+
+## 3️⃣ Example: CRUD API for Employee Management
+
+A Spring Boot REST API for Employee management:
+
+### 🔹 1. Create Employee (POST)
+
+```
+@PostMapping("/employees")
+public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee) {
+    Employee savedEmployee = employeeService.saveEmployee(employee);
+    return ResponseEntity.status(HttpStatus.CREATED).body(savedEmployee);
+}
+```
+
+### 📌 Request: POST /employees
+### 📌 Body:
+```
+{
+  "name": "John Doe",
+  "department": "IT"
+}
+```
+### 🔹 2. Read Employees (GET)
+```
+@GetMapping("/employees")
+public List<Employee> getAllEmployees() {
+    return employeeService.getAllEmployees();
+}
+```
+### 📌 Request: GET /employees
+### 📌 Response: List of all employees
+
+### 🔹 3. Update Employee (PUT)
+```
+@PutMapping("/employees/{id}")
+public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
+    Employee employee = employeeService.updateEmployee(id, updatedEmployee);
+    return ResponseEntity.ok(employee);
+}
+```
+### 📌 Request: PUT /employees/1
+### 📌 Body:
+
+```
+{
+  "name": "John Updated",
+  "department": "HR"
+}
+```
+📌 Use PUT for full updates and PATCH for partial updates.
+### 🔹 4. Delete Employee (DELETE)
+```
+@DeleteMapping("/employees/{id}")
+public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
+    employeeService.deleteEmployee(id);
+    return ResponseEntity.ok("Employee deleted successfully");
+}
+```
+📌 Request: DELETE /employees/1
+
+
 
