@@ -14687,10 +14687,10 @@ YAML: http://localhost:8080/v3/api-docs.yaml
 
 Customize API Documentation
 
-```
+
 You can add descriptions to API methods using annotations like:
 ```
-@Operation(summary = "Get all users", description = "Retrieves a list of all users.")
+@Operation(summary = "Get all users", ##escription = "Retrieves a list of all users.")
 @ApiResponses(value = {
     @ApiResponse(responseCode = "200", description = "Success"),
     @ApiResponse(responseCode = "500", description = "Internal Server Error")
@@ -14700,5 +14700,106 @@ public List<String> getAllUsers() {
     return Arrays.asList("John", "Jane", "Doe");
 }
 ```
+# HTTP Status Codes in Building RESTful APIs
+
+When designing RESTful APIs, HTTP status codes are used to indicate the outcome of a client's request. They help API consumers understand whether the request was successful, failed, or if further action is needed.
+
+### 🔹 HTTP Status Code Categories
+
+HTTP status codes are grouped into five categories:
+
+![image](https://github.com/user-attachments/assets/ed9c6bf8-c6d5-4468-8ae3-1e638f0d6989)
+
+## 🚀 Commonly Used HTTP Status Codes in REST APIs
+
+Below are the most commonly used status codes when designing RESTful APIs:
+
+### ✅ 1xx – Informational
+
+100 Continue → The server received the request and the client can proceed.
+
+101 Switching Protocols → The server is switching protocols, as requested.
+
+### ✅ 2xx – Success
+
+![image](https://github.com/user-attachments/assets/c81224d7-0618-45c4-9d60-530001ff4504)
+### 📌 Example in Spring Boot:
+```
+@PostMapping("/users")
+public ResponseEntity<String> createUser(@RequestBody User user) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body("User created successfully!");
+}
+```
+### ⚠️ 3xx – Redirection
+
+![image](https://github.com/user-attachments/assets/8993282d-c556-455e-a64c-2e0ee892ef6a)
+
+### ❌ 4xx – Client Errors
+
+![image](https://github.com/user-attachments/assets/f72eaf7a-409d-4e3d-972e-be7b3b3c5f98)
+
+### 📌 Example in Spring Boot:
+```
+@GetMapping("/users/{id}")
+public ResponseEntity<?> getUser(@PathVariable int id) {
+    Optional<User> user = userService.findUserById(id);
+    if (user.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body("User not found!");
+    }
+    return ResponseEntity.ok(user);
+}
+```
+### ❌ 5xx – Server Errors
+
+![image](https://github.com/user-attachments/assets/ff3579cf-a9a6-41ae-a4fe-c8f9218f6460)
+
+### 📌 Example in Spring Boot (Handling 500 Internal Server Error):
+
+```
+@ExceptionHandler(Exception.class)
+public ResponseEntity<String> handleGlobalException(Exception ex) {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body("An unexpected error occurred: " + ex.getMessage());
+}
+```
+## 🛠️ Summary Table of HTTP Status Codes in REST APIs
+
+![image](https://github.com/user-attachments/assets/3c19253b-c164-4ead-8857-86d499cdcda2)
+
+![image](https://github.com/user-attachments/assets/e8823730-a387-419b-a1ff-bd8d5eab9297)
+
+## 🎯 Best Practices for Using HTTP Status Codes in REST APIs
+
+Use the correct status code for each scenario (e.g., 200 OK for successful GET, 201 Created for successful POST).
+
+Provide meaningful error messages in the response body.
+
+Use standard HTTP status codes to ensure API consistency.
+
+Use 4xx for client-side errors and 5xx for server-side errors.
+
+Handle errors globally in Spring Boot using @ControllerAdvice.
+
+## REST API Specific HTTP Status Codes: 
+   
+Generally we will have likewise below scenarios and respective status codes in REST API 
+services. For Example,   
+ 
+POST   -   Create  :   201 Created : Successfully Request Completed.  
+     
+PUT     -   Update  :     200 Ok : Successfully Updated Data                 
+                                        If not i.e. Resource  Not Found Data  
+                                        404 Not Found :  Successfully Processed but Data Not available 
+                                             
+GET     -   Read  : 200 Ok : Successfully Retrieved Data                 
+                                        If not i.e. Resource  Not Found Data  
+                                        404 Not Found :  Successfully Processed but Data Not available 
+        
+DELETE   -   Delete : 204 No Content: Successfully Deleted Data 
+             If not i.e. Resource  Not Found Data  
+                                       404 Not Found :  Successfully Processed but Data Not available 
 
 
+## ResponseEntity: 
