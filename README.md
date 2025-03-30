@@ -15834,3 +15834,175 @@ public class AppConfig {
 
 ![image](https://github.com/user-attachments/assets/b34659f9-9e65-4c1f-9ae7-23abca50cf7f)
 
+# 🔥 Spring Boot DevTools 🔥
+
+## 📌 What is Spring Boot DevTools?
+
+Spring Boot DevTools is a developer-friendly tool that enhances the development experience by enabling features like automatic restart, live reload, property defaults, and faster application deployment.
+
+## 📌 Key Features of DevTools
+
+1️⃣ Auto Restart – Automatically restarts the application when code changes
+
+2️⃣ Live Reload – Refreshes the browser when static content changes
+
+3️⃣ Fast Startup Time – Optimized development environment
+
+4️⃣ Configurable Property Defaults – Provides sensible defaults for development
+
+5️⃣ Remote Debugging – Allows debugging in remote environments
+
+## 📌 1. Adding DevTools to Your Project
+
+To enable Spring Boot DevTools, simply add the following dependency in pom.xml:
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <optional>true</optional>
+</dependency>
+```
+
+### 🚀 Note:
+```
+DevTools should only be used in development and not in production. The <optional>true</optional> tag prevents it from being included in production builds
+
+```
+
+## 📌 2. Features of DevTools
+
+### ✅ 2.1 Automatic Restart
+
+Whenever you change Java code, application properties, or templates, DevTools automatically restarts the application.
+
+You don’t need to manually restart the server after every small change.
+
+Example:
+
+Modify a Java class in src/main/java
+
+Save the file → Spring Boot automatically restarts
+
+Refresh the browser → Changes take effect immediately
+
+### 🔹 How to Disable Auto Restart? 
+
+If you don’t want the application to restart on every change, disable it in application.properties:
+
+```
+spring.devtools.restart.enabled=false
+
+```
+## ✅ 2.2 Live Reload (Web Development)
+
+Spring Boot DevTools automatically reloads web pages when static resources like HTML, CSS, or JavaScript change.
+
+### 📌 To enable Live Reload:
+
+Install the LiveReload browser extension
+
+Chrome: LiveReload Extension
+
+Firefox: LiveReload Extension
+
+Start the Spring Boot application
+
+Modify src/main/resources/static/index.html
+
+Refresh the browser – Changes will reflect automatically!
+
+### 🔹 How to Disable Live Reload?
+```
+spring.devtools.livereload.enabled=false
+```
+## ✅ 2.3 Disabling Caching (For Development)
+
+By default, Spring Boot caches static content, so changes to HTML, CSS, or JS might not be reflected immediately. DevTools disables caching for better development.
+
+### ✅ To disable template caching for Thymeleaf:
+
+```
+spring.thymeleaf.cache=false
+```
+### ✅ To disable caching for Spring MVC:
+
+```
+spring.resources.cache.period=0
+spring.resources.chain.cache=false
+
+```
+## ✅ 2.4 Remote Debugging with DevTools
+
+Spring Boot DevTools also allows remote debugging of applications running in different environments.
+
+### 📌 Steps to Enable Remote Debugging:
+
+Add the following property in application.properties:
+
+```
+spring.devtools.remote.secret=mysecretkey
+```
+Start your Spring Boot application with:
+```
+java -jar myapp.jar --spring.devtools.remote.secret=mysecretkey
+```
+Connect using a Remote Debugger (IntelliJ/Eclipse).
+
+## ✅ 2.5 Excluding Files from Restart
+
+Sometimes, you may want to exclude certain files (like logs, database files) from triggering a restart.
+
+### 📌 To exclude files, add this in application.properties
+```
+spring.devtools.restart.exclude=static/**,public/**
+```
+This prevents changes in static or public folders from restarting the application.
+
+
+## 📌 3. DevTools in Action – Example
+
+### 🔹 Without DevTools (Manual Restart Required)
+
+Run the application
+
+Modify a Java class (Controller, Service, etc.)
+
+Stop the server
+
+Restart the server
+
+Refresh the browser
+
+😩 Tedious and time-consuming!
+
+
+### 🔹 With DevTools (Auto Restart)
+
+Run the application
+
+Modify a Java class
+
+Spring Boot automatically restarts the app
+
+Refresh the browser → Changes are applied instantly!
+
+🚀 Faster development and better productivity!
+
+## 📌 4. Disabling DevTools in Production
+
+Spring Boot automatically disables DevTools in production mode. However, to ensure it's not included in your production build, add this to your pom.xml:
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <scope>runtime</scope>
+</dependency>
+```
+This ensures DevTools is available only in development and not included in the final JAR file.
+
+## 📌 5. Summary
+
+![image](https://github.com/user-attachments/assets/b09663f1-1379-4648-b9b1-500e33223c43)
+
+
