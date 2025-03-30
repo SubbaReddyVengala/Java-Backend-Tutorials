@@ -18401,3 +18401,205 @@ System is busy! Please try again later.
 
 ![image](https://github.com/user-attachments/assets/6f88081c-c34e-4d5b-becb-8db8efd3dff6)
 
+# Collections in Java
+
+The Collection in Java is a framework that provides an architecture to store and manipulate the group of objects.
+
+Java Collections can achieve all the operations that you perform on a data such as searching, sorting, insertion, manipulation, and deletion.
+
+## What is Collection?
+
+A Collection represents a single unit of objects, i.e., a group.
+
+## What is a framework?
+A framework provides a ready-made structure of classes and interfaces for building software applications efficiently. It simplifies adding new features by offering reusable components that perform similar tasks, eliminating the need to create a framework from scratch for each new project. This approach enhances object-oriented design, making development quicker, more consistent, and reliable.
+
+##  📌 What is the Java Collection Framework?
+
+The Java Collection Framework (JCF) is a set of interfaces, classes, and algorithms that provides a standard architecture to store, manipulate, and process groups of objects efficiently.
+
+## ✅ Why Use Java Collections?
+
+Before Java Collections (pre-JDK 1.2), Java relied on arrays, Vectors, and Hashtables. These lacked a common interface, making it difficult to manage and standardize data structures. The introduction of Java Collections simplified and unified data manipulation.
+
+## ✅ Advantages of Java Collections Framework
+
+**Standardization** – Common methods (add(), remove(), contains(), etc.) for different collection types.
+
+**Reusability** – Ready-to-use, optimized data structures.
+
+**Performance** – Well-tested, efficient algorithms for sorting, searching, and manipulation.
+
+**Thread Safety** – Some collections (Vector, Hashtable, ConcurrentHashMap) support synchronization.
+
+**Scalability** – Can handle large data structures efficiently.
+
+## 📌 2. Java Collection Framework Hierarchy
+
+The Java Collections Framework consists of three core components:
+
+**Interfaces** – Defines abstract data types (e.g., List, Set, Map, Queue).
+
+**Implementations** (Classes) – Concrete implementations of interfaces (ArrayList, HashSet, TreeMap).
+
+**Algorithms** – Utility methods (Collections.sort(), Collections.shuffle()).
+
+### ✅ Hierarchy of Java Collections
+
+```
+                 Iterable
+                    │
+               Collection
+      ┌──────────┴──────────┐
+     List                 Set
+  ┌───┼────┐         ┌───┼────┐
+  │   │    │         │   │    │
+ArrayList  LinkedList HashSet TreeSet
+  │          │         │       │
+  Vector     Stack   LinkedHashSet
+                      
+                 Queue
+                  │
+         ┌────────┴────────┐
+         │                 │
+    PriorityQueue      Deque (ArrayDeque)
+```
+```
+                 Map
+          ┌──────┼──────┐
+          │      │      │
+      HashMap  TreeMap  LinkedHashMap
+          │
+      Hashtable
+```
+![image](https://github.com/user-attachments/assets/dc076613-bb56-4756-ba66-9b20da6b065c)
+
+## 📌 3. Core Interfaces and Implementations
+
+### ✅ List Interface (Ordered, Allows Duplicates)
+
+A List maintains insertion order and allows duplicate elements.
+
+### Implementations:
+
+**ArrayList** – Dynamic array (fast random access, slow insertion/deletion).
+
+**LinkedList** – Doubly linked list (fast insertion/deletion, slow access).
+
+**Vector** – Thread-safe alternative to ArrayList.
+
+**Stack** – LIFO data structure.
+
+### Example: Using ArrayList
+```
+import java.util.ArrayList;
+import java.util.List;
+
+public class ListExample {
+    public static void main(String[] args) {
+        List<String> names = new ArrayList<>();
+        names.add("Alice");
+        names.add("Bob");
+        names.add("Charlie");
+
+        System.out.println("Names: " + names);
+        names.remove("Bob");
+        System.out.println("After removal: " + names);
+    }
+}
+```
+### 📌 Output:
+```
+Names: [Alice, Bob, Charlie]
+After removal: [Alice, Charlie]
+
+```
+
+## ✅ Set Interface (Unique Elements, Unordered)
+
+A Set does not allow duplicate elements.
+
+### Implementations:
+
+**HashSet** – No order, fastest access (O(1)).
+
+**LinkedHashSet** – Maintains insertion order.
+
+**TreeSet** – Sorted set (O(log n), Red-Black Tree).
+
+### Example: Using HashSet
+```
+import java.util.HashSet;
+
+public class SetExample {
+    public static void main(String[] args) {
+        HashSet<Integer> set = new HashSet<>();
+        set.add(10);
+        set.add(20);
+        set.add(10); // Duplicate ignored
+
+        System.out.println(set); // Output: [10, 20]
+    }
+}
+```
+## ✅ Map Interface (Key-Value Pair, Unique Keys)
+
+A Map stores key-value pairs, where keys are unique.
+
+### Implementations:
+
+**HashMap** – No order, fastest (O(1)).
+
+**LinkedHashMap** – Maintains insertion order.
+
+**TreeMap** – Sorted keys (O(log n), Red-Black Tree).
+
+**Hashtable** – Synchronized (thread-safe).
+
+## Example: Using HashMap
+
+```
+import java.util.HashMap;
+
+public class MapExample {
+    public static void main(String[] args) {
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put("Alice", 25);
+        map.put("Bob", 30);
+        map.put("Charlie", 28);
+
+        System.out.println(map);
+    }
+}
+
+```
+
+## ✅ Queue Interface (FIFO Data Structure)
+
+### Implementations:
+
+**PriorityQueue** – Heap-based queue (natural ordering).
+
+**ArrayDeque** – Faster than Stack and LinkedList.
+
+## Example: Using PriorityQueue
+```
+import java.util.PriorityQueue;
+
+public class QueueExample {
+    public static void main(String[] args) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        pq.add(5);
+        pq.add(1);
+        pq.add(3);
+
+        System.out.println(pq.poll()); // 1 (smallest element)
+    }
+}
+
+```
+
+## 📌  Comparing Java Collections
+
+![image](https://github.com/user-attachments/assets/044a4577-de8e-4b4a-a0c3-1ab1a9cbefab)
+
