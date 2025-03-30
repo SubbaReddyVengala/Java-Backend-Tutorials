@@ -15359,4 +15359,161 @@ Value: SpringBootApp
 
 ✅ Common use cases include authentication, security, caching, and CORS
 
+# 🔥 Exception Handling in Spring MVC Controllers 🚀
+
+## 📌 Why Do We Need Exception Handling?
+
+Handling exceptions properly in Spring MVC improves API reliability by:
+
+✅ Returning meaningful error messages to clients
+
+✅ Preventing application crashes
+
+✅ Providing consistent error responses
+
+## 📌 1. Using @ExceptionHandler (Method-Level Exception Handling)
+
+This approach handles exceptions at the controller level.
+
+### 🎯 Example: Handling a Specific Exception
+
+```
+@RestController
+@RequestMapping("/api")
+public class UserController {
+
+    @GetMapping("/user/{id}")
+    public String getUser(@PathVariable int id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("Invalid user ID!");
+        }
+        return "User with ID: " + id;
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body("Error: " + ex.getMessage());
+    }
+}
+```
+✅ If id is invalid, it returns a 400 Bad Request response instead of crashing
+
+## 📌 2. Using @ControllerAdvice (Global Exception Handling)
+
+Instead of handling exceptions in every controller, we use @ControllerAdvice to handle exceptions globally.
+
+### 🎯 Example: Global Exception Handler
+```
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body("Invalid Input: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGenericException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong!");
+    }
+}
+```
+
+✅ Handles exceptions for all controllers globally
+
+✅ Returns proper error messages based on the exception type
+
+## 📌 3. Using @ResponseStatus for Simpler Exception Handling
+
+If you want a simple way to set HTTP status codes for specific exceptions, use @ResponseStatus.
+
+### 🎯 Example: Custom Exception with @ResponseStatus
+```
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class UserNotFoundException extends RuntimeException {
+    public UserNotFoundException(String message) {
+        super(message);
+    }
+}
+```
+### 🎯 Throwing the Custom Exception in Controller
+
+```
+@GetMapping("/user/{id}")
+public String getUser(@PathVariable int id) {
+    if (id > 100) {
+        throw new UserNotFoundException("User not found with ID: " + id);
+    }
+    return "User with ID: " + id;
+}
+```
+
+✅ If id > 100, API returns 404 Not Found instead of a generic error.
+
+## 📌 4. Creating Custom Error Response Structure
+
+Instead of returning plain text, we can send structured JSON error responses.
+
+### 🎯 Custom Error Response Class
+```
+public class ErrorResponse {
+    private String message;
+    private int status;
+    private LocalDateTime timestamp;
+
+    public ErrorResponse(String message, int status) {
+        this.message = message;
+        this.status = status;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    // Getters and Setters
+}
+```
+### 🎯 Using Custom Error Response in Exception Handler
+
+```
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+}
+```
+
+### ✅ Returns structured JSON error response like this:
+```
+{
+    "message": "User not found with ID: 101",
+    "status": 404,
+    "timestamp": "2025-03-30T10:15:30"
+}
+```
+## 📌 5. Handling Validation Errors (@Valid & BindingResult)
+
+When using Spring Validation, handle errors properly.
+
+### 🎯 Example: Handling Validation Errors
+```
+@RestController
+@RequestMapping("/api")
+public class UserController {
+
+    @PostMapping("/user")
+    public ResponseEntity<?> createUser(@Valid @RequestBody User user, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
+        return ResponseEntity.ok("User created successfully!");
+    }
+}
+```
+✅ If validation fails, it returns an error response instead of processing invalid data.
+
+## 📌 6. Summary
+
+![image](https://github.com/user-attachments/assets/7e8f1b4d-1e4c-4a20-837a-22f6e46e3e21)
 
