@@ -18036,3 +18036,368 @@ Test http://localhost:8001/user/config again to see updated config.
 
 ✅ Configurations can be stored in Git for version control.
 
+# Circuit Breaker in Microservices Using Resilience4j
+
+## 🔹 What is a Circuit Breaker?
+
+In a microservices architecture, services communicate with each other over the network, which may be unreliable. If one service fails, it can cause cascading failures across the system.
+
+The Circuit Breaker pattern prevents such failures by:
+
+✅ Detecting failures and stopping further requests to the failing service.
+
+✅ Returning a fallback response to avoid a complete system failure.
+
+✅ Automatically recovering when the service becomes available again.
+
+## 🔹 How Circuit Breaker Works?
+
+The circuit breaker has three states:
+
+### 1️⃣ CLOSED (Normal Operation)
+
+Requests to the service are allowed.
+
+The circuit breaker tracks failures.
+
+### 2️⃣ OPEN (Failure State)
+
+If failures exceed a threshold, the circuit opens.
+
+Requests are immediately rejected.
+
+A fallback method is used instead.
+
+### 3️⃣ HALF-OPEN (Recovery State)
+
+After a timeout period, some requests are allowed.
+
+If successful, the circuit closes again.
+
+If failures continue, it remains open.
+
+## 🔹 Implementing Circuit Breaker in Spring Boot Using Resilience4j
+
+Step 1: Add Dependencies
+
+Add the following dependencies in pom.xml:
+
+```
+<dependencies>
+    <!-- Spring Boot Web -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- Resilience4j Circuit Breaker -->
+    <dependency>
+        <groupId>io.github.resilience4j</groupId>
+        <artifactId>resilience4j-spring-boot2</artifactId>
+        <version>1.7.1</version>
+    </dependency>
+
+    <!-- Spring Boot Actuator (for monitoring) -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+</dependencies>
+```
+
+## Step 2: Create a Service with Circuit Breaker
+
+We create a service that calls an external API (or another microservice). We use @CircuitBreaker to protect the call.
+
+```
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+public class ExternalService {
+
+    private static final String SERVICE_NAME = "myCircuitBreaker";
+
+    @CircuitBreaker(name = SERVICE_NAME, fallbackMethod = "fallbackResponse")
+    public String callExternalService() {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8081/payment";  // Simulating another service
+
+        // This request may fail if the service is down
+        return restTemplate.getForObject(url, String.class);
+    }
+
+    // Fallback method when the circuit is OPEN
+    public String fallbackResponse(Exception e) {
+        return "Service is currently unavailable. Please try again later.";
+    }
+}
+```
+
+✅ @CircuitBreaker(name = "myCircuitBreaker", fallbackMethod = "fallbackResponse")
+
+If the external service fails, the fallbackResponse method is called instead.
+
+## Step 3: Create a REST Controller
+
+Expose an endpoint to test the circuit breaker.
+
+```
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api")
+public class CircuitBreakerController {
+
+    private final ExternalService externalService;
+
+    public CircuitBreakerController(ExternalService externalService) {
+        this.externalService = externalService;
+    }
+
+    @GetMapping("/call-service")
+    public String callService() {
+        return externalService.callExternalService();
+    }
+}
+```
+
+## Step 4: Configure Circuit Breaker Properties
+Add configuration in application.yml:
+```
+resilience4j:
+  circuitbreaker:
+    instances:
+      myCircuitBreaker:
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2000ms
+        minimumNumberOfCalls: 5
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 2
+        waitDurationInOpenState: 5000ms
+```
+## Step 5: Testing the Circuit Breaker
+
+1️⃣ Start your application.
+
+2️⃣ Call http://localhost:8080/api/call-service.
+
+3️⃣ If the external service is up, you get a normal response.
+
+4️⃣ If the external service fails or is down, you get:
+
+```
+Service is currently unavailable. Please try again later.
+```
+5️⃣ After repeated failures, the circuit opens, preventing further API calls.
+
+## 🔹 Benefits of Circuit Breaker
+
+✅ Prevents cascading failures across services.
+
+✅ Enhances system resilience by handling failures gracefully.
+
+✅ Improves response time by failing fast when services are down.
+
+✅ Automatic recovery when the failing service becomes available
+
+## 🔹 Conclusion
+
+Resilience4j is a powerful tool for implementing the Circuit Breaker pattern in Spring Boot microservices. It protects services from cascading failures and ensures a resilient system.
+
+# 🚀 Enhancing Microservices Resilience with Circuit Breaker, Retry, and Rate Limiting (Using Resilience4j)
+
+## Now that you've implemented Circuit Breaker using Resilience4j, let's enhance your microservices further with:
+
+✅ **Retry Mechanism** - Automatically retry failed requests before triggering the circuit breaker.
+
+✅ **Rate Limiting (RateLimiter)** - Restrict the number of requests to prevent overloading.
+
+✅ **Bulkhead Pattern** - Limit concurrent requests to protect resources.
+
+## 🔹 1️⃣ Implementing Retry Mechanism
+
+A retry mechanism ensures that a failed request is attempted multiple times before giving up.
+
+### Step 1: Add Resilience4j Retry Dependency
+
+Since we already added the Resilience4j dependency in pom.xml, no need to add again.
+
+### Step 2: Modify Service to Use Retry
+
+Use @Retry annotation in your service method:
+
+```
+import io.github.resilience4j.retry.annotation.Retry;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+public class ExternalService {
+
+    private static final String RETRY_SERVICE = "retryService";
+
+    @Retry(name = RETRY_SERVICE, fallbackMethod = "fallbackResponse")
+    public String callExternalServiceWithRetry() {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8081/payment";  // Simulating another service
+
+        System.out.println("Calling external service...");
+
+        return restTemplate.getForObject(url, String.class);
+    }
+
+    // Fallback method when retries fail
+    public String fallbackResponse(Exception e) {
+        return "Service is currently unavailable. Please try again later.";
+    }
+}
+```
+### Step 3: Configure Retry Properties in application.yml
+```
+resilience4j:
+  retry:
+    instances:
+      retryService:
+        maxAttempts: 3   # Maximum retry attempts
+        waitDuration: 2000ms  # Wait time between retries
+        retryExceptions:
+          - java.io.IOException
+          - org.springframework.web.client.HttpServerErrorException
+```
+✅ The system retries 3 times, waiting 2 seconds between each attempt.
+
+✅ If all retries fail, the fallbackResponse() is called.
+
+### Step 4: Test the Retry Mechanism
+
+1️⃣ Start your application.
+
+2️⃣ Call: http://localhost:8080/api/call-service
+
+3️⃣ If the external service fails, it will retry up to 3 times before returning the fallback response.
+
+## 🔹 2️⃣ Implementing Rate Limiting (RateLimiter)
+
+The RateLimiter pattern restricts the number of requests to a service within a time window.
+
+### Step 1: Modify Service to Use Rate Limiter
+
+Use @RateLimiter annotation:
+
+```
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+public class ExternalService {
+
+    private static final String RATE_LIMITER = "rateLimiterService";
+
+    @RateLimiter(name = RATE_LIMITER, fallbackMethod = "rateLimiterFallback")
+    public String callExternalServiceWithRateLimiter() {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8081/payment";  
+
+        System.out.println("Calling external service...");
+
+        return restTemplate.getForObject(url, String.class);
+    }
+
+    // Fallback method when rate limit is exceeded
+    public String rateLimiterFallback(Exception e) {
+        return "Too many requests! Please try again later.";
+    }
+}
+```
+### Step 2: Configure Rate Limiter in application.yml
+
+```
+resilience4j:
+  ratelimiter:
+    instances:
+      rateLimiterService:
+        limitForPeriod: 5  # Max 5 requests
+        limitRefreshPeriod: 10s  # Refresh limit every 10 seconds
+        timeoutDuration: 500ms  # If request is blocked, wait 500ms before failing
+```
+✅ Max 5 requests in 10 seconds
+
+✅ If exceeded, the request fails immediately with "Too many requests!"
+
+### Step 3: Test Rate Limiting
+
+1️⃣ Call: http://localhost:8080/api/call-service multiple times.
+
+2️⃣ If you exceed 5 requests in 10 seconds, you'll get:
+
+```
+Too many requests! Please try again later.
+
+```
+## 🔹 3️⃣ Implementing Bulkhead Pattern
+The Bulkhead pattern limits concurrent requests, preventing service overload.
+
+### Step 1: Modify Service to Use Bulkhead
+
+Use @Bulkhead annotation:
+
+```
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+public class ExternalService {
+
+    private static final String BULKHEAD_SERVICE = "bulkheadService";
+
+    @Bulkhead(name = BULKHEAD_SERVICE, fallbackMethod = "bulkheadFallback")
+    public String callExternalServiceWithBulkhead() {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8081/payment";  
+
+        System.out.println("Calling external service...");
+
+        return restTemplate.getForObject(url, String.class);
+    }
+
+    // Fallback when too many concurrent requests
+    public String bulkheadFallback(Exception e) {
+        return "System is busy! Please try again later.";
+    }
+}
+```
+### Step 2: Configure Bulkhead in application.yml
+
+```
+resilience4j:
+  bulkhead:
+    instances:
+      bulkheadService:
+        maxConcurrentCalls: 2  # Allow max 2 parallel requests
+        maxWaitDuration: 1s  # If limit reached, wait 1 sec before failing
+```
+✅ Only 2 concurrent requests allowed.
+
+✅ If exceeded, new requests wait 1 second, then fail with "System is busy!"
+
+### Step 3: Test Bulkhead
+
+1️⃣ Call multiple requests simultaneously to http://localhost:8080/api/call-service
+
+2️⃣ If more than 2 requests at the same time, you'll get:
+
+```
+System is busy! Please try again later.
+
+```
+## 🚀 Final Summary
+
+![image](https://github.com/user-attachments/assets/6f88081c-c34e-4d5b-becb-8db8efd3dff6)
+
