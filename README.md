@@ -16006,3 +16006,179 @@ This ensures DevTools is available only in development and not included in the f
 ![image](https://github.com/user-attachments/assets/b09663f1-1379-4648-b9b1-500e33223c43)
 
 
+# 🚀 Spring Boot Actuator 🚀
+
+## 📌 What is Spring Boot Actuator?
+
+Spring Boot Actuator is a powerful monitoring and management tool that provides insights into a running Spring Boot application. It exposes built-in endpoints that allow developers to monitor, manage, and interact with the application in real time.
+
+## 📌 1. Adding Actuator to Your Project
+
+To enable Spring Boot Actuator, add the following dependency to pom.xml:
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+✅ Once added, Actuator automatically exposes endpoints for monitoring and application health checks.
+
+## 📌 2. Key Features of Spring Boot Actuator
+
+
+![image](https://github.com/user-attachments/assets/f669b09b-97b1-4f02-b922-da9182f675d7)
+
+## 📌 3. Enabling Actuator Endpoints
+
+By default, only /actuator/health and /actuator/info are enabled.
+
+To enable all endpoints, modify application.properties:
+
+```
+management.endpoints.web.exposure.include=*
+```
+
+or select specific endpoints:
+
+```
+management.endpoints.web.exposure.include=health,metrics,info
+```
+## 📌 4. Common Actuator Endpoints
+
+### ✅ 4.1 Health Check
+
+Check if the application is running:
+```
+http://localhost:8080/actuator/health
+```
+```
+{
+  "status": "UP"
+}
+```
+🔹 Enable detailed health checks:
+
+```
+management.endpoint.health.show-details=always
+```
+Now, /actuator/health will display database, disk space, and service health.
+
+## ✅ 4.2 Metrics (Performance Monitoring)
+
+Monitor JVM memory, CPU usage, HTTP requests, etc.:
+```
+http://localhost:8080/actuator/metrics
+```
+### 🔹 Example Query: Get total HTTP requests
+```
+http://localhost:8080/actuator/metrics/http.server.requests
+
+```
+### 🔹 Response:
+```
+{
+  "name": "http.server.requests",
+  "measurements": [
+    {
+      "statistic": "count",
+      "value": 10
+    }
+  ]
+}
+```
+## ✅ 4.3 Environment Properties
+
+Check application properties, system variables, and environment variables:
+```
+http://localhost:8080/actuator/env
+```
+🔹 Example Query: Get a specific property
+```
+http://localhost:8080/actuator/env/server.port
+```
+## ✅ 4.4 Viewing Beans
+
+List all registered Spring Beans in the application:
+```
+http://localhost:8080/actuator/beans
+```
+## ✅ 4.5 Changing Log Levels at Runtime
+
+View and modify log levels without restarting the application:
+
+### 1️⃣ View available loggers:
+```
+http://localhost:8080/actuator/loggers
+```
+### 2️⃣ Change log level dynamically (Example: Set com.example to DEBUG):
+```
+curl -X POST "http://localhost:8080/actuator/loggers/com.example" -H "Content-Type: application/json" -d '{"configuredLevel": "DEBUG"}'
+```
+### ✅ 4.6 Thread Dump (Troubleshooting)
+
+To check running threads (useful for debugging deadlocks or high CPU usage):
+```
+http://localhost:8080/actuator/threaddump
+
+```
+## 📌 5. Securing Actuator Endpoints
+
+By default, Actuator endpoints are public. To restrict access, configure security:
+
+🔒 Secure Actuator with Spring Security
+
+### 1️⃣ Add Spring Security dependency:
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+```
+### 2️⃣ Set basic authentication in application.properties:
+```
+spring.security.user.name=admin
+spring.security.user.password=admin123
+
+```
+### 3️⃣ Now, access Actuator endpoints with:
+```
+curl -u admin:admin123 http://localhost:8080/actuator/health
+```
+## 📌 6. Custom Actuator Endpoints
+
+Create a custom endpoint to expose additional information.
+
+Example: Custom Endpoint to Show Active Users
+```
+@Component
+@Endpoint(id = "active-users")
+public class ActiveUsersEndpoint {
+
+    @ReadOperation
+    public Map<String, Object> getActiveUsers() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("activeUsers", 120);
+        return data;
+    }
+}
+```
+### 📌 Access Custom Endpoint:
+
+```
+http://localhost:8080/actuator/active-users
+```
+### 🔹 Response:
+```
+{
+  "activeUsers": 120
+}
+```
+## 📌 7. Summary
+
+![image](https://github.com/user-attachments/assets/066b9dea-70e4-4f6d-8c4b-78a9cd459acf)
+
+
+🚀 Spring Boot Actuator is essential for monitoring and managing production applications!
+
+
