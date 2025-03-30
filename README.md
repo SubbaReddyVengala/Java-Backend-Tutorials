@@ -17842,4 +17842,197 @@ public class PaymentController {
 
 ✅ Supports load balancing and circuit breakers.
 
+# Spring Cloud Config Server & Config Clients
+
+## What is Spring Cloud Config?
+
+Spring Cloud Config provides centralized configuration management for microservices. Instead of hardcoding properties in each microservice, we store them in a Config Server, and microservices (Config Clients) fetch their configurations dynamically.
+
+### 🔹 Why Use Spring Cloud Config?
+
+✅ **Centralized Configuration Management** – Keep all configurations in one place.
+
+✅ **Dynamic Updates** – Update configurations without restarting services.
+
+✅ **Environment-Specific Configurations** – Manage dev, test, prod settings easily.
+
+✅ **Security & Version Control** – Store configurations in Git, making them traceable.
+
+## Step-by-Step Implementation of Spring Cloud Config Server
+
+### Step 1: Create a Config Server
+
+👉 Create a new Spring Boot project (config-server) with the following dependencies:
+
+```
+<dependencies>
+    <!-- Spring Boot Web -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- Spring Cloud Config Server -->
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-config-server</artifactId>
+    </dependency>
+</dependencies>
+
+```
+### Step 2: Enable Config Server
+
+In ConfigServerApplication.java, enable the Config Server.
+
+```
+@EnableConfigServer
+@SpringBootApplication
+public class ConfigServerApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(ConfigServerApplication.class, args);
+    }
+}
+
+```
+### Step 3: Configure application.properties (or application.yml)
+
+Set up server port and Git repository to store configurations.
+
+```
+server.port=8888
+spring.application.name=config-server
+
+# Git repository for configurations
+spring.cloud.config.server.git.uri=https://github.com/your-repo/config-repo.git
+spring.cloud.config.server.git.clone-on-start=true
+
+```
+🔹 server.port=8888 → Config Server runs on port 8888.
+
+🔹 spring.cloud.config.server.git.uri → Stores configurations in a Git repository.
+
+### Step 4: Create a Git Repository for Configurations
+
+Create a new public/private Git repository (e.g., config-repo).
+
+Add configuration files for different microservices:
+
+### 📂 config-repo (Git)
+```
+  ├── user-service.properties
+  ├── order-service.yml
+  ├── payment-service-dev.yml
+  ├── payment-service-prod.yml
+
+```
+### Example: user-service.properties
+```
+server.port=8001
+user.service.message=Hello from Config Server!
+
+```
+### Step 5: Start the Config Server
+
+Run the Config Server (config-server).
+
+🔹 Open http://localhost:8888/user-service/default
+
+🔹 You should see configuration properties returned from Git.
+
+## Step-by-Step Implementation of Config Client
+
+#### Step 6: Modify Microservices to Fetch Configurations
+
+👉 Modify **User Service** (user-service) to act as a Config Client.
+
+### 1️⃣ Add Dependencies (pom.xml)
+
+```
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-config</artifactId>
+</dependency>
+
+```
+### 2️⃣ Modify bootstrap.properties (instead of application.properties)
+
+In User Service (src/main/resources/bootstrap.properties), add:
+```
+spring.application.name=user-service
+spring.config.import=optional:configserver:http://localhost:8888
+
+```
+🔹 spring.application.name=user-service → Matches config file in Git.
+
+🔹 spring.config.import=configserver:http://localhost:8888 → Fetches configurations from Config Server.
+
+### 3️⃣ Use Configuration in the Microservice
+
+Modify UserController.java to fetch the user.service.message property from Config Server.
+
+```
+@RefreshScope  // Enables runtime refresh of configurations
+@RestController
+@RequestMapping("/user")
+public class UserController {
+
+    @Value("${user.service.message}")
+    private String message;
+
+    @GetMapping("/config")
+    public String getConfigMessage() {
+        return "Message from Config Server: " + message;
+    }
+}
+
+```
+✅ @Value("${user.service.message}") → Injects config from Config Server.
+
+✅ @RefreshScope → Allows runtime configuration updates.
+
+## Step 7: Test Config Client
+
+1️⃣ Start the Config Server (localhost:8888).
+
+2️⃣ Start User Service (localhost:8001).
+
+3️⃣ Test the configuration endpoint:
+
+🔹 **URL**: http://localhost:8001/user/config
+🔹 **Response**:
+```
+{
+    "message": "Hello from Config Server!"
+}
+
+```
+🎉 User Service successfully fetched configuration from Config Server!
+
+## Step 8: Refresh Configurations Without Restarting
+
+To apply new configurations dynamically:
+
+Modify config in Git (e.g., change user.service.message).
+
+Commit and push changes.
+
+Call the /actuator/refresh endpoint:
+
+```
+curl -X POST http://localhost:8001/actuator/refresh
+
+```
+Test http://localhost:8001/user/config again to see updated config.
+
+✅ No need to restart the service! 🚀
+
+## 🎯 Summary
+
+✅ Spring Cloud Config enables centralized configuration management.
+
+✅ Microservices fetch configurations dynamically from a Config Server.
+
+✅ Spring Cloud Config supports dynamic updates without restarting services.
+
+✅ Configurations can be stored in Git for version control.
 
