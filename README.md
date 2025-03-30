@@ -16385,4 +16385,277 @@ curl -X POST "http://localhost:8080/actuator/loggers/com.example" -H "Content-Ty
 
 Logging is crucial for monitoring, debugging, and maintaining Spring Boot applications. Spring Boot makes it easy by providing built-in logging with Logback, SLF4J, and Actuator support.
 
+# 🚀 Spring Boot Security Module
 
+Spring Boot Security is a powerful authentication and authorization framework that helps secure Spring applications with minimal configuration. It supports:
+
+✅ Basic Authentication
+
+
+✅ JWT (JSON Web Token) Authentication
+
+✅ OAuth2 Authentication
+
+✅ Role-Based Access Control (RBAC)
+
+✅ LDAP and Database Authentication
+
+## 📌 1. Adding Spring Security to a Spring Boot Project
+
+### ✅ Step 1: Add Dependencies in pom.xml
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+```
+📌 Spring Boot automatically applies security when you add spring-boot-starter-security.
+
+## 📌 2. Default Spring Security Setup
+When you run the application, Spring Security automatically enables Basic Authentication.
+
+### Default Credentials:
+Username: user
+
+Password: (Generated in the console at startup)
+
+```
+Using generated security password: 23d1f7b0-9dbb-4a48-8d34-xxxxx
+```
+🔹 To Change the Default Credentials, Add This in application.properties:
+```
+spring.security.user.name=admin
+spring.security.user.password=admin123
+```
+📌 Now, the application requires admin:admin123 to access any endpoint.
+
+## 📌 3. Custom User Authentication (In-Memory Users)
+
+Instead of the default user, define custom users and roles.
+
+### ✅ Step 1: Create a Security Configuration Class
+```
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails user = User.withDefaultPasswordEncoder()
+                .username("user")
+                .password("user123")
+                .roles("USER")
+                .build();
+
+        UserDetails admin = User.withDefaultPasswordEncoder()
+                .username("admin")
+                .password("admin123")
+                .roles("ADMIN")
+                .build();
+
+        return new InMemoryUserDetailsManager(user, admin);
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().antMatchers("/public/**");  // Allow access to "/public/**" without authentication
+    }
+}
+```
+📌 Now, users and roles are stored in memory.
+
+📌 "admin" has ADMIN role, and "user" has USER role.
+
+## 📌 4. Role-Based Authorization (RBAC)
+
+Define different access levels based on user roles.
+
+### ✅ Step 1: Secure Endpoints in SecurityConfig.java
+```
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                .antMatchers("/admin/**").hasRole("ADMIN")  // Only ADMIN can access
+                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")  // USER and ADMIN can access
+                .antMatchers("/public/**").permitAll()  // Public endpoints
+                .anyRequest().authenticated()
+            )
+            .formLogin();  // Enable login form
+
+        return http.build();
+    }
+}
+```
+📌 Now:
+
+✔ /admin/** → Only ADMINs can access
+
+✔ /user/** → USER and ADMIN can access
+
+✔ /public/** → Open to all (No authentication required)
+
+## 📌 5. Custom Login Page
+
+Instead of the default Spring Security login, create a custom login form.
+
+### ✅ Step 1: Add a Custom Login Page (login.html)
+
+```
+<form method="post" action="/login">
+    <label>Username: <input type="text" name="username"/></label>
+    <label>Password: <input type="password" name="password"/></label>
+    <button type="submit">Login</button>
+</form>
+```
+### ✅ Step 2: Configure Security to Use the Custom Login Page
+
+Modify SecurityConfig.java:
+```
+http
+    .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+    .formLogin(form -> form.loginPage("/login").permitAll())  // Custom login page
+    .logout(logout -> logout.logoutSuccessUrl("/"));
+```
+📌 Now, Spring Security redirects to /login instead of the default login page.
+
+## 📌 6. JWT Authentication (Token-Based Security)
+
+Use JWT instead of session-based authentication.
+
+### ✅ Step 1: Add Dependencies
+```
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt</artifactId>
+    <version>0.11.5</version>
+</dependency>
+```
+
+### ✅ Step 2: Create a JWT Utility Class
+
+```
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import java.util.Date;
+
+public class JwtUtil {
+    private String secretKey = "mySecretKey";
+
+    public String generateToken(String username) {
+        return Jwts.builder()
+            .setSubject(username)
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
+    }
+
+    public String extractUsername(String token) {
+        return getClaims(token).getSubject();
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parser()
+            .setSigningKey(secretKey)
+            .parseClaimsJws(token)
+            .getBody();
+    }
+}
+```
+📌 This generates JWT tokens with expiration time.
+
+## ✅ Step 3: Expose a Login API That Returns a JWT
+```
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+    private final JwtUtil jwtUtil = new JwtUtil();
+
+    @PostMapping("/login")
+    public String login(@RequestParam String username) {
+        return jwtUtil.generateToken(username);
+    }
+}
+```
+📌 Now, /auth/login?username=admin will return a JWT token.
+## ✅ Step 4: Secure Endpoints with JWT
+
+Modify SecurityConfig.java:
+
+```
+http
+    .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+    .addFilter(new JwtAuthenticationFilter());
+```
+📌 Now, users must include JWT in the request header:
+```
+Authorization: Bearer <TOKEN>
+```
+## 📌 7. Securing a REST API in Spring Boot
+
+To secure REST APIs: ✔ Use JWT instead of sessions
+
+✔ Use @PreAuthorize to secure methods
+
+✔ Restrict access based on roles
+
+### ✅ Example: Secure API with @PreAuthorize
+```
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/secure")
+public class SecureController {
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String adminAccess() {
+        return "Admin Access";
+    }
+
+    @GetMapping("/user")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public String userAccess() {
+        return "User Access";
+    }
+}
+```
+📌 Only users with the correct roles can access the endpoints.
+## 🚀 Conclusion
+
+Spring Boot Security provides a powerful and flexible security framework.
+
+✔ Basic Authentication – Default security
+
+✔ Role-Based Access Control (RBAC) – Secure API by roles
+
+✔ Custom Login Page – Use a custom UI
+
+✔ JWT Authentication – Token-based security for REST APIs
