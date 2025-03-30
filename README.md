@@ -16181,4 +16181,208 @@ http://localhost:8080/actuator/active-users
 
 🚀 Spring Boot Actuator is essential for monitoring and managing production applications!
 
+# 📝 Logging in Spring Boot
+
+Logging is an essential part of application development, helping developers debug, monitor, and troubleshoot issues. Spring Boot provides built-in support for logging and integrates with SLF4J (Simple Logging Facade for Java) and Logback (default logging framework in Spring Boot).
+
+## 📌 1. Default Logging Setup in Spring Boot
+
+Spring Boot automatically configures logging using Logback. If you don’t add any logging dependencies, Spring Boot uses Logback with SLF4J.
+
+### Example: Default Log Output (Console)
+```
+2025-03-30 10:15:00.123  INFO 12345 --- [main] com.example.MainApplication : Application Started
+```
+### 💡 By default, Spring Boot logs:
+
+✅ Log level → INFO
+
+✅ Log format → Timestamp, Log Level, Process ID, Thread Name, Logger Name, and Message
+
+## 📌 2. Logging Frameworks in Spring Boot
+
+Spring Boot supports multiple logging frameworks:
+
+SLF4J (Simple Logging Facade for Java)
+
+Logback (Default in Spring Boot)
+
+Log4j2 (Alternative to Logback)
+
+Java Util Logging (JUL)
+
+## 📌 3. Changing the Default Logging Level
+
+By default, Spring Boot logs at INFO level. You can modify the logging level in application.properties or application.yml.
+
+Example: Change Log Level in application.properties
+
+```
+logging.level.root=DEBUG
+logging.level.org.springframework=INFO
+logging.level.com.example.myapp=TRACE
+```
+OR in application.yml
+```
+logging:
+  level:
+    root: DEBUG
+    org.springframework: INFO
+    com.example.myapp: TRACE
+```
+## 📌 4. Using SLF4J for Logging
+
+Spring Boot recommends using SLF4J (with Logback by default).
+
+### ✅ Example: Logging with SLF4J and Logback
+
+```
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+@Service
+public class LoggingExample {
+    private static final Logger logger = LoggerFactory.getLogger(LoggingExample.class);
+
+    public void execute() {
+        logger.trace("TRACE: Detailed Debugging Info");
+        logger.debug("DEBUG: Debugging Info");
+        logger.info("INFO: General Info");
+        logger.warn("WARN: Warning Message");
+        logger.error("ERROR: Something went wrong!");
+    }
+}
+```
+📌 Spring Boot automatically provides SLF4J and Logback dependencies, so no need to add them manually.
+
+# 📌 5. Logging to a File
+
+By default, logs appear in the console, but we can configure Spring Boot to log to a file.
+
+Enable File Logging in application.properties
+```
+logging.file.name=logs/app.log   # Logs will be saved in logs/app.log
+logging.level.root=INFO
+
+```
+OR in application.yml
+```
+logging:
+  file:
+    name: logs/app.log
+  level:
+    root: INFO
+```
+📌 Now logs will be saved in the logs/app.log file.
+
+## 📌 6. Custom Log Format in Logback
+
+Spring Boot uses Logback by default. We can customize the log format by adding a logback-spring.xml file in src/main/resources.
+
+Example: Custom logback-spring.xml
+
+```
+<configuration>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/application.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>
+```
+📌 Now logs will be saved in logs/application.log with a custom format.
+
+## 📌 7. Using Log4j2 Instead of Logback
+
+Spring Boot supports Log4j2, but you need to exclude Logback and add Log4j2 manually.
+
+Step 1: Add Log4j2 Dependency in pom.xml
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-logging</artifactId>
+    <scope>provided</scope>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-log4j2</artifactId>
+</dependency>
+```
+## 📌 Spring Boot will now use Log4j2 instead of Logback.
+
+Step 2: Create log4j2.xml in src/main/resources
+```
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c{1} - %m%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
+```
+📌 Now Spring Boot will log using Log4j2 with the specified format.
+
+### 📌 8. Logging in a Spring Boot REST API
+You can log request and response details in a Spring Boot REST API.
+
+### ✅ Example: Logging in a REST Controller
+```
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class LoggingController {
+    private static final Logger logger = LoggerFactory.getLogger(LoggingController.class);
+
+    @GetMapping("/hello")
+    public String hello(@RequestParam String name) {
+        logger.info("Received request for name: {}", name);
+        return "Hello, " + name;
+    }
+}
+```
+📌 Now all API calls will be logged with details.
+
+## 📌 9. Logging with Spring Boot Actuator
+
+Spring Boot Actuator provides an endpoint to dynamically change log levels at runtime.
+
+### 1️⃣ Enable the Actuator logging endpoint in application.properties
+```
+management.endpoints.web.exposure.include=loggers
+```
+### 2️⃣ View Current Log Levels
+```
+curl -X POST "http://localhost:8080/actuator/loggers/com.example" -H "Content-Type: application/json" -d '{"configuredLevel": "DEBUG"}'
+```
+### 3️⃣ Change Log Level at Runtime
+```
+curl -X POST "http://localhost:8080/actuator/loggers/com.example" -H "Content-Type: application/json" -d '{"configuredLevel": "DEBUG"}'
+```
+📌 This allows changing log levels without restarting the app.
+
+## 📌 10. Summary
+![image](https://github.com/user-attachments/assets/05ca92d5-4e92-4b0a-8aa1-a950f2c372af)
+
+## 🚀 Conclusion
+
+Logging is crucial for monitoring, debugging, and maintaining Spring Boot applications. Spring Boot makes it easy by providing built-in logging with Logback, SLF4J, and Actuator support.
+
 
