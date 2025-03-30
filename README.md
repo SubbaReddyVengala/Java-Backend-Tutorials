@@ -15217,3 +15217,146 @@ public class UserDTO {
 ✅ Customize error handling using @ExceptionHandler for better API responses.
 
 ✅ Use @Pattern and custom validators when built-in ones are insufficient.
+
+# 🔥 HTTP Headers in Spring MVC 🚀
+
+## 📌 What Are HTTP Headers?
+
+HTTP headers carry metadata about the request or response.
+
+They help define: 
+
+✅ Content type
+
+✅ Authentication
+
+✅ Caching policies
+
+✅ Request & response handling
+
+## 📌 1. Accessing HTTP Headers in Spring MVC
+
+### 🎯 Using @RequestHeader in Controller
+
+We use @RequestHeader to read HTTP headers from client requests.
+
+Example: Fetch a Specific Header
+
+```
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api")
+public class HeaderController {
+
+    @GetMapping("/header")
+    public String getHeader(@RequestHeader("User-Agent") String userAgent) {
+        return "User-Agent: " + userAgent;
+    }
+}
+```
+✅ This extracts the User-Agent header.
+
+📌 User-Agent contains browser details like Chrome, Firefox, etc.
+
+## 🎯 Fetching Multiple Headers
+```
+@GetMapping("/headers")
+public String getHeaders(@RequestHeader("User-Agent") String userAgent,
+                         @RequestHeader("Accept-Language") String language) {
+    return "User-Agent: " + userAgent + ", Accept-Language: " + language;
+}
+```
+✅ Extracts both User-Agent and Accept-Language.
+
+## 🎯 Handling Missing Headers with Default Values
+
+If a header is optional, provide a default value:
+```
+@GetMapping("/optional-header")
+public String getOptionalHeader(@RequestHeader(value = "X-Request-ID", defaultValue = "N/A") String requestId) {
+    return "Request ID: " + requestId;
+}
+```
+✅ If X-Request-ID is missing, returns "N/A" instead of an error.
+
+## 🎯 Fetching All Headers in a Request
+
+Use Map<String, String> to get all headers dynamically:
+```
+@GetMapping("/all-headers")
+public Map<String, String> getAllHeaders(@RequestHeader Map<String, String> headers) {
+    return headers;
+}
+```
+✅ Returns all headers in a Map
+
+## 📌 2. Setting HTTP Headers in Response
+
+Use HttpServletResponse or ResponseEntity to send custom headers.
+
+### 🎯 Using HttpServletResponse
+
+```
+@GetMapping("/custom-header")
+public void setHeader(HttpServletResponse response) {
+    response.setHeader("X-Custom-Header", "SpringBoot");
+}
+```
+
+✅ Adds X-Custom-Header: SpringBoot in the response.
+
+### 🎯 Using ResponseEntity
+```
+@GetMapping("/response-entity-header")
+public ResponseEntity<String> responseWithHeader() {
+    return ResponseEntity.ok()
+            .header("X-Custom-Header", "SpringBoot")
+            .body("Response with custom header");
+}
+✅ Adds X-Custom-Header using ResponseEntity.
+```
+### 🎯 Setting Multiple Headers
+```
+@GetMapping("/multiple-headers")
+public ResponseEntity<String> responseWithMultipleHeaders() {
+    return ResponseEntity.ok()
+            .header("Cache-Control", "no-cache")
+            .header("Pragma", "no-cache")
+            .body("Response with multiple headers");
+}
+```
+✅ Adds multiple headers for caching control.
+
+## 📌 3. Common HTTP Headers
+![image](https://github.com/user-attachments/assets/46843eb8-916a-431a-9932-e34c8dd40f72)
+
+## 📌 4. Sending Custom Headers in Postman
+
+### 1️⃣ Open Postman
+
+### 2️⃣ Select the Headers tab
+
+### 3️⃣ Add Key-Value Pairs
+
+```
+Key: X-Custom-Header  
+Value: SpringBootApp
+```
+✅ Sends custom headers in API requests.
+
+## 📌 5. Practical Use Cases of HTTP Headers
+
+![image](https://github.com/user-attachments/assets/7ff5791f-0cff-4316-b62e-a90cadd7ca14)
+
+## 📌 Summary
+
+✅ @RequestHeader extracts headers from incoming requests
+
+✅ Use @RequestHeader Map<String, String> to fetch all headers
+
+✅ ResponseEntity.header() helps send custom headers
+
+✅ Common use cases include authentication, security, caching, and CORS
+
+
