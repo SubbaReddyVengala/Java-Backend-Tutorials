@@ -15517,3 +15517,175 @@ public class UserController {
 
 ![image](https://github.com/user-attachments/assets/7e8f1b4d-1e4c-4a20-837a-22f6e46e3e21)
 
+# 🔥 Producing and Consuming REST API Services in Spring Boot 🚀
+
+In a Spring Boot application, producing and consuming RESTful web services means:
+
+✅ Producing API: Creating an endpoint that provides data (JSON/XML).
+
+✅ Consuming API: Calling and processing data from an external API.
+
+## 📌 1. Producing REST API Services (Creating APIs)
+
+Spring Boot makes it easy to build RESTful APIs using @RestController.
+
+### 🎯 Example: Producing a Simple REST API (JSON Response)
+
+```
+@RestController
+@RequestMapping("/api")
+public class ProductController {
+
+    @GetMapping("/products")
+    public List<String> getProducts() {
+        return List.of("Laptop", "Mobile", "Tablet");
+    }
+}
+```
+✅ Produces JSON response:
+
+```
+["Laptop", "Mobile", "Tablet"]
+```
+
+## 📌 2. Consuming REST API Services (Calling External APIs)
+
+To call an external API in Spring Boot, we can use RestTemplate (legacy) or WebClient (recommended for reactive applications).
+
+
+### 🎯 Using RestTemplate (Synchronous, Simple Use-Case)
+
+```
+@RestController
+@RequestMapping("/api")
+public class ProductConsumerController {
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    @GetMapping("/external-products")
+    public String consumeExternalAPI() {
+        String url = "https://fakestoreapi.com/products";  // Example API
+        return restTemplate.getForObject(url, String.class);
+    }
+}
+```
+✅ Calls an external API and returns the response
+
+## 📌 3. Producing API with Different Response Types (JSON/XML)
+
+By default, Spring Boot produces JSON responses. But we can configure it to support XML too.
+
+
+### 🎯 Producing JSON and XML Response Using @Produces
+
+```
+@RestController
+@RequestMapping("/api")
+public class EmployeeController {
+
+    @GetMapping(value = "/employees", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    public List<Employee> getEmployees() {
+        return List.of(new Employee(1, "John"), new Employee(2, "Doe"));
+    }
+}
+```
+
+✅ Clients can request JSON or XML by setting the Accept header.
+
+### Request Example (JSON)
+```
+GET /api/employees
+Accept: application/json
+```
+
+### Response (JSON)
+
+```
+[
+    {"id": 1, "name": "John"},
+    {"id": 2, "name": "Doe"}
+]
+```
+
+### Request Example (XML)
+```
+Request Example (XML)
+```
+
+### Response (XML)
+
+```
+<employees>
+   <employee>
+      <id>1</id>
+      <name>John</name>
+   </employee>
+   <employee>
+      <id>2</id>
+      <name>Doe</name>
+   </employee>
+</employees>
+```
+## 📌 4. Consuming API Using WebClient (Recommended for Asynchronous Calls)
+
+WebClient is the modern, non-blocking alternative to RestTemplate.
+
+### 🎯 Example: Consuming an API Using WebClient
+```
+@Service
+public class ProductService {
+
+    private final WebClient webClient;
+
+    public ProductService(WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder.baseUrl("https://fakestoreapi.com").build();
+    }
+
+    public Mono<String> getExternalProducts() {
+        return webClient.get()
+                .uri("/products")
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+}
+```
+
+✅ More efficient than RestTemplate for large-scale applications
+
+## 📌 5. Consuming API with @RequestBody (Handling JSON Payloads)
+
+APIs often accept JSON data in the request body.
+
+### 🎯 Example: Creating an API That Accepts JSON
+
+```
+@RestController
+@RequestMapping("/api")
+public class UserController {
+
+    @PostMapping("/users")
+    public ResponseEntity<String> createUser(@RequestBody User user) {
+        return ResponseEntity.ok("User " + user.getName() + " created successfully!");
+    }
+}
+```
+✅ Client sends JSON, and Spring automatically converts it into a Java object.
+
+Request (JSON)
+
+```
+{
+    "id": 1,
+    "name": "Alice"
+}
+```
+
+Response
+```
+"User Alice created successfully!"
+```
+
+## 📌 6. Summary
+![image](https://github.com/user-attachments/assets/c9a782fb-9fda-432a-9b59-9414730efe49)
+
+
