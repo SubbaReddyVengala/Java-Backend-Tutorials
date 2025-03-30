@@ -16659,3 +16659,579 @@ Spring Boot Security provides a powerful and flexible security framework.
 ✔ Custom Login Page – Use a custom UI
 
 ✔ JWT Authentication – Token-based security for REST APIs
+
+# 🚀 Microservices with Spring Boot
+
+Microservices architecture is a modern approach to building applications as a collection of small, independent services that communicate over a network. Spring Boot simplifies microservices development by providing built-in tools for REST APIs, security, service discovery, monitoring, and more.
+
+## 📌 1. What are Microservices?
+
+Microservices are small, loosely coupled services that work together to form an application. Each service:
+
+✅ Has its own database (DB per service)
+
+✅ Communicates via REST APIs or messaging (Kafka, RabbitMQ)
+
+✅ Can be deployed and scaled independently
+
+###  🛠 Example:
+
+A shopping application may have:
+
+✔ User Service (Handles users)
+
+✔ Order Service (Manages orders)
+
+✔ Product Service (Handles products)
+
+Each of these services runs independently and communicates using REST APIs or message queues.
+
+##   🚀 Monolithic Architecture (Traditional Approach)
+
+he entire application is built as a single unit (one big codebase).
+
+All components (UI, business logic, database) are tightly coupled.
+
+If one part fails, the entire system can crash.
+
+Hard to scale specific features (requires scaling the entire app).
+
+Slow development and deployment since every change requires redeploying the whole application
+
+##   🚀 Microservices Architecture (Modern Approach)
+
+The application is broken down into independent services, each handling a specific function.
+
+Services communicate with each other using APIs (like REST, gRPC, or messaging queues).
+
+If one service fails, other services can still run, making the system more resilient.
+
+Easier to scale individual services based on demand.
+
+Faster development and deployment since changes to one service do not affect others
+
+## 📌 Real-World Use Cases of Microservices
+
+Netflix – Uses microservices to handle different aspects of streaming (user preferences, recommendations, content delivery).
+
+Amazon – Each feature (order processing, payments, search) runs as a separate microservice.
+
+Uber – Divides ride-matching, payments, notifications, and driver management into microservices.
+
+
+## 📌 When to Use Microservices?
+
+✅ You want high scalability (handle more users easily).
+
+✅ Your application is growing complex and hard to maintain.
+
+✅ You need faster deployment cycles for continuous updates.
+
+✅ Your team is big and distributed, working on different features.
+
+🚫 Avoid microservices if your application is small or doesn't require independent scaling.
+
+## 📌 Best Practices for Transitioning from Monolithic to Microservices
+
+✔ Start small – Break one feature into a microservice instead of the whole app at once.
+
+✔ Use API Gateway – Acts as a single entry point to manage microservices.
+
+✔ Automate deployment – Use Docker, Kubernetes, or CI/CD pipelines.
+
+✔ Ensure service communication – Use REST APIs, gRPC, or message brokers (Kafka, RabbitMQ).
+
+✔ Monitor everything – Use Spring Boot Actuator, Prometheus, or Grafana for logging and monitoring.
+
+# Implementation of Microservices using Spring Boot
+
+We will implement three microservices (User Service, Order Service, Payment Service) and integrate them into a Spring Boot Microservices architectur
+
+## Project Setup
+
+### 1. Create Three Spring Boot Applications
+
+We will create:
+
+User Service (Runs on port 8001, context path /user)
+
+Order Service (Runs on port 8002, context path /order)
+
+Payment Service (Runs on port 8003, context path /payment)
+
+Each microservice will be independent and communicate via REST APIs.
+
+## 1️⃣ User Microservice
+
+Setup user-service
+
+Dependencies (pom.xml)
+```
+<dependencies>
+    <!-- Spring Boot Web -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    
+    <!-- Spring Boot Actuator (For monitoring) -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    
+    <!-- Lombok (For reducing boilerplate code) -->
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <scope>provided</scope>
+    </dependency>
+
+    <!-- Spring Boot DevTools (For hot reload) -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-devtools</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+</dependencies>
+
+```
+### Application Properties (application.yml)
+```
+server:
+  port: 8001
+  servlet:
+    context-path: /user
+
+spring:
+  application:
+    name: user-service
+
+```
+### User Model
+```
+package com.microservices.user.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class User {
+    private Long id;
+    private String name;
+    private String email;
+}
+
+```
+### User Controller
+
+```
+package com.microservices.user.controller;
+
+import com.microservices.user.model.User;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    private static final List<User> users = Arrays.asList(
+        new User(1L, "John Doe", "john@example.com"),
+        new User(2L, "Jane Smith", "jane@example.com")
+    );
+
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        return users.stream()
+            .filter(user -> user.getId().equals(id))
+            .findFirst()
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+}
+
+```
+## 2️⃣ Order Microservice
+
+### Setup order-
+
+Dependencies (pom.xml)
+(Same as User Service)
+
+### Application Properties (application.yml)
+
+```
+server:
+  port: 8002
+  servlet:
+    context-path: /order
+
+spring:
+  application:
+    name: order-service
+
+```
+### Order Model
+```
+package com.microservices.order.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Order {
+    private Long orderId;
+    private Long userId;
+    private String productName;
+    private double price;
+}
+```
+### Order Controller
+```
+package com.microservices.order.controller;
+
+import com.microservices.order.model.Order;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+
+@RestController
+@RequestMapping("/orders")
+public class OrderController {
+
+    private static final List<Order> orders = Arrays.asList(
+        new Order(101L, 1L, "Laptop", 75000),
+        new Order(102L, 2L, "Smartphone", 40000)
+    );
+
+    @GetMapping
+    public ResponseEntity<List<Order>> getAllOrders() {
+        return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
+        return orders.stream()
+            .filter(order -> order.getOrderId().equals(id))
+            .findFirst()
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+}
+```
+## 3️⃣ Payment Microservice
+
+### Setup payment-service
+Dependencies (pom.xml)
+(Same as User Service)
+
+### Application Properties (application.yml)
+```
+server:
+  port: 8003
+  servlet:
+    context-path: /payment
+
+spring:
+  application:
+    name: payment-service
+```
+### Payment Model
+```
+package com.microservices.payment.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Payment {
+    private Long paymentId;
+    private Long orderId;
+    private String status;
+    private double amount;
+}
+
+```
+### Payment Controller
+
+```
+package com.microservices.payment.controller;
+
+import com.microservices.payment.model.Payment;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+
+@RestController
+@RequestMapping("/payments")
+public class PaymentController {
+
+    private static final List<Payment> payments = Arrays.asList(
+        new Payment(201L, 101L, "Completed", 75000),
+        new Payment(202L, 102L, "Pending", 40000)
+    );
+
+    @GetMapping
+    public ResponseEntity<List<Payment>> getAllPayments() {
+        return ResponseEntity.ok(payments);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Payment> getPaymentById(@PathVariable Long id) {
+        return payments.stream()
+            .filter(payment -> payment.getPaymentId().equals(id))
+            .findFirst()
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+}
+```
+## Running Microservices
+
+### Start user-service
+
+```
+mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8001
+
+```
+
+### Start order-service
+
+```
+mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8002
+
+```
+
+### Start payment-service
+
+```
+mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8003
+
+```
+## Testing with Postman
+
+![image](https://github.com/user-attachments/assets/aa0f3c00-bc01-4299-8228-78a41f9c76ce)
+
+# API Gateway in Microservices – A Deep Dive 🚀
+
+## 1️⃣ What is an API Gateway?
+
+An API Gateway is a server that acts as a single entry point for multiple microservices. It manages all requests from clients and directs them to the appropriate microservices. It simplifies client interaction with microservices by abstracting the underlying service details.
+
+### Analogy:
+
+Think of an API Gateway like a receptionist in a large company. Instead of visitors contacting different departments directly, they first speak to the receptionist, who directs them to the right department based on their needs.
+
+## 2️⃣ Why Do We Need an API Gateway?
+
+When building microservices, clients (like browsers, mobile apps, or other services) need to communicate with different microservices (User, Order, Payment, etc.). Without an API Gateway, the client must handle multiple endpoints, leading to:
+
+✅ Complexity: Clients need to manage multiple service URLs.
+
+✅ Security Issues: Services might be directly exposed.
+
+✅ Redundant Code: Each microservice must handle cross-cutting concerns (authentication, logging, rate limiting, etc.).
+
+With an API Gateway, we solve these problems by providing a unified interface for all microservices.
+
+## 3️⃣ Key Features of an API Gateway
+
+### 1. Single Entry Point 🔗
+
+Instead of calling multiple services, clients communicate with the API Gateway.
+
+### 2. Request Routing & Load Balancing 🔄
+
+Routes incoming requests to the appropriate microservice.
+
+Can balance load across multiple service instances.
+
+### 3. Security & Authentication 🔒
+
+Implements authentication & authorization (e.g., JWT, OAuth2).
+
+Protects microservices from direct client access.
+
+### 4. Rate Limiting & Throttling 🚀
+
+Prevents excessive API requests by setting limits.
+
+Avoids service overloading.
+
+### 5. Logging & Monitoring 📊
+
+Captures detailed logs & metrics for monitoring API usage.
+
+### 6. Response Aggregation 🏗️
+
+Combines data from multiple microservices into a single response.
+
+Reduces the number of API calls for clients
+
+## 4️⃣ API Gateway in Microservices Architecture
+
+### 🔹 Without API Gateway:
+
+```
+Client -> User Service
+Client -> Order Service
+Client -> Payment Service
+
+```
+The client must interact with multiple microservices directly.
+
+More overhead for handling failures, retries, and security.
+
+### 🔹 With API Gateway:
+
+```
+Client -> API Gateway -> User Service
+                  -> Order Service
+                  -> Payment Service
+```
+The API Gateway manages routing, security, and communication.
+
+## 5️⃣ Common API Gateway Implementations
+
+Spring Cloud Gateway (Recommended for Spring Boot) ✅
+
+Kong API Gateway
+
+Nginx API Gateway
+
+AWS API Gateway
+
+Zuul (Older Netflix OSS API Gateway, now deprecated)
+
+## 6️⃣ When to Use an API Gateway?
+
+✅ For large-scale microservices requiring secure and efficient communication.
+
+✅ When multiple client applications (Web, Mobile, IoT) need different responses.
+
+✅ To handle load balancing, security, logging, and rate limiting centrally.
+
+✅ When you need to simplify client interactions with microservices.
+
+## 7️⃣ Challenges of API Gateway
+
+❌ Single Point of Failure – If the API Gateway crashes, all services become inaccessible.
+
+✔️ Solution: Deploy multiple instances and use load balancing.
+
+❌ Performance Overhead – Adding an extra layer increases latency.
+
+✔️ Solution: Optimize caching and enable fast routing.
+
+❌ Complexity – Managing an API Gateway requires additional infrastructure.
+
+✔️ Solution: Use Spring Cloud Gateway for easy integration.
+
+## 1. How Routing Works in API Gateway
+
+Gateway acts as an entry point: It receives incoming requests from clients.
+
+Routing table matches requests: Based on predicates (conditions), it determines which microservice should handle the request.
+
+Request forwarding: Once matched, the request is sent to the appropriate microservice (User, Order, or Payment).
+
+Response returned: The microservice processes the request and sends the response back through the gateway.
+
+## 2. Two Ways to Configure Routing
+
+### ✅ Declarative Routing (application.properties / YAML)
+
+Uses Spring Cloud properties to define routes.
+
+Example:
+```
+# Gateway Service Config
+server.port=8888
+spring.application.name=swiggy-gateway
+
+# User Microservice
+spring.cloud.gateway.routes[0].id=user
+spring.cloud.gateway.routes[0].uri=http://localhost:8001
+spring.cloud.gateway.routes[0].predicates[0]=Path=/user/**
+
+# Order Microservice
+spring.cloud.gateway.routes[1].id=order
+spring.cloud.gateway.routes[1].uri=http://localhost:8002
+spring.cloud.gateway.routes[1].predicates[0]=Path=/order/**
+
+# Payment Microservice
+spring.cloud.gateway.routes[2].id=payment
+spring.cloud.gateway.routes[2].uri=http://localhost:8003
+spring.cloud.gateway.routes[2].predicates[0]=Path=/payment/**
+
+```
+
+### ✅ Programmatic Routing (Java Configuration)
+
+Uses a RouteLocator bean in a Java class.
+```
+@Bean
+public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
+    return builder.routes()
+        .route("user", r -> r.path("/user/**")
+            .uri("http://localhost:8001"))
+        .route("order", r -> r.path("/order/**")
+            .uri("http://localhost:8002"))
+        .route("payment", r -> r.path("/payment/**")
+            .uri("http://localhost:8003"))
+        .build();
+}
+```
+### 3. How Requests Are Processed
+
+After this configuration, requests will be handled as follows:
+
+![image](https://github.com/user-attachments/assets/6f98dfe3-1bdf-4d97-b71b-2c55afe35f60)
+
+## 4. Benefits of Using API Gateway for Routing
+
+✅ Centralized Routing – No need for clients to call microservices directly.
+
+✅ Dynamic Updates – Routes can be modified without changing client applications.
+
+✅ Security & Load Balancing – Gateway can manage authentication, rate-limiting, etc.
+
+✅ Fault Tolerance – Prevents direct exposure of microservices to clients.
+
+# Service Registry and Discovery in Spring Boot Using Eureka
+
+## What is Service Registry and Discovery?
+
+Service Registry: A centralized repository that stores details (name, IP, port) of all microservices in the system.
+
+Service Discovery: A mechanism for microservices to dynamically find and communicate with other services without hardcoding their locations.
+
+## Why is Service Registry and Discovery Important?
+
+✅ Scalability: New instances of microservices can be registered dynamically.
+
+✅ Fault Tolerance: If a service fails, it is automatically removed from the registry.
+
+✅ Load Balancing: Traffic can be evenly distributed among multiple service instances.
