@@ -15688,4 +15688,149 @@ Response
 ## 📌 6. Summary
 ![image](https://github.com/user-attachments/assets/c9a782fb-9fda-432a-9b59-9414730efe49)
 
+# 🔥 Spring Boot Profiles 🔥
+
+## 📌 What are Spring Boot Profiles?
+
+Spring Boot profiles allow developers to define different configurations for different environments (e.g., dev, test, prod) within the same application. This helps manage environment-specific properties without modifying code.
+
+## 📌 Why Use Profiles?
+
+🔹 Manage different configurations for development, testing, and production
+
+🔹 Avoid hardcoding environment-specific properties
+
+🔹 Enable/disable beans and services based on the active profile
+
+## 📌 1. Defining Profiles in application.properties or application.yml
+
+Spring Boot allows you to define multiple configuration files for different environments.
+
+## 🎯 Example: application.properties (Default Profile)
+
+```
+server.port=8080
+spring.datasource.url=jdbc:mysql://localhost:3306/dev_db
+spring.datasource.username=dev_user
+spring.datasource.password=dev_pass
+```
+
+## 🎯 Example: application-dev.properties
+
+```
+server.port=8081
+spring.datasource.url=jdbc:mysql://localhost:3306/dev_db
+spring.datasource.username=dev_user
+spring.datasource.password=dev_pass
+```
+
+## 🎯 Example: application-prod.properties
+
+```
+server.port=8082
+spring.datasource.url=jdbc:mysql://prod-server:3306/prod_db
+spring.datasource.username=prod_user
+spring.datasource.password=prod_pass
+```
+
+🔹 Spring Boot loads application.properties by default.
+
+🔹 It loads application-{profile}.properties when a profile is activated.
+
+## 📌 2. Activating a Profile
+
+#### ✅ Option 1: Using application.properties
+```
+spring.profiles.active=dev
+```
+### ✅ Option 2: Using Command Line Arguments
+
+Run the application with a profile:
+
+```
+java -jar myapp.jar --spring.profiles.active=prod
+```
+
+### ✅ Option 3: Using Environment Variables
+```
+export SPRING_PROFILES_ACTIVE=prod
+```
+
+##  📌 3. Using Profiles in Java Code
+
+You can use the @Profile annotation to enable specific beans based on the active profile.
+
+### 🎯 Example: Profile-Specific Beans
+
+```
+@Service
+@Profile("dev")  // This bean is active only in the "dev" profile
+public class DevDatabaseService implements DatabaseService {
+    @Override
+    public void connect() {
+        System.out.println("Connected to DEV database");
+    }
+}
+
+@Service
+@Profile("prod")  // This bean is active only in the "prod" profile
+public class ProdDatabaseService implements DatabaseService {
+    @Override
+    public void connect() {
+        System.out.println("Connected to PROD database");
+    }
+}
+```
+✅ When the dev profile is active, DevDatabaseService is used.
+
+✅ When the prod profile is active, ProdDatabaseService is used.
+
+## 📌 4. Using @Value to Read Profile-Specific Properties
+
+```
+@RestController
+@RequestMapping("/config")
+public class ConfigController {
+
+    @Value("${server.port}")
+    private String serverPort;
+
+    @GetMapping("/port")
+    public String getServerPort() {
+        return "Application is running on port: " + serverPort;
+    }
+}
+```
+✅ If dev profile is active, it will return 8081.
+
+✅ If prod profile is active, it will return 8082.
+
+## 📌 5. Profile-Specific Beans Using @Bean
+
+If you want to define different beans for different profiles, use @Bean inside a configuration class.
+
+```
+@Configuration
+public class AppConfig {
+
+    @Bean
+    @Profile("dev")
+    public DataSource devDataSource() {
+        System.out.println("Using DEV DataSource");
+        return new DataSource("jdbc:mysql://localhost:3306/dev_db", "dev_user", "dev_pass");
+    }
+
+    @Bean
+    @Profile("prod")
+    public DataSource prodDataSource() {
+        System.out.println("Using PROD DataSource");
+        return new DataSource("jdbc:mysql://prod-server:3306/prod_db", "prod_user", "prod_pass");
+    }
+}
+```
+✅ This ensures the correct data source is used based on the active profile.
+
+## 📌 6. Summary
+
+![image](https://github.com/user-attachments/assets/b34659f9-9e65-4c1f-9ae7-23abca50cf7f)
 
