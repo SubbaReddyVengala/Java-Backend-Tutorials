@@ -17224,14 +17224,347 @@ After this configuration, requests will be handled as follows:
 
 ## What is Service Registry and Discovery?
 
-Service Registry: A centralized repository that stores details (name, IP, port) of all microservices in the system.
+**Service Registry:** A centralized repository that stores details (name, IP, port) of all microservices in the system.
 
-Service Discovery: A mechanism for microservices to dynamically find and communicate with other services without hardcoding their locations.
+**Service Discovery:** A mechanism for microservices to dynamically find and communicate with other services without hardcoding their locations.
 
 ## Why is Service Registry and Discovery Important?
 
-✅ Scalability: New instances of microservices can be registered dynamically.
+**✅ Scalability:** New instances of microservices can be registered dynamically.
 
-✅ Fault Tolerance: If a service fails, it is automatically removed from the registry.
+**✅ Fault Tolerance:** If a service fails, it is automatically removed from the registry.
 
-✅ Load Balancing: Traffic can be evenly distributed among multiple service instances.
+**✅ Load Balancing:** Traffic can be evenly distributed among multiple service instances.
+
+## Using Netflix Eureka for Service Registry and Discovery
+
+Spring Boot integrates with Netflix Eureka, which provides:
+
+**Eureka Server:** The central registry where services register themselves.
+
+**Eureka Client:** Each microservice registers with Eureka and discovers other services
+
+## Step 1: Create Eureka Server
+First, create a Spring Boot application that acts as the Eureka Service Registry.
+
+### 1. Add Eureka Server Dependency
+In pom.xml:
+```
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+</dependency>
+
+```
+### 2. Enable Eureka Server
+
+Modify SpringBootApplication class:
+
+```
+@EnableEurekaServer
+@SpringBootApplication
+public class EurekaServerApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(EurekaServerApplication.class, args);
+    }
+}
+```
+### 3. Configure application.yml
+
+```
+server:
+  port: 8761  # Default Eureka server port
+
+eureka:
+  client:
+    registerWithEureka: false  # This is the registry, it should not register itself
+    fetchRegistry: false       # No need to fetch registry data
+  server:
+    enableSelfPreservation: true
+```
+
+### 4. Start Eureka Server
+
+Run the Spring Boot application and open http://localhost:8761.
+
+You will see an Eureka Dashboard with no registered instances yet
+
+## Step 2: Register Microservices as Eureka Clients
+
+Now, modify each microservice (User, Order, Payment) to register with Eureka.
+
+### 1. Add Eureka Client Dependency
+
+In pom.xml of each microservice:
+```
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
+```
+### 2. Enable Eureka Client in Each Service
+
+Modify the SpringBootApplication class:
+
+```
+@EnableEurekaClient
+@SpringBootApplication
+public class UserServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(UserServiceApplication.class, args);
+    }
+}
+```
+### 3. Configure application.yml in Each Service
+
+User Service (application.yml)
+```
+server:
+  port: 8001
+spring:
+  application:
+    name: user-service  # Service name
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka  # Register with Eureka Server
+```
+
+### Order Service (application.yml)
+
+```
+server:
+  port: 8002
+spring:
+  application:
+    name: order-service
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+```
+### Payment Service (application.yml)
+```
+server:
+  port: 8003
+spring:
+  application:
+    name: payment-service
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+```
+## 4. Start Microservices and Verify Registration
+
+Start **Eureka Server** (localhost:8761).
+
+Start **User, Order, and Payment services.**
+
+Open **http://localhost:8761** → You will see registered services.
+
+## Step 3: Service Discovery Using Eureka
+
+Instead of calling microservices by hardcoded URLs (http://localhost:8001),
+
+we will use Eureka discovery client to fetch service locations dynamically
+
+## API Gateway Integration with Eureka Server in Spring Boot Microservices
+
+### Why Integrate API Gateway with Eureka?
+
+When using Spring Cloud API Gateway, we typically configure routes with static URLs. However, integrating it with Eureka Server enables: 
+
+✅ **Dynamic Service Discovery** → No need to hardcode service URLs.
+
+✅ **Load Balancing** → Distributes traffic among multiple instances.
+
+✅ **Centralized Routing** → Clients interact with only the gateway, not individual services
+
+## Step 1: Create the API Gateway Service
+
+First, set up a Spring Boot API Gateway project.
+
+### 1. Add Dependencies in pom.xml
+
+Include Spring Cloud Gateway and Eureka Client dependencies:
+
+```
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-gateway</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
+```
+### 2. Enable Eureka Client in GatewayApplication.java
+
+Modify the main class to register the gateway with Eureka:
+
+```
+@EnableEurekaClient
+@SpringBootApplication
+public class ApiGatewayApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(ApiGatewayApplication.class, args);
+    }
+}
+```
+### 3. Configure API Gateway in application.yml
+
+Instead of hardcoding service URLs, we use Eureka service names with lb:// (Load Balancer).
+
+```
+server:
+  port: 8888
+
+spring:
+  application:
+    name: api-gateway
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+spring.cloud.gateway.routes:
+  - id: user-service
+    uri: lb://user-service   # Eureka service name
+    predicates:
+      - Path=/user/**
+
+  - id: order-service
+    uri: lb://order-service
+    predicates:
+      - Path=/order/**
+
+  - id: payment-service
+    uri: lb://payment-service
+    predicates:
+      - Path=/payment/**
+```
+✅ Now, API Gateway dynamically discovers services registered with Eureka and forwards requests.
+
+## Step 2: Register Microservices with Eureka
+
+Each microservice (User, Order, Payment) should have Eureka Client configured.
+
+### 1. Add Eureka Client Dependency (pom.xml)
+Add this dependency in each microservice:
+```
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+</dependency>
+```
+### 2. Configure Each Microservice (application.yml)
+Each service should register itself with Eureka Server (8761).
+
+**User Service** (application.yml)
+
+```
+server:
+  port: 8001
+spring:
+  application:
+    name: user-service  # Service name for Eureka registration
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+```
+### Order Service (application.yml)
+
+```
+server:
+  port: 8002
+spring:
+  application:
+    name: order-service
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+```
+### Payment Service (application.yml)
+```
+server:
+  port: 8003
+spring:
+  application:
+    name: payment-service
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+```
+## Step 3: Start and Verify API Gateway with Eureka
+
+Start **Eureka Server** (localhost:8761).
+
+Start **User**, **Order**, and **Payment Services**.
+
+Start **API Gateway** (localhost:8888).
+
+## Test API Gateway Endpoints
+
+### ✅ Access User Service via API Gateway
+
+👉 http://localhost:8888/user/1
+
+➡ Routed to http://localhost:8001/user/1
+
+### ✅ Access Order Service via API Gateway
+
+👉 http://localhost:8888/order/1
+
+➡ Routed to http://localhost:8002/order/1
+
+### ✅ Access Payment Service via API Gateway
+
+👉 http://localhost:8888/payment/1
+
+➡ Routed to http://localhost:8003/payment/1
+
+## Step 4: Enable Load Balancing (Optional)
+
+If we deploy multiple instances of a service (e.g., two instances of user-service on different ports), API Gateway will automatically balance requests.
+
+### Start Multiple Instances of User Service
+
+```
+server:
+  port: 8001  # First instance
+
+```
+```
+server:
+  port: 8004  # Second instance
+
+```
+Eureka will register both instances, and API Gateway will distribute requests automatically.
+
+## Final Summary
+
+✅ Created API Gateway (8888).
+
+✅ Registered User, Order, Payment Services with Eureka.
+
+✅ Configured Dynamic Routing with Eureka (No hardcoded URLs).
+
+✅ API Gateway now forwards requests dynamically to services.
+
+✅ Load balancing is enabled if multiple instances are running.
+
+
