@@ -17699,16 +17699,6 @@ public class PaymentController {
 ✅ For better scalability, use Feign Client with Eureka.
 
 
-
-
-
-
-
-
-
-
-
-
 # Microservices Communication Using Feign Client
 
 ## Why Use Feign Client for Microservices Communication?
@@ -17724,5 +17714,132 @@ In a microservices architecture, services often need to communicate with each ot
 ✅ **Easier Maintenance** → More readable and maintainable than RestTemplate.
 
 ✅ **Integration with Spring Cloud** → Supports circuit breakers and tracing.
+
+## Step-by-Step Implementation: Feign Client Communication
+
+We will consume the Payment Microservice REST API from the User Microservice using Feign Client.
+
+### Step 1: Add Dependencies
+
+In User Service (pom.xml), add the Feign Client dependency:
+```
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-openfeign</artifactId>
+</dependency>
+
+```
+### Step 2: Enable Feign Client in UserServiceApplication.java
+
+Add the @EnableFeignClients annotation to enable Feign.
+
+```
+@EnableFeignClients
+@SpringBootApplication
+public class UserServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(UserServiceApplication.class, args);
+    }
+}
+```
+### Step 3: Create a Feign Client Interface
+
+In User Service, create an interface to communicate with the Payment Service.
+
+```
+@FeignClient(name = "payment-service")
+public interface PaymentClient {
+    
+    @GetMapping("/payment/{userId}")
+    PaymentResponse getPaymentDetails(@PathVariable("userId") Long userId);
+}
+```
+🔹 **@FeignClient(name = "payment-service")** → Feign will discover payment-service dynamically from Eureka.
+
+🔹 **@GetMapping("/payment/{userId}")** → Matches the REST API endpoint in the Payment Service.
+
+🔹 **PaymentRespons**e → DTO class for receiving the response.
+
+### Step 4: Define PaymentResponse DTO
+
+Create a DTO class in **User Service** to handle the response from the Payment Service.
+
+```
+public class PaymentResponse {
+    private Long userId;
+    private double amount;
+    private String transactionId;
+    private String status;
+
+    // Getters and Setters
+}
+```
+### Step 5: Inject Feign Client in User Controller
+
+Modify **UserController** to use Feign for fetching payment details
+
+```
+@RestController
+@RequestMapping("/user")
+public class UserController {
+
+    @Autowired
+    private PaymentClient paymentClient;
+
+    @GetMapping("/{userId}/payment")
+    public PaymentResponse getUserPayment(@PathVariable Long userId) {
+        return paymentClient.getPaymentDetails(userId);
+    }
+}
+```
+### ✅ Now, User Service can communicate with Payment Service via Feign Client!
+
+### Step 6: Implement Payment Service REST API
+
+In **Payment Service**, implement the REST API for payments.
+
+```
+@RestController
+@RequestMapping("/payment")
+public class PaymentController {
+
+    @GetMapping("/{userId}")
+    public PaymentResponse getPaymentDetails(@PathVariable Long userId) {
+        return new PaymentResponse(userId, 250.0, "TXN123456", "SUCCESS");
+    }
+}
+```
+
+## Step 7: Test the Feign Client Communication
+
+1️⃣ Start **Eureka Server** (localhost:8761)
+
+2️⃣ Start **Payment Service** (localhost:8003)
+
+3️⃣ Start **User Service** (localhost:8001)
+
+4️⃣ Test **User Service** Feign Call:
+
+🟢 **URL:** http://localhost:8001/user/1/payment
+
+🟢 **Response:**
+
+```
+{
+    "userId": 1,
+    "amount": 250.0,
+    "transactionId": "TXN123456",
+    "status": "SUCCESS"
+}
+```
+🚀 User Service successfully communicated with Payment Service using Feign Client!
+
+## Conclusion
+
+✅ Feign simplifies HTTP communication in microservices.
+
+✅ No need to hardcode URLs, works dynamically with Eureka.
+
+✅ Supports load balancing and circuit breakers.
 
 
