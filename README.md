@@ -18598,8 +18598,120 @@ public class QueueExample {
 }
 
 ```
+## Iterator interface
+
+The Iterator interface in Java is part of the Java Collections Framework and is used to iterate over collections like ArrayList, HashSet, LinkedList, etc. It provides a standard way to access elements one by one.
+
+### Hierarchy of Iterator Interface
+```
+java.lang.Object  
+   └── java.util.Iterator<E>
+```
+Iterator<E> is a generic interface where <E> represents the type of elements it iterates over.
+
+### Methods of Iterator Interface
+The Iterator interface provides three key methods:
+
+**boolean** **hasNext()**
+
+Returns true if the iteration has more elements.
+
+Otherwise, returns false.
+
+**E** **next()**
+
+Returns the next element in the iteration.
+
+Throws NoSuchElementException if no more elements exist.
+
+**void** **remove() (optional method)**
+
+Removes the last element returned by next().
+
+Can only be called once per next() call.
+
+Throws IllegalStateException if called without next().
+
+### Using Iterator with ArrayList
+
+```
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class IteratorExample {
+    public static void main(String[] args) {
+        // Creating an ArrayList
+        ArrayList<String> languages = new ArrayList<>();
+        languages.add("Java");
+        languages.add("Python");
+        languages.add("C++");
+
+        // Getting an Iterator
+        Iterator<String> iterator = languages.iterator();
+
+        // Iterating through the elements
+        while (iterator.hasNext()) {
+            String language = iterator.next();
+            System.out.println(language);
+        }
+    }
+}
+```
+Java
+Python
+C++
+
+
 
 ## 📌  Comparing Java Collections
 
 ![image](https://github.com/user-attachments/assets/044a4577-de8e-4b4a-a0c3-1ab1a9cbefab)
+
+# Java ArrayList
+
+ArrayList is a resizable array implementation in Java that belongs to the Java Collections Framework. It provides a dynamic way to store elements, meaning the size of the list increases automatically as elements are added.
+
+## Key Features of ArrayList
+
+**Dynamic Sizing**: Unlike arrays, you don't need to declare a fixed size; it grows dynamically.
+
+**Ordered Elements**: Maintains insertion order.
+
+**Allows Duplicates**: Can store duplicate values.
+
+**Indexed Access**: Provides fast access using indexes (O(1) time complexity for get() and set() operations).
+
+**Slower Modifications**: Insertion and deletion operations (except at the end) are slower (O(n)) due to shifting elements.
+
+**Not Synchronized**: Unlike Vector, ArrayList is not thread-safe.
+
+## ArrayList vs. Array
+![image](https://github.com/user-attachments/assets/69f5dd34-b73c-4e7e-9510-b3c32e88c3fb)
+
+###  class hierarchy of ArrayList in Java
+
+```
+java.lang.Object  
+   └── java.lang.Iterable<E>  
+       └── java.util.Collection<E>  
+           └── java.util.List<E>  
+               └── java.util.AbstractCollection<E>  
+                   └── java.util.AbstractList<E>  
+                       └── java.util.ArrayList<E>  
+```
+### Explanation:
+
+**Object** – The root class of all Java classes.
+
+**Iterable<E>** – Allows an object to be used in enhanced for-loops (for-each loop).
+
+**Collection<E>** – Defines basic collection functionalities like add(), remove(), size(), etc.
+
+**List<E>** – Extends Collection and adds ordered elements, indexed access, and duplicate allowance.
+
+**AbstractCollection<E>** – Provides a skeletal implementation of the Collection interface.
+
+**AbstractList<E>** – A partial implementation of the List interface, reducing the effort to implement lists.
+
+**ArrayList<E>** – A dynamic array implementation with fast random access and automatic resizing.
 
