@@ -18598,6 +18598,7 @@ public class QueueExample {
 }
 
 ```
+
 ## Iterator interface
 
 The Iterator interface in Java is part of the Java Collections Framework and is used to iterate over collections like ArrayList, HashSet, LinkedList, etc. It provides a standard way to access elements one by one.
@@ -18656,12 +18657,20 @@ public class IteratorExample {
         }
     }
 }
+`````
 ```
 Java
 Python
 C++
 
+```
+## Iterator vs. Enhanced For Loop
 
+![image](https://github.com/user-attachments/assets/54585b4e-4698-436e-8926-83e2ddb9c97b)
+
+## ListIterator (Advanced Iterator for Lists)
+
+Unlike Iterator, the ListIterator interface provides bidirectional traversal (forward and backward). It works only with List implementations (ArrayList, LinkedList).
 
 ## 📌  Comparing Java Collections
 
@@ -18714,4 +18723,179 @@ java.lang.Object
 **AbstractList<E>** – A partial implementation of the List interface, reducing the effort to implement lists.
 
 **ArrayList<E>** – A dynamic array implementation with fast random access and automatic resizing.
+
+### 3. Creating an ArrayList
+
+## Basic Syntax
+```
+import java.util.ArrayList;
+
+public class Main {
+    public static void main(String[] args) {
+        // Creating an ArrayList of Strings
+        ArrayList<String> list = new ArrayList<>();
+
+        // Adding elements
+        list.add("Java");
+        list.add("Python");
+        list.add("C++");
+
+        System.out.println(list);
+    }
+}
+```
+### Output
+```
+[Java, Python, C++]
+
+```
+### Parameterized Constructor (Specify Initial Capacity)
+
+```
+ArrayList<Integer> numbers = new ArrayList<>(20); // Initial Capacity = 20
+
+```
+
+### Creating an ArrayList from Another Collection
+
+```
+ArrayList<String> copyList = new ArrayList<>(list);
+
+```
+## 4. Internal Working of ArrayList
+
+### Uses an Array Internally
+
+Default capacity is 10.
+
+Dynamically resizes when full.
+
+### How Does ArrayList Expand?
+
+When the internal array is full, a new array (1.5x old size) is created.
+
+Old elements are copied into the new array.
+
+Formula: newCapacity = oldCapacity + (oldCapacity / 2)
+
+**Example**
+
+If the initial capacity is 10, it grows as follows:
+
+```
+10 → 15 → 22 → 33 → 49 → 73 → 109 → ...
+
+```
+Example Usage 5. Common Operations in ArrayList
+
+![image](https://github.com/user-attachments/assets/db63bd15-4324-4e30-bde8-4078ba937017)
+
+### Example Usage
+
+```
+import java.util.ArrayList;
+
+public class ArrayListExample {
+    public static void main(String[] args) {
+        ArrayList<Integer> numbers = new ArrayList<>();
+        
+        // Add elements
+        numbers.add(10);
+        numbers.add(20);
+        numbers.add(30);
+        
+        // Insert at index 1
+        numbers.add(1, 15);
+        
+        // Get and Set
+        System.out.println(numbers.get(2)); // Output: 20
+        numbers.set(2, 25);
+        
+        // Remove elements
+        numbers.remove(1);
+        
+        // Check size
+        System.out.println(numbers.size()); // Output: 3
+    }
+}
+```
+
+## 6. Iterating Over an ArrayList
+
+### Using for-each loop
+
+```
+for (String item : list) {
+    System.out.println(item);
+}
+```
+
+### Using for loop
+
+```
+for (int i = 0; i < list.size(); i++) {
+    System.out.println(list.get(i));
+}
+```
+### Using Iterator
+```
+Iterator<String> iterator = list.iterator();
+while (iterator.hasNext()) {
+    System.out.println(iterator.next());
+}
+```
+### Using ListIterator (Bi-Directional)
+
+```
+ListIterator<String> listIterator = list.listIterator();
+while (listIterator.hasNext()) {
+    System.out.println(listIterator.next());
+}
+```
+
+### 7. Sorting an ArrayList
+
+```
+import java.util.*;
+
+public class SortArrayList {
+    public static void main(String[] args) {
+        ArrayList<Integer> numbers = new ArrayList<>(Arrays.asList(5, 3, 8, 1));
+
+        // Sort in ascending order
+        Collections.sort(numbers);
+        System.out.println(numbers); // [1, 3, 5, 8]
+
+        // Sort in descending order
+        Collections.sort(numbers, Collections.reverseOrder());
+        System.out.println(numbers); // [8, 5, 3, 1]
+    }
+}
+```
+## 8. ArrayList vs. LinkedList
+
+![image](https://github.com/user-attachments/assets/f24fc1f5-ea7d-472d-814b-ed34aa066e7f)
+
+## 9. Synchronization in ArrayList
+
+By default, ArrayList is not synchronized. To make it thread-safe:
+
+1. Using Collections.synchronizedList()
+
+```
+List<String> syncList = Collections.synchronizedList(new ArrayList<>());
+```
+
+## 12. Summary
+
+ArrayList is a resizable array implementation of List.
+
+It grows dynamically by 1.5x when full.
+
+Provides fast random access (O(1)) but slow insertions/deletions (O(n)).
+
+Not synchronized by default, use Collections.synchronizedList() for thread safety.
+
+Java 8 streams and lambda expressions improve processing.
+
 
