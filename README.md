@@ -19083,4 +19083,66 @@ Slower random access (O(n)) than ArrayList.
 
 Can be used as a Queue (FIFO) or Stack (LIFO).
 
+# Java LinkedList vs. ArrayList – Detailed Comparison
+
+Both ArrayList and LinkedList are implementations of the List interface in Java, but they have significant differences in performance, memory usage, and use cases.
+
+## 1️⃣ Key Differences Between LinkedList and ArrayList
+
+![image](https://github.com/user-attachments/assets/6f18d21e-4149-4303-88b1-ced5480344ce)
+![image](https://github.com/user-attachments/assets/75ad708f-8475-49a7-bae2-0791a8123ea9)
+
+## 2️⃣ When to Use ArrayList vs. LinkedList?
+
+### ✅ Use ArrayList when:
+
+✔️ You need fast random access (index-based retrieval).
+
+✔️ You have more read operations than insert/delete.
+
+✔️ Memory efficiency is important (stores only data, not pointers).
+
+✔️ You perform batch operations like sorting.
+
+✔️ You are dealing with small datasets where resizing cost is negligible.
+
+📌 **Example Use Case:** Storing a list of employees where you need to frequently retrieve by index.
+
+```
+ArrayList<String> employees = new ArrayList<>();
+employees.add("Alice");
+employees.add("Bob");
+System.out.println(employees.get(1));  // Fast O(1) access
+
+```
+
+## ✅ Use LinkedList when:
+
+✔️ You need fast insertions & deletions (especially at start/middle).
+
+✔️ You have large dynamic datasets that grow/shrink frequently.
+
+✔️ You need queue or stack operations (FIFO or LIFO).
+
+✔️ The list size varies frequently (avoids resizing overhead of ArrayList).
+
+📌 **Example Use Case**: Implementing a Task Queue where tasks are added/removed frequently.
+```
+LinkedList<String> taskQueue = new LinkedList<>();
+taskQueue.addLast("Task 1");
+taskQueue.addLast("Task 2");
+System.out.println(taskQueue.removeFirst());  // Fast O(1) deletion
+
+```
+
+## 3️⃣ Performance Benchmarks: ArrayList vs. LinkedList
+
+Here’s a performance comparison based on 1 million elements:
+
+![image](https://github.com/user-attachments/assets/b5194303-acf5-4175-b525-216bc5e23fa0)
+
+## Real-World Use Cases
+
+![image](https://github.com/user-attachments/assets/c91180dc-da0f-4327-abc2-0c2ddc66f258)
+
 
