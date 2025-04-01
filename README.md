@@ -18898,4 +18898,189 @@ Not synchronized by default, use Collections.synchronizedList() for thread safet
 
 Java 8 streams and lambda expressions improve processing.
 
+# Java LinkedList Class
+
+## 1. Introduction
+
+LinkedList is a part of the Java Collections Framework (JCF) and implements a doubly linked list to store elements. It provides flexibility in inserting and deleting elements efficiently, unlike arrays or ArrayList, which require shifting elements.
+
+**Package**: java.util
+
+**Implements**: List<E>, Deque<E>, Queue<E>, Cloneable, Serializable
+
+**Extends:** AbstractSequentialList<E>
+
+## 2. LinkedList Class Hierarchy
+```
+java.lang.Object
+   └── java.util.AbstractCollection<E>
+       └── java.util.AbstractList<E>
+           └── java.util.AbstractSequentialList<E>
+               └── java.util.LinkedList<E>
+```
+### 🔹 Key Features of Java LinkedList
+
+✅ Allows duplicate elements – Can store multiple occurrences of the same value.
+
+✅ Maintains insertion order – Elements remain in the order they were inserted.
+
+✅ Non-synchronized – Not thread-safe by default; requires explicit synchronization.
+
+✅ Faster insertions/deletions – No shifting of elements as in an ArrayList.
+
+✅ Used as a List, Stack, or Queue – Implements both List and Deque interfaces.
+
+✅ Dynamic size – Automatically grows or shrinks as needed.
+
+
+### Key Interfaces Implemented:
+
+**List<E>** – Supports indexed element access.
+
+**Deque<E>** – Enables usage as a double-ended queue.
+
+**Queue<E>** – Allows FIFO operations.
+
+**Cloneable** – Supports shallow cloning.
+
+**Serializable** – Can be serialized.
+
+## 3. How Java LinkedList Works Internally
+
+Unlike ArrayList, which stores elements in contiguous memory as an array, LinkedList stores elements as nodes with pointers.
+Each node contains:
+
+**Data**: The actual element.
+
+Reference to the next node (**next**)
+
+Reference to the previous node (**prev**)
+
+### Doubly Linked List Structure:
+
+```
+Head → [Prev | Data | Next] ↔ [Prev | Data | Next] ↔ [Prev | Data | Next] ← Tail
+```
+## 4. Creating a LinkedList
+
+### Basic Syntax
+
+```
+import java.util.LinkedList;
+
+public class Main {
+    public static void main(String[] args) {
+        // Creating LinkedList of Strings
+        LinkedList<String> list = new LinkedList<>();
+
+        // Adding elements
+        list.add("Java");
+        list.add("Python");
+        list.add("C++");
+
+        System.out.println(list);
+    }
+}
+```
+### Output:
+```
+[Java, Python, C++]
+```
+
+## Common LinkedList Operations
+![image](https://github.com/user-attachments/assets/2c2981ce-b30e-44ae-b482-5759a8717a08)
+
+### Example
+```
+import java.util.LinkedList;
+
+public class LinkedListExample {
+    public static void main(String[] args) {
+        LinkedList<Integer> numbers = new LinkedList<>();
+
+        // Add elements
+        numbers.add(10);
+        numbers.add(20);
+        numbers.add(30);
+
+        // Insert at index 1
+        numbers.add(1, 15);
+
+        // Get and Set
+        System.out.println(numbers.get(2)); // Output: 20
+        numbers.set(2, 25);
+
+        // Remove elements
+        numbers.remove(1);
+
+        // Check size
+        System.out.println(numbers.size()); // Output: 3
+    }
+}
+```
+## Iterating Over a LinkedList
+
+### 1. Using for-each loop
+
+```
+for (String item : list) {
+    System.out.println(item);
+}
+```
+### 2. Using Iterator
+
+```
+Iterator<String> iterator = list.iterator();
+while (iterator.hasNext()) {
+    System.out.println(iterator.next());
+}
+```
+
+### 3. Using ListIterator (Bi-Directional)
+
+```
+ListIterator<String> listIterator = list.listIterator();
+while (listIterator.hasNext()) {
+    System.out.println(listIterator.next());
+}
+```
+
+## LinkedList as a Queue
+
+Since LinkedList implements Deque, it can be used as a queue.
+
+### FIFO Operations (Queue Behavior)
+
+```
+LinkedList<Integer> queue = new LinkedList<>();
+queue.offer(10); // Add
+queue.offer(20);
+queue.offer(30);
+
+System.out.println(queue.poll()); // Removes & returns 10
+```
+## Advantages of Doubly Linked List
+
+✅ Faster deletions – No need to traverse the list when removing a node.
+
+✅ Can traverse in both directions – Unlike singly linked lists.
+
+✅ Efficient insertions – Only pointers are updated.
+
+## Disadvantages of Doubly Linked List
+
+❌ Higher memory usage – Each node stores two pointers.
+
+❌ More complex implementation – Need to maintain both prev and next references.
+
+## Summary
+
+LinkedList is implemented as a doubly linked list.
+
+Provides fast insertions and deletions (O(1)) at the beginning or end.
+
+Slower random access (O(n)) than ArrayList.
+
+Can be used as a Queue (FIFO) or Stack (LIFO).
+
 
