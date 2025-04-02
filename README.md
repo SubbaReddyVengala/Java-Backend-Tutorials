@@ -19145,4 +19145,164 @@ Here’s a performance comparison based on 1 million elements:
 
 ![image](https://github.com/user-attachments/assets/c91180dc-da0f-4327-abc2-0c2ddc66f258)
 
+# 🔹 Vector in Java – Complete Guide
+
+The Vector class in Java is a resizable-array implementation of the List interface, similar to ArrayList. However, it is synchronized, making it thread-safe but slower in performance compared to ArrayList.
+
+## 1️⃣ Features of Java Vector
+
+✅ Allows duplicate elements
+
+✅ Maintains insertion order
+
+✅ Thread-safe (Synchronized)
+
+✅ Automatically resizable (Doubles in size when full)
+
+✅ Implements List, RandomAccess, Cloneable, Serializable
+
+
+## 2️⃣ Class Hierarchy of Vector
+
+```
+java.lang.Object
+   └── java.util.AbstractCollection<E>
+       └── java.util.AbstractList<E>
+           └── java.util.Vector<E>
+               └── java.util.Stack<E>
+
+```
+
+**Implements:** List<E>, RandomAccess, Cloneable, Serializable
+
+## 3️⃣ Declaring a Vector in Java
+
+```
+// Creating a Vector of Strings
+Vector<String> vector = new Vector<>();
+vector.add("Apple");
+vector.add("Banana");
+vector.add("Cherry");
+
+System.out.println(vector);  // Output: [Apple, Banana, Cherry]
+
+```
+
+## 4️⃣ Constructors of Vector
+
+![image](https://github.com/user-attachments/assets/edee2044-1759-43a0-bfce-c59d573e555b)
+
+```
+Vector<Integer> vector = new Vector<>(5); // Initial capacity: 5
+
+```
+
+## 5️⃣ Important Methods in Vector
+
+![image](https://github.com/user-attachments/assets/e77c264f-eff0-4269-99fb-33a96cbe76fe)
+
+```
+Vector<Integer> numbers = new Vector<>();
+numbers.add(10);
+numbers.add(20);
+numbers.add(30);
+
+System.out.println(numbers.get(1)); // Output: 20
+numbers.remove(1);
+System.out.println(numbers); // Output: [10, 30]
+
+```
+## 6️⃣ How Vector Handles Synchronization?
+
+Unlike ArrayList, Vector is synchronized, meaning multiple threads can access it without data corruption.
+
+**📌 Thread-safe example:**
+
+```
+Vector<Integer> vector = new Vector<>();
+synchronized(vector) {
+    vector.add(100);
+    vector.add(200);
+}
+```
+Vector synchronizes each method, making it slower but safe for multi-threading.
+
+For better performance, use Collections.synchronizedList(new ArrayList<>()) instead of Vector.
+
+## 7️⃣ Performance Comparison: Vector vs. ArrayList vs. LinkedList
+
+![image](https://github.com/user-attachments/assets/2f5b3835-9201-405e-a80d-4e8063e284b9)
+
+## 8️⃣ When to Use Vector?
+
+**✅ Use Vector when:**
+
+You need thread safety and multiple threads will access the list.
+
+You are working in a legacy system (before Java 1.2).
+
+You need a resizable array but with synchronized operations.
+
+**❌ Avoid Vector when:**
+
+Performance is a priority (use ArrayList instead).
+
+You do not need synchronization.
+
+You are working in modern applications (use ArrayList with Collections.synchronizedList instead).
+
+## 9️⃣ Alternative to Vector – Collections.synchronizedList()
+
+Instead of Vector, you can make an ArrayList thread-safe using:
+
+```
+List<Integer> list = Collections.synchronizedList(new ArrayList<>());
+
+```
+This gives better performance than Vector.
+
+## 🔟 Real-World Example: Multi-Threaded Access to Vector
+
+📌 Example of multiple threads accessing a Vector:
+
+```
+import java.util.Vector;
+
+class Task implements Runnable {
+    private Vector<Integer> vector;
+
+    public Task(Vector<Integer> vector) {
+        this.vector = vector;
+    }
+
+    public void run() {
+        synchronized (vector) {
+            vector.add((int) (Math.random() * 100));
+            System.out.println(Thread.currentThread().getName() + " added an element.");
+        }
+    }
+}
+
+public class MultiThreadedVectorExample {
+    public static void main(String[] args) {
+        Vector<Integer> vector = new Vector<>();
+        Thread t1 = new Thread(new Task(vector), "Thread-1");
+        Thread t2 = new Thread(new Task(vector), "Thread-2");
+
+        t1.start();
+        t2.start();
+    }
+}
+```
+This ensures thread-safe operations when multiple threads modify the Vector
+
+## 🔹 Summary
+
+✔️ Vector is a synchronized, resizable array-based List implementation.
+
+✔️ Slower than ArrayList because of synchronization overhead.
+
+✔️ Useful in multi-threaded environments but not recommended for single-threaded use.
+
+✔️ Alternatives: Use ArrayList with Collections.synchronizedList().
 
