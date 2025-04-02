@@ -19306,3 +19306,92 @@ This ensures thread-safe operations when multiple threads modify the Vector
 
 ✔️ Alternatives: Use ArrayList with Collections.synchronizedList().
 
+## 🔹 Stack in Java Collections
+
+The Stack class in Java is a Last In, First Out (LIFO) data structure. It extends the Vector class and is synchronized, meaning it's thread-safe but slower than ArrayDeque, which is a better alternative in most cases.
+
+## 1️⃣ Stack Class Hierarchy
+
+```
+java.lang.Object
+   └── java.util.AbstractCollection<E>
+       └── java.util.AbstractList<E>
+           └── java.util.Vector<E>
+               └── java.util.Stack<E>
+```
+Implements List<E>, Collection<E>, Iterable<E>, Cloneable, Serializable
+
+## 2️⃣ Creating a Stack in Java
+
+🔹 Declaration:
+
+```
+Stack<Integer> stack = new Stack<>();
+
+```
+
+## 3️⃣ Key Methods in Stack
+
+
+![image](https://github.com/user-attachments/assets/91e29e40-06aa-40af-abb2-f1b7c60ac93b)
+
+## 4️⃣ Example of Stack Operations
+
+```
+import java.util.Stack;
+
+public class StackExample {
+    public static void main(String[] args) {
+        Stack<Integer> stack = new Stack<>();
+
+        // Pushing elements onto the stack
+        stack.push(10);
+        stack.push(20);
+        stack.push(30);
+        System.out.println("Stack: " + stack); // Output: [10, 20, 30]
+
+        // Peek (Top Element)
+        System.out.println("Top element: " + stack.peek()); // Output: 30
+
+        // Pop (Remove Top Element)
+        System.out.println("Popped: " + stack.pop()); // Output: 30
+        System.out.println("Stack after pop: " + stack); // Output: [10, 20]
+
+        // Search
+        System.out.println("Position of 10: " + stack.search(10)); // Output: 2
+
+        // Check if stack is empty
+        System.out.println("Is stack empty? " + stack.empty()); // Output: false
+    }
+}
+
+```
+## 5️⃣ Stack vs. ArrayDeque (Better Alternative)
+
+ArrayDeque is faster and preferred over Stack for stack operation
+
+![image](https://github.com/user-attachments/assets/f8704086-587b-4eed-b94f-a3dfde30332f)
+
+📌 Using ArrayDeque instead of Stack
+
+```
+import java.util.ArrayDeque;
+
+ArrayDeque<Integer> stack = new ArrayDeque<>();
+stack.push(10);
+stack.push(20);
+stack.push(30);
+System.out.println(stack.pop()); // Output: 30
+
+```
+## 6️⃣ Real-World Use Cases of Stack
+
+✔ Expression evaluation (e.g., Postfix, Prefix expressions)
+
+✔ Undo/Redo operations in text editors
+
+✔ Backtracking algorithms (e.g., Maze solving, DFS traversal)
+
+✔ Function call stack in programming languages
+
+
