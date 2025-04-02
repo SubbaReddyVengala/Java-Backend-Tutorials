@@ -19394,4 +19394,165 @@ System.out.println(stack.pop()); // Output: 30
 
 ✔ Function call stack in programming languages
 
+# 🔹 Java Queue Interface (FIFO Structure)
+
+The Queue interface in Java represents a collection designed for holding elements prior to processing. It follows the First-In-First-Out (FIFO) principle, where elements are added at the rear and removed from the front.
+
+## 1️⃣ Queue Interface Hierarchy
+
+```
+java.lang.Object
+   └── java.util.Collection<E>
+       └── java.util.Queue<E>
+```
+The Queue interface extends the Collection<E> interface.
+
+Implementing classes include:
+
+LinkedList (Doubly-linked list, allows duplicates)
+
+PriorityQueue (Heap-based, elements ordered by priority)
+
+ArrayDeque (Resizes dynamically, efficient for stacks & queues)
+
+
+## 2️⃣ Common Implementations of Queue
+
+![image](https://github.com/user-attachments/assets/1c9bf940-5095-409d-a306-b26b14f27ad6)
+
+## 3️⃣ Queue Methods
+
+![image](https://github.com/user-attachments/assets/44173119-8af2-4a19-aaad-07130723f9d8)
+
+## 5️⃣ Real-World Applications of Queue
+
+✔ Task Scheduling (e.g., Printer jobs, ThreadPoolExecutor)
+
+✔ Breadth-First Search (BFS) (Graph traversal)
+
+✔ Order Processing Systems (E-commerce)
+
+✔ Load Balancing (Managing requests in a web serve
+
+## 🔹 PriorityQueue Class in Java
+
+The PriorityQueue class in Java is a heap-based implementation of the Queue interface. Unlike a regular queue, which follows FIFO (First-In-First-Out), a PriorityQueue orders its elements based on natural ordering or a custom comparator.
+
+### 📌 Key Characteristics:
+
+✔ Implements a min-heap by default (smallest element is always at the head).
+
+✔ Does not allow null elements.
+
+✔ Does not allow heterogeneous elements (All elements must be comparable).
+
+✔ Insertion order is not preserved (because elements are sorted).
+
+✔ Not thread-safe (Use PriorityBlockingQueue for concurrency).
+
+
+## 1️⃣ PriorityQueue Class Hierarchy
+```
+java.lang.Object
+   └── java.util.AbstractCollection<E>
+       └── java.util.AbstractQueue<E>
+           └── java.util.PriorityQueue<E>
+```
+PriorityQueue extends AbstractQueue, which implements the Queue interface.
+
+```
+import java.util.PriorityQueue;
+
+public class PriorityQueueExample {
+    public static void main(String[] args) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        pq.offer(40);
+        pq.offer(10);
+        pq.offer(30);
+        pq.offer(20);
+
+        System.out.println("Priority Queue: " + pq); // Output: [10, 20, 30, 40] (Heap order)
+
+        System.out.println("Dequeued: " + pq.poll()); // Output: 10
+        System.out.println("Queue after poll: " + pq); // Output: [20, 40, 30]
+    }
+}
+```
+✔ The smallest element is always dequeued first.
+
+## 7️⃣ When to Use PriorityQueue?
+
+✔ Task Scheduling (e.g., CPU job scheduling)
+
+✔ Graph Algorithms (e.g., Dijkstra’s shortest path)
+
+✔ Event-driven Simulations (Handling events based on priority)
+
+✔ Data Processing (Processing elements in priority order)
+
+## 🔹 Java Deque (Double-Ended Queue) Interface
+
+The Deque (Double-Ended Queue) interface in Java extends the Queue interface and provides the ability to add and remove elements from both ends (head and tail). It supports FIFO (First-In-First-Out) and LIFO (Last-In-First-Out) operations, making it a versatile data structure.
+
+### 📌 Key Characteristics of Deque:
+
+✔ Supports insertion and deletion at both ends (head & tail).
+
+✔ Allows duplicate elements.
+
+✔ Not thread-safe (Use ConcurrentLinkedDeque for concurrency).
+
+✔ Implemented by LinkedList and ArrayDeque.
+
+## 1️⃣ Deque Interface Hierarchy
+
+```
+java.lang.Object
+   └── java.util.Collection<E>
+       └── java.util.Queue<E>
+           └── java.util.Deque<E>
+               ├── java.util.ArrayDeque<E>
+               ├── java.util.LinkedList<E>
+               └── java.util.concurrent.ConcurrentLinkedDeque<E>  (Thread-Safe)
+
+```
+## 2️⃣ Methods in Deque Interface
+
+![image](https://github.com/user-attachments/assets/df41b472-1cc8-45f2-a10d-1b9f1ec625af)
+
+```
+import java.util.Deque;
+import java.util.ArrayDeque;
+
+public class DequeExample {
+    public static void main(String[] args) {
+        Deque<Integer> deque = new ArrayDeque<>();
+
+        deque.addFirst(10); // Adds to front
+        deque.addLast(20);  // Adds to rear
+        deque.offerFirst(5); // Adds to front
+        deque.offerLast(25); // Adds to rear
+
+        System.out.println("Deque: " + deque); // Output: [5, 10, 20, 25]
+
+        System.out.println("Remove First: " + deque.pollFirst()); // Output: 5
+        System.out.println("Remove Last: " + deque.pollLast());   // Output: 25
+        System.out.println("Updated Deque: " + deque); // Output: [10, 20]
+    }
+}
+```
+✔ ArrayDeque is recommended over LinkedList because it is faster for add/remove operations.
+
+### When to Use Deque?
+
+✔ Deque as a Stack → push() and pop() operations.
+
+✔ Deque as a Queue → offer() and poll() operations.
+
+✔ Sliding Window Problems (e.g., Maximum in sliding window).
+
+✔ Undo/Redo Operations (Used in text editors).
+
+✔ Palindrome Checking (Checking from both ends).
 
