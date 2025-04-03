@@ -19658,3 +19658,400 @@ Uses Hashing → Elements are stored based on their hash code.
 Uses HashMap internally → Each element in HashSet is stored as a key in a HashMap, with a dummy value (PRESENT).
 
 Maintains Unordered Data → Elements are not stored in insertion order.
+
+## 4️⃣ Key Methods in HashSet
+
+![image](https://github.com/user-attachments/assets/447f0fac-6790-4a57-8220-c3c4d678eeb9)
+
+## 5️⃣ Example: Basic HashSet Operations
+
+```
+import java.util.HashSet;
+
+public class HashSetExample {
+    public static void main(String[] args) {
+        HashSet<String> set = new HashSet<>();
+
+        set.add("Apple");
+        set.add("Banana");
+        set.add("Cherry");
+        set.add("Apple");  // Duplicate, will be ignored
+
+        System.out.println("HashSet: " + set);  // Output: [Banana, Cherry, Apple] (Order may vary)
+        System.out.println("Contains Apple? " + set.contains("Apple")); // true
+        set.remove("Banana");
+        System.out.println("After Removal: " + set);
+    }
+}
+
+```
+✔ HashSet does not maintain insertion order.
+
+## 6️⃣ Performance of HashSet
+
+Best case (O(1)): Operations like add(), remove(), and contains() run in constant time.
+
+Worst case (O(n)): If too many hash collisions occur, operations can degrade to linear time.
+
+Memory Consumption: HashSet uses a HashMap, so it requires more memory compared to other sets.
+
+## 7️⃣ How HashSet Handles Collisions
+
+🔹 HashSet uses a hashing mechanism to determine where elements should be stored.
+
+🔹 If two elements have the same hash code (collision), Java handles it using Linked Lists (before Java 8) and Balanced Trees (after Java 8).
+
+## 8️⃣ Difference Between HashSet and List
+
+![image](https://github.com/user-attachments/assets/5310d7fd-139e-43bd-a235-e56d5940a253)
+
+## 9️⃣ Example: HashSet with Integer Elements
+```
+import java.util.HashSet;
+
+public class HashSetIntegerExample {
+    public static void main(String[] args) {
+        HashSet<Integer> numbers = new HashSet<>();
+
+        numbers.add(10);
+        numbers.add(20);
+        numbers.add(30);
+        numbers.add(10);  // Duplicate, ignored
+
+        System.out.println("HashSet: " + numbers); // Output: [20, 10, 30] (Order may vary)
+    }
+}
+```
+## 🔹 HashSet vs LinkedHashSet vs TreeSet
+![image](https://github.com/user-attachments/assets/284a9fad-1d25-4668-abff-260b3efec284)
+
+## 📌 Summary
+![image](https://github.com/user-attachments/assets/048c02e5-5168-4efa-8ca8-8b37bb199f99)
+
+## 🔹 Java LinkedHashSet (Collection Framework)
+
+The LinkedHashSet class in Java is a part of the java.util package. It extends HashSet and implements the Set interface. Unlike HashSet, it maintains the insertion order of elements while ensuring that duplicates are not allowed.
+
+## 1️⃣ Key Characteristics of LinkedHashSet
+
+✔ No duplicate elements allowed.
+
+✔ Maintains insertion order (Unlike HashSet).
+
+✔ Faster than TreeSet but slower than HashSet.
+
+✔ Allows one null value.
+
+✔ Not indexed (Elements cannot be accessed by index).
+
+✔ Not synchronized (Not thread-safe, but can be synchronized manually
+
+## 2️⃣ LinkedHashSet Class Hierarchy
+
+```
+java.lang.Object
+   └── java.util.AbstractCollection<E>
+       └── java.util.AbstractSet<E>
+           └── java.util.HashSet<E>
+               └── java.util.LinkedHashSet<E>
+```
+
+LinkedHashSet extends HashSet, which means it inherits all properties of HashSet but maintains insertion order.
+
+It internally uses a LinkedHashMap to store elements.
+
+## 3️⃣ Internal Working of LinkedHashSet
+
+Uses Hashing → Similar to HashSet, it uses a hash table to store elements.
+
+Maintains a doubly linked list → Unlike HashSet, it maintains a linked list of elements to preserve insertion order.
+
+Uses LinkedHashMap internally → Each element is stored as a key in the LinkedHashMap, with a dummy value (PRESENT).
+
+## 4️⃣ Key Methods in LinkedHashSet
+
+![image](https://github.com/user-attachments/assets/344492f4-1eeb-490c-91f1-8468e0077b28)
+
+## 5️⃣ Example: Basic LinkedHashSet Operations
+
+```
+import java.util.LinkedHashSet;
+
+public class LinkedHashSetExample {
+    public static void main(String[] args) {
+        LinkedHashSet<String> set = new LinkedHashSet<>();
+
+        set.add("Apple");
+        set.add("Banana");
+        set.add("Cherry");
+        set.add("Apple");  // Duplicate, will be ignored
+
+        System.out.println("LinkedHashSet: " + set);  
+        // Output: [Apple, Banana, Cherry] (Maintains insertion order)
+
+        System.out.println("Contains Banana? " + set.contains("Banana")); // true
+        set.remove("Banana");
+        System.out.println("After Removal: " + set);
+    }
+}
+```
+
+✔ LinkedHashSet maintains insertion order, unlike HashSet.
+
+## 6️⃣ Performance of LinkedHashSet
+![image](https://github.com/user-attachments/assets/547ba515-ff6e-4bd2-9a74-90b10b7ce00d)
+
+Best case (O(1)): Operations like add(), remove(), and contains() run in constant time.
+
+Worst case (O(n)): If too many hash collisions occur, performance may degrade.
+
+Memory Consumption: Uses more memory than HashSet because it maintains a linked list.
+
+## 7️⃣ Difference Between HashSet, LinkedHashSet, and TreeSet
+
+![image](https://github.com/user-attachments/assets/2a34d58a-e8a7-48ea-95ff-21e6f8ea1feb)
+
+# 🔹 Java TreeSet (Collection Framework)
+
+The TreeSet class in Java is a part of the java.util package. It implements the SortedSet interface and extends the AbstractSet class. The elements in a TreeSet are automatically sorted in ascending order (natural order or as per a custom comparator).
+
+## 1️⃣ Key Characteristics of TreeSet
+
+✔ Elements are stored in sorted order (Ascending by default).
+
+✔ No duplicate elements are allowed.
+
+✔ Implements NavigableSet and SortedSet.
+
+✔ Based on a Red-Black Tree (self-balancing binary search tree).
+
+✔ Not indexed (Cannot access elements using an index like an array).
+
+✔ Not synchronized (Not thread-safe, but can be synchronized manually).
+
+✔ Allows only one null value (only if it's the first element added).
+
+## 2️⃣ TreeSet Class Hierarchy
+```
+java.lang.Object
+   └── java.util.AbstractCollection<E>
+       └── java.util.AbstractSet<E>
+           └── java.util.TreeSet<E>
+```
+TreeSet implements the SortedSet and NavigableSet interfaces.
+
+Internally, it uses a Red-Black Tree (a self-balancing binary search tree).
+
+## 3️⃣ Internal Working of TreeSet
+
+Uses a Red-Black Tree for storage → This ensures that all operations (insert, delete, search) run in O(log n) time.
+
+Automatically sorts elements → When you insert elements, they are placed in sorted order.
+
+Maintains balance → Due to the self-balancing nature of the Red-Black Tree, the operations remain efficient.
+
+## 4️⃣ Key Methods in TreeSet
+
+![image](https://github.com/user-attachments/assets/0fc9d589-4195-4091-bee8-0f295083e75b)
+
+## 5️⃣ Example: Basic TreeSet Operations
+```
+import java.util.TreeSet;
+
+public class TreeSetExample {
+    public static void main(String[] args) {
+        TreeSet<Integer> treeSet = new TreeSet<>();
+
+        treeSet.add(40);
+        treeSet.add(10);
+        treeSet.add(30);
+        treeSet.add(20);
+
+        System.out.println("TreeSet: " + treeSet);  
+        // Output: [10, 20, 30, 40] (Sorted Order)
+
+        System.out.println("First Element: " + treeSet.first());  // 10
+        System.out.println("Last Element: " + treeSet.last());    // 40
+        System.out.println("Higher than 20: " + treeSet.higher(20)); // 30
+        System.out.println("Lower than 30: " + treeSet.lower(30));   // 20
+    }
+}
+```
+✔ TreeSet automatically sorts elements in ascending order.
+
+## 6️⃣ Performance of TreeSet
+
+![image](https://github.com/user-attachments/assets/68aa86a4-3418-47c2-9b1b-d7e700f70200)
+
+Slower than HashSet but faster than LinkedList for sorted retrieval.
+
+Ideal for applications that require sorted data with quick retrieval.
+
+# 🔹 Java Map Interface (Collection Framework)
+
+The Map interface in Java is part of the java.util package and represents a collection of key-value pairs. Unlike List or Set, a Map does not allow duplicate keys, but each key can be mapped to a single value.
+![image](https://github.com/user-attachments/assets/b8384111-e9b8-4a75-9532-93c526fda364)
+
+
+## 1️⃣ Key Features of Map
+
+✔ Stores key-value pairs (key -> value).
+
+✔ No duplicate keys allowed (but values can be duplicate).
+
+✔ Each key is mapped to at most one value.
+
+✔ Efficient lookup, insertion, and deletion operations.
+
+✔ Supports different implementations (HashMap, TreeMap, LinkedHashMap)
+
+✔ Does not extend Collection (works differently from List & Set).
+
+## 2️⃣ Hierarchy of Java Map Interface
+
+```
+java.lang.Object
+   └── java.util.Map<K, V>  (Interface)
+       ├── java.util.HashMap<K, V>
+       ├── java.util.LinkedHashMap<K, V>
+       ├── java.util.TreeMap<K, V>
+       ├── java.util.Hashtable<K, V>
+       ├── java.util.EnumMap<K extends Enum<K>, V>
+       └── java.util.WeakHashMap<K, V>
+```
+
+**🔹 HashMap** → Unordered, best for general-purpose.
+
+**🔹 LinkedHashMap** → Maintains insertion order.
+
+**🔹 TreeMap** → Sorted order (Ascending by default).
+
+**🔹 Hashtable** → Thread-safe but slower.
+
+## 3️⃣ Key Methods in Map Interface
+
+![image](https://github.com/user-attachments/assets/f414322e-7d53-4625-8804-56c1ddcaa353)
+
+## 4️⃣ Example: Basic Map Operations
+
+```
+import java.util.*;
+
+public class MapExample {
+    public static void main(String[] args) {
+        Map<Integer, String> map = new HashMap<>();
+
+        map.put(101, "Alice");
+        map.put(102, "Bob");
+        map.put(103, "Charlie");
+
+        System.out.println("Map: " + map);  // {101=Alice, 102=Bob, 103=Charlie}
+        System.out.println("Get key 102: " + map.get(102));  // Bob
+        System.out.println("Contains key 103? " + map.containsKey(103));  // true
+        System.out.println("Contains value 'David'? " + map.containsValue("David"));  // false
+
+        map.remove(102);
+        System.out.println("After removing key 102: " + map);
+    }
+}
+```
+✔ Insertion order is not maintained in HashMap.
+
+## 5️⃣ Iterating Over a Map
+
+### 🔹 Using keySet()
+```
+for (Integer key : map.keySet()) {
+    System.out.println("Key: " + key + ", Value: " + map.get(key));
+}
+```
+### 🔹 Using entrySet() (Best Way)
+
+```
+for (Map.Entry<Integer, String> entry : map.entrySet()) {
+    System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+}
+```
+
+### 🔹 Using forEach() (Java 8)
+
+```
+map.forEach((key, value) -> System.out.println("Key: " + key + ", Value: " + value));
+
+```
+## 6️⃣ Different Implementations of Map
+
+### 🔹 HashMap (Unordered, Fastest)
+```
+Map<String, Integer> hashMap = new HashMap<>();
+hashMap.put("Apple", 50);
+hashMap.put("Banana", 20);
+hashMap.put("Cherry", 30);
+System.out.println(hashMap);  // {Banana=20, Cherry=30, Apple=50} (Order not guaranteed)
+```
+### 🔹 LinkedHashMap (Maintains Insertion Order)
+```
+Map<String, Integer> linkedHashMap = new LinkedHashMap<>();
+linkedHashMap.put("Apple", 50);
+linkedHashMap.put("Banana", 20);
+linkedHashMap.put("Cherry", 30);
+System.out.println(linkedHashMap);  // {Apple=50, Banana=20, Cherry=30} (Maintains order)
+```
+
+### 🔹 TreeMap (Sorted Order)
+```
+Map<String, Integer> treeMap = new TreeMap<>();
+treeMap.put("Apple", 50);
+treeMap.put("Banana", 20);
+treeMap.put("Cherry", 30);
+System.out.println(treeMap);  // {Apple=50, Banana=20, Cherry=30} (Sorted)
+```
+### 🔹 Hashtable (Thread-Safe, Legacy)
+
+```
+Map<String, Integer> hashtable = new Hashtable<>();
+hashtable.put("Apple", 50);
+hashtable.put("Banana", 20);
+hashtable.put("Cherry", 30);
+System.out.println(hashtable);  // {Banana=20, Cherry=30, Apple=50}
+```
+🚀 Use ConcurrentHashMap instead of Hashtable for better performance.
+
+## 7️⃣ Difference Between HashMap, LinkedHashMap, TreeMap, and Hashtable
+
+![image](https://github.com/user-attachments/assets/f73e6ef1-7e09-43bd-b20f-c7c0191b1bb6)
+
+### By default, HashMap is not thread-safe. To synchronize:
+
+```
+Map<Integer, String> syncMap = Collections.synchronizedMap(new HashMap<>());
+synchronized (syncMap) {
+    for (Map.Entry<Integer, String> entry : syncMap.entrySet()) {
+        System.out.println(entry.getKey() + " : " + entry.getValue());
+    }
+}
+```
+### 🔹 Better Alternative: Use ConcurrentHashMap
+
+```
+import java.util.concurrent.ConcurrentHashMap;
+
+ConcurrentHashMap<Integer, String> concurrentMap = new ConcurrentHashMap<>();
+concurrentMap.put(1, "Alice");
+concurrentMap.put(2, "Bob");
+```
+## 📌 Summary
+
+![image](https://github.com/user-attachments/assets/a30e8f55-1828-4a98-bb2b-e870814b9b07)
+
+## 🚀 Conclusion
+
+Use HashMap for fast, unordered key-value storage.
+
+Use LinkedHashMap when insertion order matters.
+
+Use TreeMap for sorted keys.
+
+Use ConcurrentHashMap for multi-threading.
+
+
