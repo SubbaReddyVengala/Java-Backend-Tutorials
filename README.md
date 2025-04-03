@@ -20054,4 +20054,294 @@ Use TreeMap for sorted keys.
 
 Use ConcurrentHashMap for multi-threading.
 
+## Java HashMap
+
+HashMap is one of the most commonly used classes in Java that implements the Map interface. It is part of the Java Collections Framework and provides an unordered collection of key-value pairs
+
+## 🔹 Key Features of HashMap
+
+✅ Stores key-value pairs using a hashing mechanism.
+
+✅ Allows one null key and multiple null values.
+
+✅ No duplicate keys (each key is unique).
+
+✅ Order is not maintained (unlike LinkedHashMap).
+
+✅ Fast operations (O(1) time complexity for get/put operations in ideal cases).
+
+✅ Non-synchronized (not thread-safe by default).
+
+## 🔹 HashMap Class Declaration
+
+```
+public class HashMap<K, V> extends AbstractMap<K, V>
+    implements Map<K, V>, Cloneable, Serializable
+```
+
+## 🔹 Internal Working of HashMap
+
+1️⃣ Uses an array of Linked Lists (buckets) internally.
+
+2️⃣ Each key is hashed into an index using the hashCode() method.
+
+3️⃣ If multiple keys map to the same index (hash collision), it uses separate chaining (Linked List or Tree).
+
+4️⃣ Uses load factor (default 0.75) to decide when to resize the table (double the size).
+
+## 🔹 Creating a HashMap
+```
+import java.util.HashMap;
+
+public class HashMapExample {
+    public static void main(String[] args) {
+        // Creating a HashMap
+        HashMap<Integer, String> map = new HashMap<>();
+
+        // Adding key-value pairs
+        map.put(1, "Apple");
+        map.put(2, "Banana");
+        map.put(3, "Cherry");
+
+        // Printing the HashMap
+        System.out.println(map);
+    }
+}
+```
+### 🛠 Output:
+
+```
+{1=Apple, 2=Banana, 3=Cherry}
+
+```
+
+## 🔹 Common HashMap Methods
+
+![image](https://github.com/user-attachments/assets/3385f2a8-e67d-4113-83d2-b3ef08d39f43)
+
+### 🔹 Accessing Values from HashMap
+
+```
+System.out.println("Value for key 2: " + map.get(2)); 
+
+```
+### 🛠 Output:
+```
+Value for key 2: Banana
+
+```
+## 🔹 Iterating Over a HashMap
+
+### 1️⃣ Using forEach and Lambda
+
+```
+map.forEach((key, value) -> System.out.println(key + " -> " + value));
+
+```
+## 2️⃣ Using entrySet()
+
+```
+for (Map.Entry<Integer, String> entry : map.entrySet()) {
+    System.out.println(entry.getKey() + " -> " + entry.getValue());
+}
+
+```
+## 🔹 Handling Collisions in HashMap
+
+Uses Separate Chaining (Linked List → Tree if many collisions).
+
+Rehashing occurs when the load factor (0.75 default) is exceeded.
+
+## 🔹 Thread-Safety in HashMap
+
+🚨 HashMap is not synchronized, so it’s not thread-safe.
+
+✅ Use Collections.synchronizedMap() or ConcurrentHashMap for multi-threaded environments.
+
+```
+Map<Integer, String> syncMap = Collections.synchronizedMap(new HashMap<>());
+
+```
+## 🔹 When to Use HashMap?
+
+✔ When you need fast lookups (O(1) time).
+
+✔ When insertion order doesn’t matter.
+
+✔ When you don’t need synchronization (single-threaded).
+
+## 📌 Example: HashMap for User Login System
+```
+import java.util.HashMap;
+import java.util.Scanner;
+
+public class LoginSystem {
+    public static void main(String[] args) {
+        HashMap<String, String> users = new HashMap<>();
+        users.put("admin", "admin123");
+        users.put("user1", "password1");
+        users.put("user2", "pass123");
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine();
+
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+
+        if (users.containsKey(username) && users.get(username).equals(password)) {
+            System.out.println("Login Successful!");
+        } else {
+            System.out.println("Invalid Credentials.");
+        }
+
+        scanner.close();
+    }
+}
+```
+
+### 🛠 Sample Output:
+
+```
+Enter username: admin
+Enter password: admin123
+Login Successful!
+```
+## 🔹 HashMap vs Other Maps
+
+![image](https://github.com/user-attachments/assets/e20de0a3-b047-43b6-85f8-5a1cc53f30f1)
+
+## ✅ Summary
+
+✔ Stores key-value pairs using hashing.
+
+✔ Allows one null key and multiple null values.
+
+✔ Fast O(1) lookup and insertion.
+
+✔ Not thread-safe (use ConcurrentHashMap for multi-threading).
+
+✔ Does not maintain order (use LinkedHashMap if ordering is required).
+
+## Java TreeMap & LinkedHashMap
+
+Both TreeMap and LinkedHashMap are implementations of the Map interface in Java, but they have distinct behaviors. Let’s explore each in detail.
+
+### 🔹 Java TreeMap
+
+TreeMap is a sorted implementation of the Map interface that stores key-value pairs in a Red-Black Tree (a self-balancing binary search tree).
+
+### ✅ Key Features
+
+✔ Stores key-value pairs in sorted order (based on natural ordering or a custom comparator).
+
+✔ No duplicate keys allowed (each key must be unique).
+
+✔ Null keys not allowed (throws NullPointerException).
+
+✔ Maintains ascending key order (sorted by default).
+
+✔ Performance: O(log n) for put, get, remove operations due to tree-based storage.
+
+✔ Not synchronized (use Collections.synchronizedSortedMap() for thread safety).
+
+## 🔹 Creating a TreeMap
+
+```
+import java.util.TreeMap;
+
+public class TreeMapExample {
+    public static void main(String[] args) {
+        TreeMap<Integer, String> map = new TreeMap<>();
+
+        // Adding key-value pairs
+        map.put(3, "Banana");
+        map.put(1, "Apple");
+        map.put(2, "Cherry");
+
+        // Printing TreeMap (Sorted order)
+        System.out.println(map);
+    }
+}
+
+```
+
+### 🛠 Output:
+```
+{1=Apple, 2=Cherry, 3=Banana}
+
+```
+🌟 Keys are sorted automatically!
+
+### 🔹 Common TreeMap Methods
+
+![image](https://github.com/user-attachments/assets/b6e2bca8-4913-4a86-91df-750e6efc7058)
+
+## 🔹 When to Use TreeMap?
+
+✔ When you need sorted order for keys.
+
+✔ When fast searching (O(log n)) is acceptable.
+
+✔ When you don’t need null keys.
+
+# 🔹 Java LinkedHashMap
+
+LinkedHashMap is a HashMap with a linked list structure that maintains insertion order.
+
+## ✅ Key Features
+
+✔ Maintains the insertion order (Unlike HashMap, which is unordered).
+
+✔ Allows one null key and multiple null values.
+
+✔ Faster than TreeMap (O(1) time complexity for basic operations).
+
+✔ Not synchronized (Use Collections.synchronizedMap() for thread safety).
+
+✔ Can be used for creating an LRU Cache.
+
+## 🔹 LinkedHashMap Class Declaration
+
+```
+public class LinkedHashMap<K, V> extends HashMap<K, V>
+    implements Map<K, V>
+```
+Extends HashMap and maintains insertion order using a doubly linked list.
+
+## 🔹 Creating a LinkedHashMap
+
+```
+import java.util.LinkedHashMap;
+
+public class LinkedHashMapExample {
+    public static void main(String[] args) {
+        LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
+
+        // Adding key-value pairs
+        map.put(3, "Banana");
+        map.put(1, "Apple");
+        map.put(2, "Cherry");
+
+        // Printing LinkedHashMap (Insertion Order)
+        System.out.println(map);
+    }
+}
+```
+### 🛠 Output:
+```
+{3=Banana, 1=Apple, 2=Cherry}
+```
+## 🔹 TreeMap vs LinkedHashMap vs HashMap
+
+![image](https://github.com/user-attachments/assets/6b77cdaf-cb13-4861-9f80-29058f6665a0)
+
+## ✅ Summary
+
+**✔ TreeMap** → Sorted order, O(log n) operations, no null keys.
+
+**✔ LinkedHashMap** → Insertion order, O(1) operations, allows null keys.
+
+**✔ HashMap** → Unordered, O(1) operations, allows null keys.
 
