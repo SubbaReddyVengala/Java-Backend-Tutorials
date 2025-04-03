@@ -19556,3 +19556,105 @@ public class DequeExample {
 
 ✔ Palindrome Checking (Checking from both ends).
 
+# 🔹 Java Set Interface (Collection Framework)
+
+The Set interface in Java is a part of the java.util package and extends the Collection interface. It represents a collection of unique elements, meaning it does not allow duplicate values.
+
+## 1️⃣ Key Characteristics of Set
+
+✔ No duplicate elements allowed.
+
+✔ Unordered collection (except for LinkedHashSet, which maintains insertion order).
+
+✔ Allows one null value.
+
+✔ Not indexed (elements cannot be accessed by index like lists).
+
+✔ Implements mathematical set operations (Union, Intersection, Difference).
+
+## 2️⃣ Set Interface Hierarchy
+
+```
+java.lang.Object
+   └── java.util.Collection<E>
+       └── java.util.Set<E>
+           ├── java.util.HashSet<E>          (Fastest, unordered)
+           ├── java.util.LinkedHashSet<E>    (Maintains insertion order)
+           ├── java.util.TreeSet<E>          (Sorted, Red-Black Tree)
+           └── java.util.concurrent.CopyOnWriteArraySet<E> (Thread-safe)
+
+```
+
+**HashSet** → Unordered, best performance (O(1) for add, remove, contains).
+
+**LinkedHashSet** → Maintains insertion order, slightly slower than HashSet.
+
+**TreeSet** → Sorted set, O(log n) complexity due to Red-Black Tree.
+
+**CopyOnWriteArraySet** → Thread-safe implementation.
+
+## 3️⃣ Methods in Set Interface
+
+![image](https://github.com/user-attachments/assets/27742c10-34fe-4a1a-a706-1ecbddf56d92)
+
+##  4️⃣ Example: Using HashSet
+
+```
+import java.util.HashSet;
+import java.util.Set;
+
+public class HashSetExample {
+    public static void main(String[] args) {
+        Set<String> set = new HashSet<>();
+
+        set.add("Apple");
+        set.add("Banana");
+        set.add("Cherry");
+        set.add("Apple");  // Duplicate, will be ignored
+
+        System.out.println("Set: " + set);  // Output: [Banana, Cherry, Apple] (Order may vary)
+        System.out.println("Contains Apple? " + set.contains("Apple")); // true
+        set.remove("Banana");
+        System.out.println("After Removal: " + set);
+    }
+}
+
+```
+✔ HashSet does not maintain insertion order
+
+## 5️⃣ Example: Using LinkedHashSet
+
+### 1️⃣ Key Characteristics of HashSet
+
+✔ No duplicate elements allowed.
+
+✔ Unordered collection (Elements are stored based on their hash code).
+
+✔ Allows one null value.
+
+✔ Not indexed (Elements cannot be accessed by index).
+
+✔ Fast performance (O(1) time complexity for add, remove, and contains).
+
+✔ Not synchronized (Not thread-safe, but can be synchronized manually).
+
+
+## 2️⃣ HashSet Class Hierarchy
+
+```
+java.lang.Object
+   └── java.util.AbstractCollection<E>
+       └── java.util.AbstractSet<E>
+           └── java.util.HashSet<E>
+```
+HashSet extends AbstractSet, which implements the Set interface.
+
+Internally, HashSet uses a HashMap to store elements, where each element is stored as a key in the map, with a dummy value.
+
+## 3️⃣ Internal Working of HashSet
+
+Uses Hashing → Elements are stored based on their hash code.
+
+Uses HashMap internally → Each element in HashSet is stored as a key in a HashMap, with a dummy value (PRESENT).
+
+Maintains Unordered Data → Elements are not stored in insertion order.
