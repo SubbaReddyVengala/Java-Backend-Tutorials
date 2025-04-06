@@ -20691,4 +20691,234 @@ System.out.println(list);
 
 ![image](https://github.com/user-attachments/assets/f53b5b10-a573-4aa6-b649-f0d8fc1f94c8)
 
+# ✅ Java 8 Stream API – 15 Practical Examples
+
+---
+
+## 🔰 Introduction
+
+Java 8 introduced the **Stream API**, which provides a **functional approach** to processing sequences of elements. It supports operations such as:
+
+- ✅ Filtering  
+- ✅ Mapping  
+- ✅ Reducing  
+- ✅ Collecting  
+
+Streams make working with collections **concise, readable, and efficient**. They can work with `List`, `Set`, arrays, and more.
+
+---
+
+## 📚 Table of Contents
+
+1. [Create a Stream from a List](#1-create-a-stream-from-a-list)  
+2. [Filter Elements in a Stream](#2-filter-elements-in-a-stream)  
+3. [Map Elements in a Stream](#3-map-elements-in-a-stream)  
+4. [Stream `forEach()` to Print Elements](#4-stream-foreach-to-print-elements)  
+5. [Stream `collect()` to Convert to a List](#5-stream-collect-to-convert-to-a-list)  
+6. [Sort Elements in a Stream](#6-sort-elements-in-a-stream)  
+7. [Reduce a Stream to a Single Value](#7-reduce-a-stream-to-a-single-value)  
+8. [Count Elements in a Stream](#8-count-elements-in-a-stream)  
+9. [Limit the Stream Size](#9-limit-the-stream-size)  
+10. [Skip Elements in a Stream](#10-skip-elements-in-a-stream)  
+11. [FlatMap Example (Flattening Nested Lists)](#11-flatmap-example-flattening-nested-lists)  
+12. [Find the First Element in a Stream](#12-find-the-first-element-in-a-stream)  
+13. [Check if Any Match in a Stream](#13-check-if-any-match-in-a-stream)  
+14. [Grouping by using Collectors](#14-grouping-by-using-collectors)  
+15. [Stream Parallel Processing](#15-stream-parallel-processing)
+
+---
+# ✅ Java 8 Stream API Practical Examples
+
+## 1️⃣ Create a Stream from a List
+
+```
+List<String> items = Arrays.asList("apple", "banana", "orange");
+Stream<String> stream = items.stream();
+```
+
+## 2️⃣ Filter Elements in a Stream
+
+```
+items.stream()
+     .filter(item -> item.startsWith("a"))
+     .forEach(System.out::println);
+```
+
+## 3️⃣ Map Elements in a Stream
+```
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4);
+
+numbers.stream()
+       .map(n -> n * n)
+       .forEach(System.out::println);
+
+// Output:
+// 1
+// 4
+// 9
+// 16
+```
+
+## 4️⃣ Stream forEach() to Print Elements
+```
+List<String> items = Arrays.asList("apple", "banana", "cherry");
+
+items.stream()
+     .forEach(System.out::println);
+
+// Output:
+// apple
+// banana
+// cherry
+
+```
+## 5️⃣ Stream collect() to Convert to a List
+```
+List<String> items = Arrays.asList("apple", "banana", "avocado", "cherry");
+
+List<String> filtered = items.stream()
+                             .filter(i -> i.contains("a"))
+                             .collect(Collectors.toList());
+
+System.out.println(filtered);
+
+// Output:
+// [apple, banana, avocado]
+```
+## 6️⃣ Sort Elements in a Stream
+```
+List<String> items = Arrays.asList("banana", "apple", "cherry");
+
+items.stream()
+     .sorted()
+     .forEach(System.out::println);
+
+// Output:
+// apple
+// banana
+// cherry
+```
+## 7️⃣ Reduce a Stream to a Single Value
+```
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4);
+
+int sum = numbers.stream()
+                 .reduce(0, Integer::sum);
+
+System.out.println("Sum: " + sum);
+
+// Output:
+// Sum: 10
+```
+## 8️⃣ Count Elements in a Stream
+```
+List<String> items = Arrays.asList("banana", "strawberry", "kiwi", "pineapple");
+
+long count = items.stream()
+                  .filter(i -> i.length() > 5)
+                  .count();
+
+System.out.println("Count: " + count);
+
+// Output:
+// Count: 3
+```
+## 9️⃣ Limit the Stream Size
+```
+List<String> items = Arrays.asList("apple", "banana", "cherry");
+
+items.stream()
+     .limit(2)
+     .forEach(System.out::println);
+
+// Output:
+// apple
+// banana
+```
+## 🔟 Skip Elements in a Stream
+```
+List<String> items = Arrays.asList("apple", "banana", "cherry");
+
+items.stream()
+     .skip(1)
+     .forEach(System.out::println);
+
+// Output:
+// banana
+// cherry
+```
+## 1️⃣1️⃣ FlatMap Example (Flattening Nested Lists)
+```
+List<List<String>> nested = Arrays.asList(
+    Arrays.asList("a", "b"),
+    Arrays.asList("c", "d")
+);
+
+nested.stream()
+      .flatMap(List::stream)
+      .forEach(System.out::println);
+
+// Output:
+// a
+// b
+// c
+// d
+```
+## 1️⃣2️⃣ Find the First Element in a Stream
+```
+List<String> items = Arrays.asList("apple", "banana", "cherry");
+
+Optional<String> first = items.stream().findFirst();
+first.ifPresent(System.out::println);
+
+// Output:
+// apple
+```
+## 1️⃣3️⃣ Check if Any Match in a Stream
+```
+List<String> items = Arrays.asList("apple", "banana", "cherry");
+
+boolean hasApple = items.stream()
+                        .anyMatch(i -> i.equals("apple"));
+
+System.out.println("Contains apple? " + hasApple);
+
+// Output:
+// Contains apple? true
+```
+## 1️⃣4️⃣ Grouping by using Collectors
+```
+List<String> fruits = Arrays.asList("apple", "banana", "apple", "orange");
+
+Map<String, Long> grouped = fruits.stream()
+    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+System.out.println(grouped);
+
+// Output:
+// {orange=1, banana=1, apple=2}
+```
+## 1️⃣5️⃣ Stream Parallel Processing
+
+```
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4);
+
+int total = numbers.parallelStream()
+                  .mapToInt(Integer::intValue)
+                  .sum();
+
+System.out.println("Parallel sum: " + total);
+
+// Output:
+// Parallel sum: 10
+```
+
+## ✅ Summary
+
+The Stream API in Java 8 simplifies many collection-based operations.
+
+With functional programming features, code becomes cleaner and more expressive.
+
+Mastering these stream operations can significantly enhance your productivity as a Java developer.
+
 
