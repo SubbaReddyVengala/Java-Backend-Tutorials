@@ -21279,3 +21279,125 @@ System.out.println(combined); // Output: ABC
 
 The `Collectors` utility class in Java 8 makes data aggregation with streams powerful and expressive. Mastering these methods enhances your ability to transform data cleanly and efficiently using functional programming paradigms.
 
+## 📌 Java 8 `StringJoiner` – Complete Guide
+
+### 🔍 What is `StringJoiner`?
+
+Java 8 introduced the `StringJoiner` class in the `java.util` package to build a sequence of characters separated by a delimiter (e.g., comma) and optionally with a prefix and suffix.
+
+It provides a flexible and efficient way to concatenate strings.
+
+----------
+
+### ✅ Why Use `StringJoiner`?
+
+-   Eliminates manual string concatenation using loops
+    
+-   Supports custom delimiters, prefixes, and suffixes
+    
+-   Cleaner, more readable, and efficient string joining
+    
+
+----------
+
+### 🧪 Basic Example
+
+```
+import java.util.StringJoiner;
+
+public class SimpleJoinerDemo {
+    public static void main(String[] args) {
+        StringJoiner joiner = new StringJoiner(", ");
+        joiner.add("Java");
+        joiner.add("Python");
+        joiner.add("Go");
+
+        System.out.println(joiner); // Output: Java, Python, Go
+    }
+}
+```
+
+----------
+
+### 🌟 Using Prefix and Suffix
+
+```
+import java.util.StringJoiner;
+
+public class JoinerWithPrefixSuffix {
+    public static void main(String[] args) {
+        StringJoiner joiner = new StringJoiner(", ", "[", "]");
+        joiner.add("Apple");
+        joiner.add("Banana");
+
+        System.out.println(joiner); // Output: [Apple, Banana]
+    }
+}
+```
+
+----------
+
+### 🔗 Merging Two StringJoiners
+
+```
+import java.util.StringJoiner;
+
+public class MergeJoiners {
+    public static void main(String[] args) {
+        StringJoiner joiner1 = new StringJoiner(", ");
+        joiner1.add("One").add("Two");
+
+        StringJoiner joiner2 = new StringJoiner(", ");
+        joiner2.add("Three").add("Four");
+
+        joiner1.merge(joiner2);
+        System.out.println(joiner1); // Output: One, Two, Three, Four
+    }
+}
+```
+
+----------
+
+### 📏 Getting Length of Joined String
+
+```
+public class JoinerLength {
+    public static void main(String[] args) {
+        StringJoiner joiner = new StringJoiner("-");
+        joiner.add("2023").add("12").add("31");
+
+        System.out.println("Joined String: " + joiner);
+        System.out.println("Length: " + joiner.length());
+        // Output: Joined String: 2023-12-31
+        //         Length: 10
+    }
+}
+```
+
+----------
+
+### 🔍 ToString vs getLength
+
+-   `toString()` returns the actual joined string
+    
+-   `length()` returns the number of characters in the joined string (including delimiters, prefix, suffix)
+    
+
+----------
+
+### 🧹 Summary
+
+-   `StringJoiner` simplifies string concatenation with delimiters
+    
+-   Great for CSV-style or formatted output
+    
+-   Supports nesting and merging
+    
+
+### 🧰 When to Use It?
+
+-   When building strings from collection elements
+    
+-   Generating output with consistent formatting
+    
+-   Avoiding mutable string concatenation inside loops
