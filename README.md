@@ -20605,4 +20605,90 @@ Java 8 introduced many useful built-in functional interfaces.
 
 You can also create your own based on application needs.
 
+# ✅ Java 8 Method References
+
+Java 8 introduced method references as a shorthand syntax for lambda expressions that merely call an existing method. They make code more readable and concise when you're not modifying arguments or return values.
+
+## 📌 What is a Method Reference?
+
+A method reference is a simplified way of writing a lambda expression that calls a method. It uses the :: operator (double colon).
+
+For example:
+```
+// Lambda expression
+Consumer<String> print = s -> System.out.println(s);
+
+// Equivalent method reference
+Consumer<String> printRef = System.out::println;
+```
+## 🔹 Benefits of Method References
+
+Makes code more readable and expressive
+
+Eliminates boilerplate lambda syntax
+
+Promotes reuse of existing methods
+
+## 🧠 Types of Method References
+
+There are four kinds of method references:
+
+### 1️⃣ Reference to a Static Method
+
+Syntax: ClassName::staticMethodName
+
+### ✅ Example:
+```
+public class Utils {
+    public static void greet(String name) {
+        System.out.println("Hello, " + name);
+    }
+}
+
+Consumer<String> greeting = Utils::greet;
+greeting.accept("Alice");
+```
+### 2️⃣ Reference to an Instance Method of a Particular Object
+Syntax: instance::instanceMethodName
+
+### ✅ Example:
+
+```
+public class MessagePrinter {
+    public void print(String msg) {
+        System.out.println(msg);
+    }
+}
+
+MessagePrinter printer = new MessagePrinter();
+Consumer<String> printAction = printer::print;
+printAction.accept("Using method reference!");
+```
+### 3️⃣ Reference to an Instance Method of an Arbitrary Object of a Particular Type
+
+Syntax: ClassName::instanceMethodName
+
+### ✅ Example:
+```
+List<String> names = Arrays.asList("john", "emma", "peter");
+names.sort(String::compareToIgnoreCase);
+System.out.println(names);
+```
+Here, String::compareToIgnoreCase is a reference to the instance method of String class.
+
+### 4️⃣ Reference to a Constructor
+
+Syntax: ClassName::new
+
+### ✅ Example:
+```
+Supplier<List<String>> listSupplier = ArrayList::new;
+List<String> list = listSupplier.get();
+list.add("Java");
+System.out.println(list);
+```
+## 📝 Summary Table
+
+![image](https://github.com/user-attachments/assets/f53b5b10-a573-4aa6-b649-f0d8fc1f94c8)
+
 
