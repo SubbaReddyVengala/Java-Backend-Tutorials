@@ -21401,3 +21401,117 @@ public class JoinerLength {
 -   Generating output with consistent formatting
     
 -   Avoiding mutable string concatenation inside loops
+
+# 📌 Java 8 Static and Default Methods in Interface – Complete Guide
+
+## 🔍 Introduction
+
+Java 8 introduced two new features to interfaces:
+
+-   `default` methods
+    
+-   `static` methods
+    
+
+These allow interfaces to have method implementations without breaking existing classes that implement the interface.
+
+----------
+
+## ✅ Why Introduced?
+
+Before Java 8, interfaces could only have **abstract methods**. Adding a new method to an interface meant breaking all implementing classes. Java 8 solves this by allowing methods with default implementations.
+
+----------
+
+## 🧩 Default Methods
+
+Default methods are non-abstract methods defined in interfaces using the `default` keyword.
+
+### ✨ Syntax
+
+
+```
+interface  MyInterface { default  void  greet() {
+        System.out.println("Hello from default method!");
+    }
+}
+```
+
+### 📦 Example
+
+
+```
+interface  Vehicle { default  void  start() {
+        System.out.println("Starting vehicle...");
+    }
+} class  Car  implements  Vehicle { // inherits start() by default } public  class  DefaultDemo { public  static  void  main(String[] args) { Car  car  =  new  Car();
+        car.start(); // Output: Starting vehicle... }
+}
+```
+
+----------
+
+## 🧷 Static Methods in Interface
+
+Static methods are associated with the interface itself and **not** with instances.
+
+### ✨ Syntax
+
+
+```
+interface  MyInterface { static  void  utilityMethod() {
+        System.out.println("Utility logic here");
+    }
+}
+``` 
+
+### 📦 Example
+
+
+
+```
+interface  MathUtils { static  int  square(int x) { return x * x;
+    }
+} public  class  StaticMethodDemo { public  static  void  main(String[] args) { int  result  = MathUtils.square(5);
+        System.out.println(result); // Output: 25 }
+}
+``` 
+
+----------
+
+## ⚠️ Important Notes
+
+-   **Default methods** can be overridden in implementing classes.
+    
+-   **Static methods** cannot be overridden and are not inherited.
+    
+-   If a class implements two interfaces with the same default method, it must override it to avoid ambiguity.
+    
+
+### 🤯 Example: Conflict Resolution
+
+
+
+```
+interface  A { default  void  show() {
+        System.out.println("A's show");
+    }
+} interface  B { default  void  show() {
+        System.out.println("B's show");
+    }
+} class  TestClass  implements  A, B { public  void  show() {
+        A.super.show(); // or B.super.show(); }
+}
+``` 
+
+----------
+
+## 🧹 Summary
+
+-   Java 8 allows **concrete method implementations in interfaces**.
+    
+-   **default methods** → Inherited by implementing classes.
+    
+-   **static methods** → Called using interface name.
+    
+
