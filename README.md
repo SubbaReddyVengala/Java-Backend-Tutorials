@@ -20461,7 +20461,148 @@ BiFunction<Integer, Integer, Integer> sum = (a, b) -> a + b;
 System.out.println(sum.apply(5, 3));  // Output: 8
 
 ```
-## 🔹 Using Lambda with Collections
+# ✅ Java 8 Functional Interfaces
 
-### ✅ 1. forEach
+## 🔹 What is a Functional Interface?
+
+An interface with exactly one abstract method.
+
+Can have any number of default or static methods.
+
+Known as SAM Interfaces (Single Abstract Method).
+
+Used to implement Lambda Expressions and Method References.
+
+Annotated with @FunctionalInterface (optional but recommended).
+
+## 🔹 Custom Functional Interface
+
+```
+@FunctionalInterface
+interface Sayable {
+    void say(String msg); // Single abstract method
+}
+```
+
+Example:
+```
+public class FunctionalInterfacesExample {
+    public static void main(String[] args) {
+        Sayable sayable = (msg) -> System.out.println(msg);
+        sayable.say("Say something ..");
+    }
+}
+```
+## 🔹 Java 8 Predefined Functional Interfaces
+
+### 1. Predicate<T>
+
+Used to test a condition and return a boolean result.
+
+```
+import java.util.function.Predicate;
+
+public class PredicateDemo {
+    public static void main(String[] args) {
+        Predicate<String> isLongerThan5 = str -> str.length() > 5;
+        System.out.println(isLongerThan5.test("Welcome")); // true
+    }
+}
+```
+### 2. Function<T, R>
+
+Transforms input of type T into output of type R.
+
+```
+import java.util.function.Function;
+
+public class FunctionDemo {
+    public static void main(String[] args) {
+        Function<Integer, String> toStringFunction = num -> "Number: " + num;
+        System.out.println(toStringFunction.apply(42)); // Number: 42
+    }
+}
+```
+### 3. Supplier<T>
+
+Supplies results without taking any input.
+```
+import java.util.function.Supplier;
+
+public class SupplierDemo {
+    public static void main(String[] args) {
+        Supplier<Double> randomSupplier = () -> Math.random();
+        System.out.println("Generated: " + randomSupplier.get());
+    }
+}
+```
+### 4. Consumer<T>
+
+Consumes an input and returns nothing.
+
+```
+import java.util.function.Consumer;
+
+public class ConsumerDemo {
+    public static void main(String[] args) {
+        Consumer<String> printer = value -> System.out.println("Input: " + value);
+        printer.accept("Functional Programming");
+    }
+}
+```
+### 5. BiFunction<T, U, R>
+
+Takes two inputs and returns a result.
+
+```
+import java.util.function.BiFunction;
+
+public class BiFunctionDemo {
+    public static void main(String[] args) {
+        BiFunction<Integer, Integer, String> sumResult = (a, b) -> "Sum: " + (a + b);
+        System.out.println(sumResult.apply(15, 10)); // Sum: 25
+    }
+}
+```
+### 6. BiConsumer<T, U>
+
+Consumes two inputs and returns nothing.
+
+```
+import java.util.function.BiConsumer;
+
+public class BiConsumerDemo {
+    public static void main(String[] args) {
+        BiConsumer<String, Integer> displayInfo = (name, age) -> 
+            System.out.println(name + " is " + age + " years old.");
+        
+        displayInfo.accept("Alice", 30);
+    }
+}
+```
+### 7. BiPredicate<T, U>
+
+Evaluates a condition on two inputs and returns boolean.
+
+```
+import java.util.function.BiPredicate;
+
+public class BiPredicateDemo {
+    public static void main(String[] args) {
+        BiPredicate<Integer, Integer> isDivisible = (x, y) -> x % y == 0;
+
+        System.out.println(isDivisible.test(10, 2)); // true
+        System.out.println(isDivisible.test(7, 3));  // false
+    }
+}
+```
+## 🔹 Final Notes
+Functional interfaces are the backbone of lambda expressions.
+
+They help in writing concise, readable, and testable code.
+
+Java 8 introduced many useful built-in functional interfaces.
+
+You can also create your own based on application needs.
+
 
