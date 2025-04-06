@@ -21515,3 +21515,383 @@ interface  A { default  void  show() {
 -   **static methods** → Called using interface name.
     
 
+## 📦 Project Title: **Employee Management System (EMS)**
+
+### 🎯 Objective:
+
+Build a system to manage employees and departments in an organization using modern Java 8 features. This includes managing employee data, performing analytics, and generating reports.
+
+----------
+
+### 🧰 Java 8 Features Used:
+
+Feature
+
+How It's Used
+
+✅ Optional
+
+Handling missing employee fields like email or department
+
+🔧 Functional Interfaces
+
+Custom filters, transformations (using Predicate, Function, etc.)
+
+🔁 Stream API
+
+Data processing: filtering, mapping, reducing, grouping, etc.
+
+📊 Collectors
+
+Collecting statistics, grouping by department, joining names
+
+🔤 StringJoiner
+
+Formatting employee data as CSV or display strings
+
+🧱 Default & Static Methods
+
+Define reusable logic inside interfaces like `EmployeeService`
+
+----------
+
+### 📁 Modules & Structure:
+
+1.  **Model Layer**
+    
+    -   `Employee` (id, name, age, salary, department, email)
+        
+    -   `Department` (id, name)
+        
+2.  **Service Layer**
+    
+    -   `EmployeeService` (interface with default and static methods)
+        
+    -   `EmployeeServiceImpl` (implementation class)
+        
+3.  **Utility Layer**
+    
+    -   `EmployeeUtils` (for formatting strings using StringJoiner, etc.)
+        
+
+----------
+
+### 🔍 Key Functionalities:
+
+#### 1️⃣ Add, Update, Delete, and View Employees
+
+-   Use **default methods** in interface for generic CRUD operations.
+    
+
+#### 2️⃣ Filter Employees
+
+-   Use **Predicate** to filter employees by age, salary, or department.
+    
+
+#### 3️⃣ Generate Reports
+
+-   Use **Collectors.groupingBy** and **partitioningBy** for:
+    
+    -   Employees by Department
+        
+    -   High vs Low Salary Employees
+        
+
+#### 4️⃣ Email & Optional Fields
+
+-   Use **Optional** to safely retrieve optional fields like email or department.
+    
+
+#### 5️⃣ Salary Analytics
+
+-   Use **Collectors.averagingDouble**, **summarizingDouble**, etc.
+    
+
+#### 6️⃣ Employee Summary
+
+-   Use **StringJoiner** to create printable summaries or CSV export.
+    
+
+----------
+
+### 🔗 Example Use Case:
+```
+Optional<String> email = Optional.ofNullable(emp.getEmail());
+email.ifPresentOrElse(
+    e -> System.out.println("Email: " + e),
+    () -> System.out.println("Email not provided")
+);
+```
+```
+Map<String, List<Employee>> byDept = employees.stream()
+        .collect(Collectors.groupingBy(Employee::getDepartment));
+```
+````
+StringJoiner summary = new StringJoiner(", ", "[", "]");
+employees.forEach(emp -> summary.add(emp.getName()));
+System.out.println("All employees: " + summary);
+```
+✅ Here’s a complete real-time project example called **Employee Management** using key Java 8 features:
+
+-   `Streams`, `Collectors` (grouping, filtering, averaging)
+    
+-   `Optional`
+    
+-   `Functional Interfaces` (Predicate)
+    
+-   `StringJoiner`
+    
+-   `Default and Static methods in Interfaces`
+```
+// Employee.java
+
+public  class Employee {
+
+private  int id;
+
+private  String name;
+
+private  int age;
+
+private  double salary;
+
+private  String department;
+
+private  String email;
+
+  
+
+public Employee(int id, String name, int age, double salary, String department, String email) {
+
+this.id = id;
+
+this.name = name;
+
+this.age = age;
+
+this.salary = salary;
+
+this.department = department;
+
+this.email = email;
+
+}
+
+  
+
+// Getters
+
+public  int getId() { return id; }
+
+public  String getName() { return name; }
+
+public  int getAge() { return age; }
+
+public  double getSalary() { return salary; }
+
+public  String getDepartment() { return department; }
+
+public  String getEmail() { return email; }
+
+}
+
+  
+
+// EmployeeService.java
+
+import java.util.*;
+
+import java.util.function.*;
+
+import java.util.stream.*;
+
+  
+
+public  interface EmployeeService {
+
+  
+
+List<Employee> getAllEmployees();
+
+  
+
+default  void printAllEmployeeNames(List<Employee> employees) {
+
+employees.stream()
+
+.map(Employee::getName)
+
+.forEach(System.out::println);
+
+}
+
+  
+
+default  List<Employee> filterEmployees(List<Employee> employees, Predicate<Employee> condition) {
+
+return employees.stream().filter(condition).collect(Collectors.toList());
+
+}
+
+  
+
+default  Map<String, List<Employee>> groupByDepartment(List<Employee> employees) {
+
+return employees.stream().collect(Collectors.groupingBy(Employee::getDepartment));
+
+}
+
+  
+
+static  double getAverageSalary(List<Employee> employees) {
+
+return employees.stream()
+
+.collect(Collectors.averagingDouble(Employee::getSalary));
+
+}
+
+  
+
+static  Optional<Employee> findHighestPaid(List<Employee> employees) {
+
+return employees.stream()
+
+.max(Comparator.comparingDouble(Employee::getSalary));
+
+}
+
+  
+
+static  String employeeSummary(List<Employee> employees) {
+
+StringJoiner joiner = new StringJoiner(", ");
+
+employees.forEach(emp -> joiner.add(emp.getName()));
+
+return joiner.toString();
+
+}
+
+}
+
+  
+
+// EmployeeServiceImpl.java
+
+import java.util.*;
+
+  
+
+public  class EmployeeServiceImpl implements EmployeeService {
+
+  
+
+private  final  List<Employee> employeeList;
+
+  
+
+public EmployeeServiceImpl(List<Employee> employeeList) {
+
+this.employeeList = employeeList;
+
+}
+
+  
+
+@Override
+
+public  List<Employee> getAllEmployees() {
+
+return employeeList;
+
+}
+
+}
+
+  
+
+// Main.java
+
+import java.util.*;
+
+  
+
+public  class Main {
+
+public  static  void main(String[] args) {
+
+List<Employee> employees = Arrays.asList(
+
+new Employee(1, "John", 30, 70000, "IT", "john@example.com"),
+
+new Employee(2, "Jane", 25, 80000, "Finance", null),
+
+new Employee(3, "Alex", 35, 75000, "HR", "alex@example.com"),
+
+new Employee(4, "Emma", 29, 85000, "IT", null)
+
+);
+
+  
+
+EmployeeService service = new EmployeeServiceImpl(employees);
+
+  
+
+System.out.println("--- All Employee Names ---");
+
+service.printAllEmployeeNames(service.getAllEmployees());
+
+  
+
+System.out.println("\n--- IT Employees ---");
+
+List<Employee> itEmployees = service.filterEmployees(employees, e ->  "IT".equals(e.getDepartment()));
+
+itEmployees.forEach(e -> System.out.println(e.getName()));
+
+  
+
+System.out.println("\n--- Grouped By Department ---");
+
+service.groupByDepartment(employees).forEach((dept, list) -> {
+
+System.out.println(dept + ": " + EmployeeService.employeeSummary(list));
+
+});
+
+  
+
+System.out.println("\n--- Average Salary ---");
+
+System.out.println(EmployeeService.getAverageSalary(employees));
+
+  
+
+System.out.println("\n--- Highest Paid Employee ---");
+
+EmployeeService.findHighestPaid(employees).ifPresent(e -> System.out.println(e.getName() + " - " + e.getSalary()));
+
+  
+
+System.out.println("\n--- Email Checks ---");
+
+employees.forEach(emp -> {
+
+Optional.ofNullable(emp.getEmail())
+
+.ifPresentOrElse(
+
+email -> System.out.println(emp.getName() + " Email: " + email),
+
+() -> System.out.println(emp.getName() + " Email: Not Provided")
+
+);
+
+});
+
+}
+
+}```
+
