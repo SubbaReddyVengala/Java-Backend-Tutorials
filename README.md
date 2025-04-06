@@ -21125,3 +21125,157 @@ public class OptionalApiShowcase {
 ## 📌 Conclusion
 
 The `Optional` class in Java 8 is a powerful tool to avoid null references, improve API design, and promote cleaner, more readable code.
+
+
+# 📦 Java 8 Collectors – A Practical Guide
+
+Java 8 introduced the `Collectors` class as part of the `java.util.stream` package. It's primarily used with the `Stream.collect()` method to gather elements from a stream into various result containers like `List`, `Set`, `Map`, or even a single concatenated `String`.
+
+This guide walks through some of the most widely used methods from the `Collectors` utility class with practical examples.
+
+---
+
+## 📚 Table of Contents
+
+1. [Collect to a List](#example-1-collect-to-a-list)
+2. [Collect to a Set](#example-2-collect-to-a-set)
+3. [Collect to a Map](#example-3-collect-to-a-map)
+4. [Joining Elements into a String](#example-4-joining-elements-into-a-string)
+5. [Summing Elements](#example-5-summing-elements)
+6. [Averaging Values](#example-6-averaging-values)
+7. [Grouping Elements by a Key](#example-7-grouping-elements-by-a-key)
+8. [Partitioning Elements by a Predicate](#example-8-partitioning-elements-by-a-predicate)
+9. [Counting Elements](#example-9-counting-elements)
+10. [Collecting and Reducing Elements](#example-10-collecting-and-reducing-elements)
+
+---
+
+## ✅ Example 1: Collect to a List
+
+```java
+List<String> names = Stream.of("John", "Jane", "Jack")
+                           .collect(Collectors.toList());
+System.out.println(names); // Output: [John, Jane, Jack]
+```
+
+---
+
+## ✅ Example 2: Collect to a Set
+
+```java
+Set<String> uniqueNames = Stream.of("apple", "banana", "apple")
+                                .collect(Collectors.toSet());
+System.out.println(uniqueNames); // Output: [apple, banana]
+```
+
+---
+
+## ✅ Example 3: Collect to a Map
+
+```java
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+
+Map<String, Integer> nameLengthMap = names.stream()
+    .collect(Collectors.toMap(name -> name, name -> name.length()));
+
+System.out.println(nameLengthMap);
+// Output: {Alice=5, Bob=3, Charlie=7}
+```
+
+---
+
+## ✅ Example 4: Joining Elements into a String
+
+```java
+List<String> words = Arrays.asList("Java", "8", "Stream");
+
+String result = words.stream()
+                     .collect(Collectors.joining(" - "));
+
+System.out.println(result); // Output: Java - 8 - Stream
+```
+
+---
+
+## ✅ Example 5: Summing Elements
+
+```java
+List<Integer> numbers = Arrays.asList(10, 20, 30);
+
+int total = numbers.stream()
+                   .collect(Collectors.summingInt(Integer::intValue));
+
+System.out.println(total); // Output: 60
+```
+
+---
+
+## ✅ Example 6: Averaging Values
+
+```java
+List<Integer> scores = Arrays.asList(80, 90, 100);
+
+double avg = scores.stream()
+                   .collect(Collectors.averagingInt(Integer::intValue));
+
+System.out.println(avg); // Output: 90.0
+```
+
+---
+
+## ✅ Example 7: Grouping Elements by a Key
+
+```java
+List<String> animals = Arrays.asList("lion", "tiger", "bear", "leopard");
+
+Map<Integer, List<String>> groupedByLength = animals.stream()
+    .collect(Collectors.groupingBy(String::length));
+
+System.out.println(groupedByLength);
+// Output: {4=[lion, bear], 5=[tiger], 7=[leopard]}
+```
+
+---
+
+## ✅ Example 8: Partitioning Elements by a Predicate
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6);
+
+Map<Boolean, List<Integer>> isEvenPartition = numbers.stream()
+    .collect(Collectors.partitioningBy(n -> n % 2 == 0));
+
+System.out.println(isEvenPartition);
+// Output: {false=[1, 3, 5], true=[2, 4, 6]}
+```
+
+---
+
+## ✅ Example 9: Counting Elements
+
+```java
+long count = Stream.of("one", "two", "three")
+                   .collect(Collectors.counting());
+
+System.out.println(count); // Output: 3
+```
+
+---
+
+## ✅ Example 10: Collecting and Reducing Elements
+
+```java
+List<String> words = Arrays.asList("A", "B", "C");
+
+String combined = words.stream()
+    .collect(Collectors.reducing("", (a, b) -> a + b));
+
+System.out.println(combined); // Output: ABC
+```
+
+---
+
+## 📌 Summary
+
+The `Collectors` utility class in Java 8 makes data aggregation with streams powerful and expressive. Mastering these methods enhances your ability to transform data cleanly and efficiently using functional programming paradigms.
+
