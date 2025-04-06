@@ -20345,3 +20345,123 @@ public class LinkedHashMapExample {
 
 **✔ HashMap** → Unordered, O(1) operations, allows null keys.
 
+# Java 8 Features with Examples
+
+Oracle released a new version of Java as Java 8 in March 18, 2014. It was a revolutionary release of the Java for software development platform. It includes various upgrades to the Java programming, JVM, Tools and libraries.
+
+## Java 8 Programming Language Enhancements
+
+Java 8 provides following features for Java Programming:
+
+Lambda expressions,
+
+Method references,
+
+Functional interfaces,
+
+Stream API,
+
+Default methods,
+
+Base64 Encode Decode,
+
+Static methods in interface,
+
+Optional class,
+
+Collectors class,
+
+ForEach() method,
+
+Nashorn JavaScript Engine,
+
+Parallel Array Sorting,
+
+Type and Repating Annotations,
+
+IO Enhancements,
+
+Concurrency Enhancements,
+
+JDBC Enhancements etc.
+
+## 🔹 What are Lambda Expressions?
+
+A Lambda Expression is a concise way to represent an anonymous function — a method without a name. It helps implement functional interfaces in a much cleaner way.
+
+### ✅ Syntax:
+
+```
+(parameters) -> { body }
+
+```
+
+### ✅ Example:
+```
+(int a, int b) -> { return a + b; }
+
+```
+
+Or shorter (when possible):
+
+```
+(a, b) -> a + b
+
+```
+### 🔹 Why use Lambda Expressions?
+
+They are mainly used to:
+
+Simplify code
+
+Reduce boilerplate
+
+Make code more functional (like in streams and collections)
+
+Replace anonymous inner classes
+
+## 🔹 Functional Interface Recap
+
+A functional interface is an interface with only one abstract method.
+
+Example:
+
+```
+@FunctionalInterface
+interface MyFunctional {
+    void show();
+}
+
+```
+You can pass a lambda to this:
+```
+MyFunctional mf = () -> System.out.println("Hello Lambda");
+mf.show();  // Output: Hello Lambda
+```
+
+## 🔹 Examples of Lambda Usage
+
+### ✅ 1. No Parameters
+
+```
+Runnable r = () -> System.out.println("Running thread using lambda");
+new Thread(r).start();
+```
+
+### ✅ 2. Single Parameter
+
+```
+Consumer<String> printUpper = s -> System.out.println(s.toUpperCase());
+printUpper.accept("java");  // Output: JAVA
+```
+
+### ✅ 3. Multiple Parameters
+```
+BiFunction<Integer, Integer, Integer> sum = (a, b) -> a + b;
+System.out.println(sum.apply(5, 3));  // Output: 8
+
+```
+## 🔹 Using Lambda with Collections
+
+### ✅ 1. forEach
+
