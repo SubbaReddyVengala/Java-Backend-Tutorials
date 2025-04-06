@@ -20920,5 +20920,208 @@ The Stream API in Java 8 simplifies many collection-based operations.
 With functional programming features, code becomes cleaner and more expressive.
 
 Mastering these stream operations can significantly enhance your productivity as a Java developer.
+## 📋 Java 8 Optional – Simplified Guide with Custom Examples
 
+### 🔍 Introduction
 
+Java 8 introduced the `Optional` class to help deal with `null` values in a more expressive and safe way, helping avoid the infamous `NullPointerException`.
+
+### ✅ Benefits of Using Optional:
+
+- No more boilerplate null checks  
+- Avoids NullPointerException at runtime  
+- Leads to cleaner APIs  
+- Eliminates unnecessary if-else logic  
+
+---
+
+## 🧪 Basic Example
+
+```java
+import java.util.Optional;
+
+public class OptionalDemo {
+    public static void main(String[] args) {
+        Optional<String> result = Optional.of("MALE");
+
+        String responseOne = "Yes";
+        String responseTwo = null;
+
+        System.out.println("Wrapped Optional: " + result);
+        System.out.println("Extracted Value: " + result.get());
+        System.out.println("Empty Optional: " + Optional.empty());
+
+        System.out.println("ofNullable with value: " + Optional.ofNullable(responseOne));
+        System.out.println("ofNullable with null: " + Optional.ofNullable(responseTwo));
+
+        // ⚠️ Throws NullPointerException
+        System.out.println("of with null (throws error): " + Optional.of(responseTwo));
+    }
+}
+```
+
+---
+
+## 🔍 Common Optional Methods
+
+### 1️⃣ `isPresent()`
+
+Checks if a value exists.
+
+```java
+private static void checkPresence() {
+    Optional<String> data = Optional.of("Data");
+    System.out.println("Is value present? " + data.isPresent()); // Output: true
+}
+```
+
+---
+
+### 2️⃣ `empty()`
+
+Creates an empty Optional.
+
+```java
+private static void createEmpty() {
+    Optional<String> emptyOpt = Optional.empty();
+    System.out.println("Is empty? " + emptyOpt.isPresent()); // Output: false
+}
+```
+
+---
+
+### 3️⃣ `ifPresent()`
+
+Executes logic if a value is present.
+
+```java
+private static void demonstrateIfPresent() {
+    Optional<String> user = Optional.of("Arjun");
+    user.ifPresent(u -> System.out.println("Name length: " + u.length())); // Output: Name length: 5
+}
+```
+
+---
+
+### 4️⃣ `orElse()`
+
+Returns the default if value is not present.
+
+```java
+private static void useOrElse() {
+    String fallback = null;
+    String finalName = Optional.ofNullable(fallback).orElse("DefaultName");
+    System.out.println(finalName); // Output: DefaultName
+}
+```
+
+---
+
+### 5️⃣ `orElseGet()`
+
+Uses a supplier to generate fallback.
+
+```java
+private static void useOrElseGet() {
+    String missingName = null;
+    String fallbackName = Optional.ofNullable(missingName)
+                                  .orElseGet(() -> "GuestUser");
+    System.out.println(fallbackName); // Output: GuestUser
+}
+```
+
+---
+
+### 6️⃣ `orElseThrow()`
+
+Throws an exception if value not found.
+
+```java
+private static void useOrElseThrow() {
+    String missing = null;
+    String result = Optional.ofNullable(missing)
+                            .orElseThrow(() -> new RuntimeException("No value found!"));
+    System.out.println(result);
+}
+```
+
+---
+
+### 7️⃣ `get()`
+
+Extracts value if present (avoid using without check).
+
+```java
+private static void demoGetMethod() {
+    Optional<String> user = Optional.of("Explorer");
+    String name = user.get();
+    System.out.println("Name is: " + name); // Output: Name is: Explorer
+}
+```
+
+---
+
+## 🧹 Complete Working Example
+
+```java
+import java.util.Optional;
+
+public class OptionalApiShowcase {
+
+    public static void main(String[] args) {
+        checkPresence();
+        createEmpty();
+        demonstrateIfPresent();
+        useOrElse();
+        useOrElseGet();
+        // Uncomment below to see the exception thrown
+        // useOrElseThrow();
+        demoGetMethod();
+    }
+
+    private static void checkPresence() {
+        Optional<String> value = Optional.of("Hello");
+        System.out.println("Present: " + value.isPresent());
+    }
+
+    private static void createEmpty() {
+        Optional<String> nothing = Optional.empty();
+        System.out.println("Empty? " + nothing.isPresent());
+    }
+
+    private static void demonstrateIfPresent() {
+        Optional<String> name = Optional.of("OptionalUser");
+        name.ifPresent(n -> System.out.println("Length: " + n.length()));
+    }
+
+    private static void useOrElse() {
+        String data = null;
+        String fallback = Optional.ofNullable(data).orElse("FallbackName");
+        System.out.println("Value: " + fallback);
+    }
+
+    private static void useOrElseGet() {
+        String response = null;
+        String user = Optional.ofNullable(response).orElseGet(() -> "GeneratedUser");
+        System.out.println("Resolved user: " + user);
+    }
+
+    private static void useOrElseThrow() {
+        String error = null;
+        String value = Optional.ofNullable(error)
+                .orElseThrow(() -> new IllegalArgumentException("No data found!"));
+        System.out.println("Value: " + value);
+    }
+
+    private static void demoGetMethod() {
+        Optional<String> item = Optional.of("Gadget");
+        System.out.println("Item: " + item.get());
+    }
+}
+```
+
+---
+
+## 📌 Conclusion
+
+The `Optional` class in Java 8 is a powerful tool to avoid null references, improve API design, and promote cleaner, more readable code.
