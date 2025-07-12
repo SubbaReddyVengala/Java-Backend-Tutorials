@@ -59,64 +59,78 @@ public interface OrderClient {
    List<Order> getOrdersByUser(@PathVariable Long id);
 }
 
+```
 ## 🔷 6. Best Practices
 
--   Follow **Single Responsibility Principle** per service
-    
--   Use **DTOs** to decouple internal models
-    
--   Avoid direct database calls between services
-    
--   Implement **centralized logging & tracing**
-    
--   Secure APIs with **JWT/OAuth2**
-    
--   Maintain **backward compatibility** in APIs
+- Follow **Single Responsibility Principle** per service  
+- Use **DTOs** to decouple internal models  
+- Avoid direct database calls between services  
+- Implement **centralized logging & tracing**  
+- Secure APIs with **JWT/OAuth2**  
+- Maintain **backward compatibility** in APIs  
+
+---
+
 ## 🔷 7. Challenges in Microservices
 
--   Complex inter-service communication
-    
--   Distributed transactions → solved via **Saga Pattern**
-    
--   Debugging → use **Sleuth + Zipkin**
-    
--   Configuration management → use **Spring Cloud Config**
-    
--   Data consistency → use **event-driven architecture**
+- Complex inter-service communication  
+- Distributed transactions → solved via **Saga Pattern**  
+- Debugging → use **Sleuth + Zipkin**  
+- Configuration management → use **Spring Cloud Config**  
+- Data consistency → use **event-driven architecture**
+
+---
 
 ## 🔷 8. Typical Spring Boot Microservices Project Structure
 
+microservices/  
+│  
+├── api-gateway/ --> Spring Cloud Gateway  
+├── config-server/ --> Centralized Configs  
+├── discovery-server/ --> Eureka Service Registry  
+├── user-service/ --> Sample Microservice (REST + JPA)  
+├── order-service/ --> Another Microservice  
+└── common-lib/ --> DTOs, Constants, Utils
 
-microservices/
-│
-├── api-gateway/          --> Spring Cloud Gateway
-├── config-server/        --> Centralized Configs
-├── discovery-server/     --> Eureka Service Registry
-├── user-service/         --> Sample Microservice (REST + JPA)
-├── order-service/        --> Another Microservice
-└── common-lib/           --> DTOs, Constants, Utils
+---
 
-🔷 9. Common Spring Annotations for Microservices
-Annotation
+## 🔷 9. Common Spring Annotations for Microservices
 
-Purpose
+| Annotation               | Purpose                                  |
+|--------------------------|------------------------------------------|
+| `@SpringBootApplication` | Main class to bootstrap the app          |
+| `@EnableEurekaClient`    | Register service with Eureka             |
+| `@EnableFeignClients`    | Enables Feign client usage               |
+| `@EnableDiscoveryClient` | Enables service discovery                |
+| `@RestController`        | Marks a class as a REST controller       |
 
-`@SpringBootApplication`
+---
 
-Main class to bootstrap the app
+## 🔷 Difference Between Monolithic and Microservices
 
-`@EnableEurekaClient`
+| Feature                   | Monolithic Architecture                                  | Microservices Architecture                                    |
+|---------------------------|----------------------------------------------------------|---------------------------------------------------------------|
+| **Definition**            | Single unified application                               | Application composed of small, independent services           |
+| **Deployment**            | Entire application deployed as one unit                  | Each service is deployed independently                        |
+| **Scalability**           | Scales by cloning the whole app                          | Individual services can be scaled independently               |
+| **Technology Stack**      | Typically uses a single tech stack                       | Different services can use different tech stacks              |
+| **Development**           | Easy to develop in early stages                          | Suitable for large, complex applications                      |
+| **Codebase**              | One large codebase                                       | Multiple smaller codebases (per service)                      |
+| **Communication**         | In-process method calls                                  | Lightweight protocols like HTTP/REST, Kafka, gRPC             |
+| **Database**              | Single database                                          | Each service manages its own database                         |
+| **Fault Isolation**       | A failure can bring down the whole app                   | Failure in one service doesn't affect others                  |
+| **Deployment Time**       | Longer due to size of app                                | Faster as only changed services are deployed                  |
+| **Testing**               | End-to-end testing is easier                             | Requires service-level and contract testing                   |
+| **Team Ownership**        | Multiple teams work on the same codebase                 | Each team owns specific microservices                         |
+| **Maintainability**       | Becomes harder as app grows                              | Easier to manage and maintain                                 |
+| **Performance Overhead**  | Less (no inter-process communication)                    | Slightly higher due to inter-service communication            |
 
-Register service with Eureka
+---
 
-`@EnableFeignClients`
+### ✅ Summary:
 
-Enables Feign client usage
+- **Monolithic**: Best for small, simple apps. Easy to start, harder to scale.  
+- **Microservices**: Best for complex, scalable systems with independent teams.
 
-`@EnableDiscoveryClient`
 
-Enables service discovery
 
-`@RestController`
-
-Marks class as a REST controller
