@@ -2503,3 +2503,207 @@ Now send a POST request to `http://localhost:8080/actuator/bus-refresh` to refre
 -   📍 Enable live refresh with **Spring Cloud Bus + RabbitMQ/Kafka**
 
 
+# ⚡ Circuit Breaker in Microservices – In-Depth Guide
+
+---
+
+## 🔍 What is a Circuit Breaker?
+
+A **Circuit Breaker** is a resiliency pattern used to prevent a failure in one part of the system (like a downstream service or database) from bringing down the entire application.
+
+It acts like a **safety valve** — if a remote call fails consistently, the circuit opens to stop more calls and gives time for the service to recover.
+
+---
+
+## 🔄 Circuit Breaker – State Machine
+
+| State        | Description |
+|--------------|-------------|
+| **Closed**   | All requests are allowed and counted. Errors are tracked. |
+| **Open**     | Requests are immediately failed/skipped to avoid system overload. |
+| **Half-Open**| A small number of test requests are allowed. If successful, the circuit closes again. Otherwise, it reopens. |
+
+### 🎯 Use Case
+
+- Protect your app from slow/failing services
+- Avoid thread exhaustion from too many retries
+- Prevent cascading failures across microservices
+
+---
+
+## 🛠️ How Circuit Breaker Works (Under the Hood)
+
+```text
+                 Success
+               ↗        ↘
+            Closed    ←  Half-Open
+               ↓             ↘
+        Failure Threshold     Success
+               ↓               ↘
+              Open → waitDuration → Half-Open
+```
+-   Failures are counted in a **sliding window**
+    
+-   When failure rate exceeds a threshold, circuit **opens**
+    
+-   After wait time, **Half-Open** allows few requests to test
+    
+-   If requests succeed → **Closed**, else → **Open**
+## 🧩 Resilience4j Overview
+
+Resilience4j is a lightweight fault-tolerance library designed for Java 8+ and functional programming.
+
+### 🧱 Modules:
+
+-   `CircuitBreaker`: Detect failures
+    
+-   `Retry`: Retry failed requests
+    
+-   `RateLimiter`: Limit requests per second
+    
+-   `Bulkhead`: Thread pool isolation
+    
+-   `TimeLimiter`: Timeout long-running tasks
+
+## ✅ Add Dependencies
+
+```xml
+<dependency>
+  <groupId>io.github.resilience4j</groupId>
+  <artifactId>resilience4j-spring-boot2</artifactId>
+</dependency>
+
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
+```
+🔧 Circuit Breaker in Code (with Fallback)
+```java
+@RestController
+public class OrderController {
+
+    @Autowired
+    private PaymentService paymentService;
+
+    @GetMapping("/pay")
+    @CircuitBreaker(name = "paymentCB", fallbackMethod = "fallbackPayment")
+    public String makePayment() {
+        return paymentService.process();
+    }
+
+    public String fallbackPayment(Exception e) {
+        return "Payment Service is currently unavailable. Please try later.";
+    }
+}
+```
+## ⚙️ Configuration (`application.yml`)
+
+```yaml
+resilience4j:
+  circuitbreaker:
+    instances:
+      paymentCB:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        ignoreExceptions:
+          - com.example.exceptions.IgnoredException
+
+```
+## 🎯 Real-World Use Case
+
+### Scenario:
+
+You have a microservice `order-service` calling `payment-service`. If the payment service is down or responding slowly, it may exhaust threads or delay other orders.
+
+**Solution:** Wrap the payment call with a circuit breaker to:
+
+-   Fail fast
+    
+-   Return fallback message
+    
+-   Avoid cascading failures
+    
+-   Recover automatically
+## 📊 Monitoring (Prometheus + Grafana)
+
+Spring Boot Actuator + Micrometer can expose metrics:
+```xml
+<dependency>
+  <groupId>io.micrometer</groupId>
+  <artifactId>micrometer-registry-prometheus</artifactId>
+</dependency>
+```
+Enable actuator endpoints:
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+```
+Resilience4j exposes:
+
+-   `resilience4j_circuitbreaker_state`
+    
+-   `resilience4j_circuitbreaker_calls`
+    
+
+----------
+
+## 🧪 Testing Failure Scenarios
+
+Simulate failures in your downstream service:
+```java
+if (Math.random() > 0.5) {
+    throw new RuntimeException("Simulated failure");
+}
+```
+Observe when:
+
+-   Circuit goes OPEN
+    
+-   Requests are short-circuited
+    
+-   Fallback is triggered
+## 📌 Best Practices
+
+-   Always define `fallbackMethod` for user experience
+    
+-   Use **TimeLimiter** for remote calls to avoid hanging
+    
+-   Combine with **Retry** and **RateLimiter** carefully
+    
+-   Monitor and tune thresholds for each service
+    
+
+----------
+
+## 🧠 Interview & Scenario-Based Questions
+## 🧠 Circuit Breaker – Interview Questions
+
+| Question                                         | Answer                                                          |
+|--------------------------------------------------|------------------------------------------------------------------|
+| What is a Circuit Breaker?                       | A fault-tolerance mechanism to prevent cascading failures.      |
+| How many states in a circuit breaker?            | Three – Closed, Open, Half-Open.                                |
+| What is `fallbackMethod` in Resilience4j?        | Alternative logic when the main method fails.                   |
+| Can we combine Retry + Circuit Breaker?          | Yes, using chained annotations or programmatic config.          |
+| How do you monitor circuit states?               | Spring Boot Actuator + Prometheus + Grafana.                    |
+| What is `permittedNumberOfCallsInHalfOpenState`? | Number of test calls allowed in Half-Open before transitioning. |
+
+## ✅ Summary
+-   Circuit Breakers improve **resilience** in microservices.
+    
+-   Use Resilience4j with Spring Boot for production-grade fault tolerance.
+    
+-   Monitor behavior with Actuator + Prometheus + Grafana.
+    
+-   Add meaningful **fallbacks** and **timeouts** to enhance user experience.
+
+
