@@ -1098,4 +1098,152 @@ You accidentally exposed a microservice on a public port. What security risks ar
 
 
 
+# 🚀 Spring Cloud Microservices Architecture
+
+A **production-ready microservices setup** built with Spring Boot, Spring Cloud Gateway, Eureka, JWT authentication, Redis-backed rate limiting, and Docker Compose.
+
+---
+
+## 🧱 Architecture Overview
+
+```mermaid
+graph TD
+    Client -->|JWT Token| API_Gateway
+    API_Gateway -->|Service Discovery| Eureka
+    API_Gateway --> Auth_Service
+    API_Gateway --> User_Service
+    API_Gateway -->|Trace Logs| Zipkin
+    API_Gateway -->|Rate Limiting| Redis
+```
+📁 Project Structure
+```microservices-architecture/
+│
+├── api-gateway/           # Spring Cloud Gateway with filters, routing, JWT, rate limiting
+├── discovery-server/      # Eureka service registry
+├── auth-service/          # Issues JWT tokens
+├── user-service/          # Secured microservice
+├── redis/                 # Redis container (rate limiter backend)
+├── zipkin/                # Distributed tracing service
+└── docker-compose.yml     # Brings everything together
+```
+## ✨ Features
+
+-   ✅ **Spring Cloud Gateway** (Routing, Filters, Path Rewriting)
+    
+-   🔐 **JWT Authentication** via custom filter
+    
+-   ⛔ **Rate Limiting** using Redis
+    
+-   ♻️ **Circuit Breaker + Fallbacks** with Resilience4j
+    
+-   🔁 **Service Discovery** with Eureka
+    
+-   📜 **Centralized Logging & Tracing** using Sleuth + Zipkin
+    
+-   🔧 **Custom Filters** (Auth, Logging)
+    
+-   🚦 **Swagger Aggregation** (Optional enhancement)
+    
+-   🐳 **Dockerized Stack** — run with one command!
+
+🚀 How to Run (Docker Compose)
+```
+# Clone the repo
+git clone https://github.com/your-username/microservices-architecture.git
+cd microservices-architecture
+
+# Build and start all services
+docker-compose build
+docker-compose up
+```
+## 🔐 JWT Authentication Flow
+
+1.  `POST /auth/login`  
+    👉 Receives `{ username, password }`, returns JWT token.
+    
+2.  `GET /users/1`  
+    👉 Add `Authorization: Bearer <token>` in header to access user-service.
+    
+
+----------
+
+## 🧪 Test with Postman
+
+### 1️⃣ Login
+
+```
+POST http://localhost:8080/auth/login
+Body: { "username": "subba", "password": "1234" }
+```
+### 2️⃣ Access user service
+
+```
+GET http://localhost:8080/users/1
+
+Headers: Authorization: Bearer <your_token>`
+```
+## 🔧 Configuration Highlights
+
+### `application.yml` (Gateway)
+```
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+          filters:
+            - JwtAuthFilter
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 10
+            - name: CircuitBreaker
+              args:
+                name: userCB
+                fallbackUri: forward:/fallback/users
+```
+## 📊 Monitoring & Tracing
+
+-   View tracing: `http://localhost:9411` (Zipkin)
+    
+-   Eureka Dashboard: `http://localhost:8761`
+
+## 🛠 Future Enhancements
+
+-   🔑 OAuth2 + Keycloak integration
+    
+-   🧪 Swagger UI aggregation
+    
+-   📈 Prometheus + Grafana metrics
+    
+-   🔐 Role-based access per route
+
+## 🧠 Spring Cloud API Gateway – Interview Questions (3 YOE)
+
+| #  | ❓ Question                                                                 | ✅ What to Cover                                                                 |
+|----|------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| 1  | What is Spring Cloud Gateway?                                               | A lightweight reactive API gateway using Spring WebFlux                         |
+| 2  | How is it different from Zuul?                                              | WebFlux-based (non-blocking), better performance, newer design                  |
+| 3  | What is a Route Predicate?                                                  | Condition to match incoming requests (Path, Method, Header, Query Param, etc.) |
+| 4  | What are Pre and Post filters?                                              | Pre: before routing (auth, logging), Post: after routing (metrics, headers)     |
+| 5  | What is the purpose of a Gateway Filter?                                    | Modify requests/responses, perform checks, logging, metrics                     |
+| 6  | How do you implement JWT authentication in Gateway?                         | Custom `GatewayFilterFactory`, validate token, forward only if valid            |
+| 7  | How do you pass user info to downstream services?                          | Extract from JWT, inject into headers before forwarding                         |
+| 8  | How to apply security only to specific routes?                              | Apply filter conditionally per route                                            |
+| 9  | How does rate limiting work?                                                | Redis-based token bucket algorithm using `RequestRateLimiter` filter            |
+| 10 | How to customize rate limit per user?                                       | Create a `KeyResolver` based on IP/token/user ID                                |
+| 11 | How to handle fallback for failed services?                                 | Use Circuit Breaker filter with `fallbackUri`                                   |
+| 12 | What is used for circuit breaker in Spring Cloud Gateway?                  | Resilience4j (or Hystrix optionally)                                            |
+| 13 | How do you rewrite the path in Gateway?                                     | Use `RewritePath` filter with RegEx mapping                                     |
+| 14 | How to inject custom headers in a request?                                  | Mutate headers using `ServerHttpRequest.mutate()` in filter                     |
+| 15 | How to implement global logging for all requests?                           | Create and register a `GlobalFilter`                                            |
+| 16 | How does load balancing work?                                               | Via `lb://` URI using Eureka service discovery                                  |
+| 17 | How do you trace requests across services?                                  | Sleuth adds `traceId`, `spanId`; Zipkin visualizes the trace                    |
+| 18 | How do you Dockerize Spring Cloud Gateway?                                  | Dockerfile per service + Docker Compose with Redis, Eureka, Zipkin, etc.        |
+| 19 | How do you expose Swagger UI for multiple services?                         | Use path rewrite in gateway or Swagger UI aggregation                           |
+| 20 | How do you secure gateway endpoints in production?                          | Use HTTPS, JWT filters, IP whitelisting, CORS rules                             |
+
 
