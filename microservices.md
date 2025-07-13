@@ -1247,3 +1247,291 @@ spring:
 | 20 | How do you secure gateway endpoints in production?                          | Use HTTPS, JWT filters, IP whitelisting, CORS rules                             |
 
 
+## 🔷 Service Registry & Service Discovery
+
+### ✅ What Is Service Discovery?
+
+In microservices, services often **start, stop, scale dynamically** across different machines.  
+Service Discovery allows services to **find and communicate** with each other **without hardcoding IPs or URLs**.
+
+---
+
+### ✅ What Is a Service Registry?
+
+A **Service Registry** is a central directory that **tracks available services** and their **host/port metadata**.  
+It allows automatic **registration and lookup** of microservices at runtime.
+
+---
+
+### 🏢 Real-World Analogy
+
+> Think of the **Service Registry** as a hotel reception:
+> - Services are like guests registering when they check in (register with Eureka)
+> - Other guests can ask the receptionist for someone's room number (service lookup)
+> - The receptionist keeps track of who is available and where
+
+---
+
+### 🛠 How It Works
+
+| Role              | Function                                                                 |
+|-------------------|--------------------------------------------------------------------------|
+| **Service Registry** | Maintains a dynamic list of service instances (e.g., Eureka server)      |
+| **Service Provider** | Registers itself to the registry on startup (e.g., user-service)        |
+| **Service Consumer** | Looks up services from registry to invoke (e.g., API Gateway)           |
+
+---
+
+### 🔧 Technologies
+
+| Tool         | Role                   |
+|--------------|------------------------|
+| **Eureka Server** | Service Registry (Netflix OSS) |
+| **Eureka Client** | Spring Boot microservices          |
+| **Consul / Zookeeper** | Alternative service registries |
+
+---
+
+### 📦 Spring Cloud + Eureka Example
+
+#### ✅ Eureka Server (`discovery-server`)
+
+```yaml
+# application.yml
+server:
+  port: 8761
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+```
+```
+@EnableEurekaServer
+@SpringBootApplication
+public class DiscoveryServerApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DiscoveryServerApplication.class, args);
+    }
+}
+
+```
+#### ✅ Eureka Client (`user-service`, `api-gateway`)
+
+```
+spring:
+  application:
+    name: user-service
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+ 
+```
+```
+@EnableEurekaClient
+@SpringBootApplication
+public class UserServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(UserServiceApplication.class, args);
+    }
+}
+
+```
+----------
+
+### 🔁 How It Works Together
+
+1.  `discovery-server` starts as Eureka Server
+    
+2.  `user-service` and `api-gateway` **register** themselves on startup
+    
+3.  Gateway uses `lb://user-service` to **discover** and forward requests
+    
+
+----------
+
+### 📈 Benefits
+
+-   ✅ No hardcoding of IPs or hostnames
+    
+-   🔄 Supports auto-scaling & dynamic environments
+    
+-   💥 Enables load balancing (Ribbon/Resilience4j)
+    
+-   🔌 Easily integrated with Spring Cloud Gateway, Feign Clients
+    
+
+----------
+
+### 🚫 Without Service Discovery
+
+❌ Static URLs → brittle  
+❌ Manual config updates  
+❌ No load balancing or failover
+
+----------
+
+Here's a complete **implementation code setup** for **Service Registry (Eureka Server)** and a **Service Provider (Eureka Client)** using Spring Boot. You can copy this into your documentation or project.
+## ✅ 1. Eureka Server (Service Registry)
+
+### 🔧 `pom.xml` dependencies
+
+```
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+    </dependency>
+</dependencies>
+
+```
+
+### ⚙️ application.yml
+```
+server:
+  port: 8761
+
+spring:
+  application:
+    name: discovery-server
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+```
+### 🚀 Main Class
+```
+@SpringBootApplication
+@EnableEurekaServer
+public class DiscoveryServerApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DiscoveryServerApplication.class, args);
+    }
+}
+```
+## ✅ 2. Eureka Client (User-Service Example)
+
+### 🔧 `pom.xml` dependencies
+```
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+</dependencies>
+```
+⚙️ `application.yml`
+```
+server:
+  port: 8081
+
+spring:
+  application:
+    name: user-service
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+```
+🚀 Main Class
+```
+@SpringBootApplication
+@EnableEurekaClient
+public class UserServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(UserServiceApplication.class, args);
+    }
+}
+```
+✅ Sample Controller
+```
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    @GetMapping("/{id}")
+    public ResponseEntity<String> getUser(@PathVariable String id) {
+        return ResponseEntity.ok("User ID: " + id);
+    }
+}
+```
+## 🐳 Docker Compose (Optional)
+
+You can deploy both services using Docker Compose:
+
+### 📦 `docker-compose.yml`
+```
+version: '3.8'
+
+services:
+  discovery-server:
+    build: ./discovery-server
+    ports:
+      - "8761:8761"
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - discovery-server
+```
+## ✅ Test It
+
+1.  Run `discovery-server` → Visit `http://localhost:8761`
+    
+2.  Start `user-service` → It auto-registers in the Eureka dashboard
+    
+3.  Call: `http://localhost:8081/users/1`
+
+
+## 📚 Interview & Scenario-Based Questions: Service Registry & Discovery (Eureka)
+
+| #  | ❓ Question                                                                  | ✅ What to Cover                                                                 |
+|----|------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| 1  | What is a Service Registry?                                                 | A central server where microservices register themselves for discovery          |
+| 2  | What is Service Discovery?                                                  | Mechanism for services to discover each other dynamically                       |
+| 3  | How does Eureka work in Spring Cloud?                                       | Services register with Eureka and query it to find other services               |
+| 4  | What is the difference between Eureka Server and Eureka Client?            | Server: registry, Client: registers and discovers                               |
+| 5  | What are the key configurations in `application.yml` for Eureka?           | `defaultZone`, `fetchRegistry`, `registerWithEureka`                            |
+| 6  | What happens when Eureka server goes down?                                 | Discovery fails; circuit breakers or retries should be in place                 |
+| 7  | Can multiple Eureka servers be run in production?                          | Yes — run in cluster for high availability (HA)                                 |
+| 8  | What is the default heartbeat interval in Eureka?                          | Every 30 seconds (by default); can be customized                                |
+| 9  | How to handle stale instances in Eureka?                                   | Set `evictionIntervalTimerInMs`, enable self-preservation mode                  |
+| 10 | How does API Gateway use Eureka for discovery?                             | Uses `lb://<service-name>` and discovers via Eureka                             |
+| 11 | How to load balance across instances discovered via Eureka?                | Spring Cloud LoadBalancer or Ribbon (deprecated)                                |
+| 12 | How to register only specific services with Eureka?                        | Use `@EnableEurekaClient` only in desired services                              |
+| 13 | How to secure Eureka dashboard or registry?                                | Use Spring Security (basic auth or OAuth2)                                      |
+| 14 | How to disable Eureka registration in local or test profiles?              | Set `register-with-eureka: false`                                               |
+| 15 | What are Eureka alternatives?                                               | Consul, Zookeeper, Nacos                                                        |
+| 16 | What happens when a registered instance crashes?                           | Eureka removes it after timeout (default ~90 sec unless heartbeat is missed)   |
+| 17 | How does Eureka achieve fault tolerance?                                   | Self-preservation mode, replicas in HA mode                                     |
+| 18 | How do you monitor registered services in Eureka?                          | Via Eureka dashboard or Spring Boot Actuator endpoints                          |
+| 19 | How to prevent stale data in Eureka registry?                              | Disable self-preservation + shorten eviction timeout                            |
+| 20 | How would you scale service discovery in a large system?                   | Use Eureka clusters + API Gateway + global registry pattern                     |
+
+## ✅ Example Scenario-Based Questions with Answers
+
+> 🧩 **Scenario 1:**  
+> **Q:** Your microservice is not discoverable by other services. What could be wrong?  
+> **A:** Check if the service is registering with Eureka (`register-with-eureka: true`), ensure Eureka client dependencies are present, and validate the Eureka server URL.
+
+> 🧩 **Scenario 2:**  
+> **Q:** After scaling up a service, some instances are not hit. Why?  
+> **A:** Eureka may not have updated all service instances yet, or your load balancer is caching stale instances. Consider lowering Eureka cache TTL.
+
+> 🧩 **Scenario 3:**  
+> **Q:** Eureka dashboard shows stale/down services even after stopping them. What to do?  
+> **A:** Reduce `evictionIntervalTimerInMs` and disable `self-preservation-mode` in Eureka server to remove stale services faster.
+
+> 🧩 **Scenario 4:**  
+> **Q:** You want your service to discover another service **only if Eureka is available**. How?  
+> **A:** Use Spring Retry, fail-safe fallback logic, or define a circuit breaker around Feign/Gateway.
