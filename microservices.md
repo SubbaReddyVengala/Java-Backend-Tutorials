@@ -2298,6 +2298,208 @@ public void consume(String message) {
 | **JMS**       | Java API Spec     | Vendor-neutral messaging abstraction  | ✅        | ⭐⭐         | `spring-jms`         |
 
 ---
+## 🐰 RabbitMQ with Spring Boot
 
+### 🔷 What is RabbitMQ?
+
+RabbitMQ is a lightweight **message broker** that supports **asynchronous communication** between services using **queues** and **exchanges**. It's ideal for decoupling services, retry logic, and background job processing.
+
+---
+
+### 🔧 Core Concepts
+
+| Concept       | Description                                                                 |
+|---------------|-----------------------------------------------------------------------------|
+| **Producer**  | Sends messages to an **exchange**                                           |
+| **Consumer**  | Listens to messages from a **queue**                                        |
+| **Exchange**  | Routes messages from producer to one or more queues using a **routing key** |
+| **Queue**     | Stores messages until a consumer processes them                             |
+| **Binding**   | Connects an exchange to a queue using a routing key                         |
+
+---
+
+### 🔁 Exchange Types
+
+| Type     | Description                                                   |
+|----------|---------------------------------------------------------------|
+| Direct   | Routes messages to a queue by exact routing key match         |
+| Fanout   | Broadcasts message to all bound queues (routing key ignored)  |
+| Topic    | Routes by pattern (e.g., `order.*`, `*.created`)              |
+| Headers  | Routes based on message header values                         |
+
+## 🧠 RabbitMQ Interview Questions (with Answers)
+
+| ❓ Question | ✅ Answer |
+|------------|-----------|
+| **1. What is RabbitMQ?** | A lightweight message broker that enables asynchronous communication between microservices using queues and exchanges. |
+| **2. How does RabbitMQ differ from Kafka?** | Kafka is a distributed log with high throughput and message replay. RabbitMQ is a queue-based broker ideal for task distribution and retries. |
+| **3. What are Exchanges in RabbitMQ?** | An exchange routes messages to queues based on binding rules. Types include Direct, Topic, Fanout, and Headers. |
+| **4. What is the role of Routing Key?** | It's a key used to match messages to queues when using direct or topic exchanges. |
+| **5. What is a Dead Letter Queue (DLQ)?** | A queue where messages go if they are rejected, expired, or failed delivery retries. Useful for debugging and reprocessing. |
+| **6. How to ensure message durability?** | Declare queues as durable and publish messages with `MessageDeliveryMode.PERSISTENT`. |
+| **7. Explain Acknowledgment in RabbitMQ.** | After a message is consumed, it must be acknowledged (`ack`) manually or automatically to remove it from the queue. |
+| **8. What happens if a consumer crashes before acking?** | If `manualAck` is enabled and no ack is received, RabbitMQ will requeue the message for another consumer. |
+| **9. What is message TTL in RabbitMQ?** | Time-To-Live: how long a message lives in a queue before being dropped or moved to a DLQ. |
+| **10. How does RabbitMQ support retry mechanisms?** | Use message TTL + DLX (Dead Letter Exchange) or implement retry logic manually in code. |
+
+---
+
+## 📘 Scenario-Based Questions
+
+| 🔍 Scenario | 🧩 Suggested Approach |
+|------------|------------------------|
+| **1. You want to retry a failed payment processing message 3 times. How will you do it?** | Use message headers to track retry count, implement custom retry logic, or use TTL + DLQ routing. |
+| **2. Messages are getting lost after RabbitMQ restarts. Why?** | Likely due to non-durable queues or transient messages. Ensure queues and messages are both durable. |
+| **3. You need to log every message that failed to be processed.** | Route failed messages to a DLQ. Attach a listener to the DLQ to log or audit failed payloads. |
+| **4. You want to process one message at a time per consumer.** | Set `prefetchCount = 1` in the consumer configuration. |
+| **5. The consumer is slow and queue keeps building up.** | Scale out by adding more consumer instances or optimize processing time. |
+
+---
+
+## 🛠️ Spring Boot + RabbitMQ Questions
+
+| ❓ Question | ✅ Answer |
+|------------|-----------|
+| **How do you configure RabbitMQ in Spring Boot?** | Use `spring-boot-starter-amqp`, define queues, exchanges, and bindings via `@Bean`. |
+| **How to send a message in Spring Boot?** | Use `RabbitTemplate.convertAndSend(exchange, routingKey, message)`. |
+| **How to consume messages in Spring Boot?** | Annotate a method with `@RabbitListener(queues = "queue-name")`. |
+| **How to handle JSON payloads?** | Use DTOs and Jackson to auto-deserialize messages. Configure `MessageConverter` if needed. |
+| **How to integrate DLQ in Spring?** | Define a dead-letter exchange and bind a DLQ to it. Set arguments in the queue definition to route expired/rejected messages. |
+
+
+---
+
+### ✅ Summary Tips
+
+- Always enable message durability (`durable=true`, `persistent`)
+- Use `@RabbitListener` for easy message consumption
+- Apply **idempotency** to avoid double-processing
+- Monitor with RabbitMQ Management UI (`http://localhost:15672`)
+- For retries, avoid infinite loops — set max TTL or max retry count
+
+# ⚙️ Spring Cloud Config Server & Config Clients
+
+---
+
+## 🔷 What is Spring Cloud Config?
+
+Spring Cloud Config provides **centralized configuration management** for distributed systems. Instead of keeping configuration in each microservice's `application.yml`, all configurations are moved to a **central Git repo**, and pulled at runtime.
+
+---
+
+## 📁 Key Components
+
+| Component         | Description |
+|------------------|-------------|
+| **Config Server** | Central service that loads properties from Git/Repo/File System and exposes it over HTTP |
+| **Config Client** | Any Spring Boot app that fetches its configuration from the Config Server |
+| **Git Repository** | Stores all environment-specific `application.yml` files |
+| **Bus Refresh**   | Auto-propagates config changes using Spring Cloud Bus + RabbitMQ/Kafka |
+
+---
+
+## 🔄 Flow Diagram
+
+[ Git Repo (YAML files) ]  
+↓  
+[ Spring Cloud Config Server ]  
+↓  
+[ Microservice Config Clients ]
+---
+## 🧱 Folder Structure Example (Git Repo)
+```
+config-repo/  
+├── application.yml  
+├── user-service.yml  
+├── order-service-dev.yml  
+├── order-service-prod.yml
+```
+## 🧩 Setting Up Config Server
+![Generated image](https://sdmntprwestus.oaiusercontent.com/files/00000000-ab2c-6230-bc5b-bfd7f7cf4b9e/raw?se=2025-07-13T20%3A45%3A36Z&sp=r&sv=2024-08-04&sr=b&scid=ed513e44-c4e7-562b-ba03-c7306a10599d&skoid=0da8417a-a4c3-4a19-9b05-b82cee9d8868&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-07-12T23%3A12%3A24Z&ske=2025-07-13T23%3A12%3A24Z&sks=b&skv=2024-08-04&sig=F3nb/MU60aesaoNLM9KU9YKvZkpUj1P/IOZeWvOY3Ic%3D)
+
+```xml
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-config-server</artifactId>
+</dependency>
+```
+### 2. Enable Config Server
+```java
+@SpringBootApplication
+@EnableConfigServer
+public class ConfigServerApp { ... }
+```
+### 3. `application.yml`
+```yaml
+server:
+  port: 8888
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/your-org/config-repo
+```
+## 🧩 Setting Up Config Client (Microservice)
+
+### 1. `pom.xml`
+```xml
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-starter-config</artifactId>
+</dependency>
+```
+### 2. `bootstrap.yml` or `application.yml`
+```yaml
+spring:
+  application:
+    name: user-service
+
+  cloud:
+    config:
+      uri: http://localhost:8888
+ ```
+ 🔥 `spring.application.name` must match the file name in the Git repo (`user-service.yml`)
+ ## ✅ Spring Cloud Config with Bus Refresh (Optional)
+
+Add this to enable real-time refresh of config changes using RabbitMQ/Kafka:
+```xml
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+</dependency>
+```
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, bus-refresh
+```
+Now send a POST request to `http://localhost:8080/actuator/bus-refresh` to refresh all services.
+📌 Interview Questions (with Answers)
+## 📋 Spring Cloud Config – Interview Q&A
+
+| Question                                      | Answer                                                                         |
+|----------------------------------------------|--------------------------------------------------------------------------------|
+| What is Spring Cloud Config?                  | A centralized external configuration management system for microservices.      |
+| Where are the configurations stored?          | In a Git repo, filesystem, or Vault                                            |
+| How does a client fetch config?               | Via REST call to Config Server based on `spring.application.name`              |
+| What is the advantage?                        | Externalized configs, centralized management, environment profiles             |
+| What is `bus-refresh`?                        | A way to refresh all clients using Spring Cloud Bus and a messaging broker     |
+| Can config values be updated without restart? | Yes, via actuator `/refresh` or `/bus-refresh` endpoints                       |
+| How do profiles work?                         | File naming like `user-service-dev.yml` maps to `--spring.profiles.active=dev` |
+
+
+## ✅ Summary
+
+-   📍 Use Config Server for **central config management**
+    
+-   📍 Store all configs in a **Git repository**
+    
+-   📍 Clients pull configuration dynamically based on their name/profile
+    
+-   📍 Enable live refresh with **Spring Cloud Bus + RabbitMQ/Kafka**
 
 
