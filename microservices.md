@@ -1535,3 +1535,143 @@ services:
 > 🧩 **Scenario 4:**  
 > **Q:** You want your service to discover another service **only if Eureka is available**. How?  
 > **A:** Use Spring Retry, fail-safe fallback logic, or define a circuit breaker around Feign/Gateway.
+
+
+## 🔷 API Gateway Integration with Eureka Server
+
+![Generated image](https://sdmntpreastus2.oaiusercontent.com/files/00000000-38b0-61f6-b071-f6d76971a6e6/raw?se=2025-07-13T08%3A10%3A24Z&sp=r&sv=2024-08-04&sr=b&scid=ff32c7e7-9e88-52ea-a7be-7947a75fade5&skoid=f71d6506-3cac-498e-b62a-67f9228033a9&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-07-12T23%3A11%3A26Z&ske=2025-07-13T23%3A11%3A26Z&sks=b&skv=2024-08-04&sig=5rHR86Iart4rLZJ61qUKlF75MSROMGCr1dJZXPXiqHc%3D)
+
+### 📘 Overview
+
+Spring Cloud Gateway integrates seamlessly with Eureka for **dynamic routing** to registered microservices.  
+With Eureka, the Gateway does **not need hardcoded URLs** — it discovers service instances automatically.
+
+---
+
+### 🧩 Architecture
+
+1. Microservices (user-service, order-service) **register** with Eureka
+2. API Gateway also registers with Eureka
+3. Gateway routes requests using service names like `lb://user-service`
+4. Eureka returns healthy instances to the Gateway
+5. Gateway applies filters and forwards the request
+
+---
+
+### ⚙️ `pom.xml` for API Gateway
+```xml
+<dependencies>
+  <dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-gateway</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+  </dependency>
+</dependencies>
+```
+### ⚙️ `application.yml` (API Gateway)
+
+```
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/orders/**
+
+``` 
+
+----------
+
+### 🚀 `ApiGatewayApplication.java`
+```
+@SpringBootApplication
+@EnableEurekaClient
+public class ApiGatewayApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(ApiGatewayApplication.class, args);
+    }
+}
+
+```
+----------
+
+### ✅ How It Works
+| Feature                   | Behavior                                                                 |
+|---------------------------|--------------------------------------------------------------------------|
+| `uri: lb://user-service`  | Gateway dynamically discovers `user-service` via Eureka                 |
+| `Path=/users/**`          | Routes all requests matching `/users/**` to `user-service`              |
+| `@EnableEurekaClient`     | Registers the API Gateway with Eureka for service discovery             |
+
+
+
+
+Makes Gateway discoverable and able to use service registry
+----------
+
+### 📈 Benefits
+
+-   ✅ No need to hardcode service URLs
+    
+-   ✅ Built-in load balancing
+    
+-   ✅ Scalable routing config
+    
+-   ✅ Resilient to instance failures
+    
+-   ✅ Simplifies microservice communication
+    
+
+----------
+
+### 🧪 Test it
+
+-   Start **Eureka Server**
+    
+-   Start **user-service** and **order-service**
+    
+-   Start **api-gateway**
+    
+-   Access via:
+    
+    -   `http://localhost:8080/users/1`
+        
+    -   `http://localhost:8080/orders/100`
+        
+
+----------
+
+### 🛠 Pro Tips
+
+-   Use `Spring Cloud LoadBalancer` for custom load balancing
+    
+-   Combine with JWT filter to secure routes
+    
+-   Add **circuit breaker + fallback** for better resilience
+    
+-   Use `RewritePath` for cleaner URLs
