@@ -302,7 +302,7 @@ Filters allow you to **manipulate the request and response**. Filters can be use
     
 
 **Example in Java:**
-```
+```java
 @Component
 public class CustomLoggingFilter implements GlobalFilter {
     @Override
@@ -341,7 +341,7 @@ Prevents a single client or IP from **overloading** the backend system by limiti
     
 -   Ensures fair usage across clients
     
-```
+```yaml
 spring:
   cloud:
     gateway:
@@ -372,7 +372,7 @@ Sometimes the internal microservice expects a different path than what the clien
 
 **Use case:** Hide internal paths or version details
 
-```
+```yaml
 filters:
   - RewritePath=/v1/api/(?<segment>.*), /$\{segment}
 ```
@@ -413,7 +413,7 @@ API Gateway is the **central entry point** for all requests coming into your sys
 
 Routing in Spring Cloud Gateway is configured using the `application.yml` file
 routes:
-  ```
+  ```yaml
    - id: user-service
     uri: lb://USER-SERVICE
     predicates:
@@ -452,7 +452,7 @@ What it does:
 If a microservice is **down or unresponsive**, the API Gateway uses a **fallback URI** to return a predefined message.
 
 Example:
-```
+```yaml
 filters:
   - name: CircuitBreaker
     args:
@@ -475,7 +475,7 @@ Eureka acts as the **service registry**.
     
 
 **Example in YAML:**
-```
+```yaml
 eureka:
   client:
     service-url:
@@ -484,7 +484,7 @@ eureka:
 ### ✅ 6. **Dummy JWT Generation (Auth Service)**
 
 The `auth-service` acts like an **identity provider**. It returns a dummy token (in reality, you’d generate a signed JWT with user claims).
-```
+```json
 POST /auth/login
 {
   "username": "subba",
@@ -1171,13 +1171,13 @@ docker-compose up
 
 ### 1️⃣ Login
 
-```
+```json
 POST http://localhost:8080/auth/login
 Body: { "username": "subba", "password": "1234" }
 ```
 ### 2️⃣ Access user service
 
-```
+```json
 GET http://localhost:8080/users/1
 
 Headers: Authorization: Bearer <your_token>`
@@ -1185,7 +1185,7 @@ Headers: Authorization: Bearer <your_token>`
 ## 🔧 Configuration Highlights
 
 ### `application.yml` (Gateway)
-```
+```yaml
 spring:
   cloud:
     gateway:
@@ -1306,7 +1306,7 @@ eureka:
     register-with-eureka: false
     fetch-registry: false
 ```
-```
+```java
 @EnableEurekaServer
 @SpringBootApplication
 public class DiscoveryServerApplication {
@@ -1318,7 +1318,7 @@ public class DiscoveryServerApplication {
 ```
 #### ✅ Eureka Client (`user-service`, `api-gateway`)
 
-```
+```yaml
 spring:
   application:
     name: user-service
@@ -1329,7 +1329,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka
  
 ```
-```
+```java
 @EnableEurekaClient
 @SpringBootApplication
 public class UserServiceApplication {
@@ -1389,7 +1389,7 @@ Here's a complete **implementation code setup** for **Service Registry (Eureka S
 ```
 
 ### ⚙️ application.yml
-```
+```yaml
 server:
   port: 8761
 
@@ -1403,7 +1403,7 @@ eureka:
     fetch-registry: false
 ```
 ### 🚀 Main Class
-```
+```java
 @SpringBootApplication
 @EnableEurekaServer
 public class DiscoveryServerApplication {
@@ -1428,7 +1428,7 @@ public class DiscoveryServerApplication {
 </dependencies>
 ```
 ⚙️ `application.yml`
-```
+```yaml
 server:
   port: 8081
 
@@ -1442,7 +1442,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 ```
 🚀 Main Class
-```
+```java
 @SpringBootApplication
 @EnableEurekaClient
 public class UserServiceApplication {
@@ -1452,7 +1452,7 @@ public class UserServiceApplication {
 }
 ```
 ✅ Sample Controller
-```
+```java
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -1468,7 +1468,7 @@ public class UserController {
 You can deploy both services using Docker Compose:
 
 ### 📦 `docker-compose.yml`
-```
+```yaml
 version: '3.8'
 
 services:
@@ -1573,7 +1573,7 @@ With Eureka, the Gateway does **not need hardcoded URLs** — it discovers servi
 ```
 ### ⚙️ `application.yml` (API Gateway)
 
-```
+```yaml
 server:
   port: 8080
 
@@ -1609,7 +1609,7 @@ spring:
 ----------
 
 ### 🚀 `ApiGatewayApplication.java`
-```
+```java
 @SpringBootApplication
 @EnableEurekaClient
 public class ApiGatewayApplication {
@@ -1675,3 +1675,340 @@ Makes Gateway discoverable and able to use service registry
 -   Add **circuit breaker + fallback** for better resilience
     
 -   Use `RewritePath` for cleaner URLs
+
+## 🔷 Microservices Communication
+
+In a microservices architecture, services must **communicate** with each other to fulfill business workflows. There are two primary communication types:
+
+---
+
+### 🔁 1. Synchronous Communication
+
+> Real-time request-response (Blocking)
+
+#### ✅ Protocols
+- **HTTP/REST**
+- **gRPC**
+- **Feign Client**
+- **GraphQL**
+
+#### ✅ Characteristics
+| Feature             | Description                                |
+|---------------------|--------------------------------------------|
+| Latency             | Depends on network; slower under load      |
+| Coupling            | Tighter (consumer waits for response)      |
+| Use Case            | CRUD ops, user-facing requests             |
+| Examples            | `RestTemplate`, `WebClient`, `FeignClient` |
+
+#### ✅ Pros
+- Simple to implement and debug
+- Easier error handling (HTTP codes)
+- Works well for request-response models
+
+#### ❌ Cons
+- Tightly coupled (fails if service is down)
+- Not ideal for high throughput/low latency needs
+
+---
+
+### 📬 2. Asynchronous Communication
+
+> Event-driven (Non-blocking)
+
+#### ✅ Protocols & Tools
+- **Kafka**
+- **RabbitMQ**
+- **ActiveMQ**
+- **AWS SNS/SQS**
+
+#### ✅ Characteristics
+| Feature             | Description                                 |
+|---------------------|---------------------------------------------|
+| Latency             | Decoupled and often faster at scale         |
+| Coupling            | Loosely coupled                             |
+| Use Case            | Notifications, audit logs, batch processing |
+| Examples            | Kafka consumers/producers, message queues   |
+
+#### ✅ Pros
+- Decouples producer and consumer
+- More resilient and scalable
+- Supports retries and message durability
+
+#### ❌ Cons
+- Harder to debug
+- Requires message brokers
+- Eventual consistency required
+
+---
+
+### 🏁 When to Use What?
+
+| Scenario                                  | Recommended Approach     |
+|-------------------------------------------|---------------------------|
+| Real-time API request (e.g., get user)    | Synchronous (REST, Feign) |
+| Order placed → trigger email              | Asynchronous (Kafka)      |
+| Update one service and notify others      | Asynchronous (Events)     |
+| Chained workflow (needs data immediately) | Synchronous               |
+
+---
+
+### ⚙️ Best Practices
+
+- Use **DTOs** for inter-service contracts
+- Implement **Circuit Breakers** in sync calls
+- Use **Idempotency** for retries in async events
+- Design for **eventual consistency**
+
+---
+
+### 📈 Common Tools in Spring Boot
+
+| Purpose             | Tool/Library                  |
+|---------------------|-------------------------------|
+| REST Client         | `RestTemplate`, `WebClient`   |
+| Declarative Client  | `FeignClient`                 |
+| Messaging           | `Spring Kafka`, `RabbitMQ`    |
+| Observability       | `Sleuth`, `Zipkin`, `Micrometer` |
+| Retry/Fallback      | `Resilience4j`, `RetryTemplate` |
+
+---
+<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/a2a0bc6c-eebb-40dd-bac9-684c040dd121" />
+
+# 🔁 Synchronous Inter-Service Communication in Spring Boot
+
+Microservices often need to communicate with each other. In Spring Boot, the most commonly used tools for synchronous REST communication are:
+
+- ✅ `RestTemplate` (imperative & legacy)
+- ✅ `FeignClient` (declarative & modern)
+- ✅ `WebClient` (reactive but usable in sync mode with `.block()`)
+
+---
+
+## 📦 1. RestTemplate
+
+### 🔍 What is RestTemplate?
+
+`RestTemplate` is a synchronous HTTP client provided by Spring to perform REST operations such as `GET`, `POST`, `PUT`, `DELETE`, etc.  
+It is **imperative**, **blocking**, and **was the standard** before WebClient and Feign came into play.
+
+> ⚠️ Deprecated in Spring 6+ and Spring Boot 3.x — replaced by `WebClient`.
+
+---
+
+### ✅ Use Case
+
+Used in traditional Spring Boot applications where blocking I/O is acceptable.
+
+---
+
+### 🧩 Example: Calling Another Microservice
+
+```java
+@RestController
+@RequestMapping("/orders")
+public class OrderController {
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @GetMapping("/{orderId}")
+    public Order getOrderWithUser(@PathVariable String orderId) {
+        Order order = new Order(orderId, "Mobile");
+
+        // Calling user-service synchronously
+        User user = restTemplate.getForObject("http://USER-SERVICE/users/1", User.class);
+        order.setUser(user);
+
+        return order;
+    }
+}
+```
+🛠️ Configuration
+
+  ```java
+    @Configuration
+    public class RestTemplateConfig {
+        
+        @Bean
+        @LoadBalanced // Enables Eureka service discovery
+        public RestTemplate restTemplate() {
+            return new RestTemplate();
+        }
+    }
+```
+### 📌 Key Points
+
+-   🔗 Supports service discovery with `@LoadBalanced`
+    
+-   ⛔ Blocking – not suitable for high-throughput or reactive systems
+    
+-   📉 Deprecated in Spring 6 — avoid for new development
+    
+-   🛠 Requires manual error handling, retries, timeouts, etc.
+
+## 📘 2. FeignClient
+
+### 🔍 What is Feign?
+
+`FeignClient` is a declarative HTTP client from Netflix, integrated into Spring Cloud. It allows you to write **Java interfaces** for REST endpoints, removing boilerplate code.
+
+### ✅ Why Use Feign?
+
+-   Declarative → No boilerplate
+    
+-   Built-in Eureka + Ribbon integration
+    
+-   Easy integration with Resilience4j for fault tolerance
+
+### 🧩 Example: Create Interface for User Service
+
+```java
+@FeignClient(name = "USER-SERVICE")
+public interface UserClient {
+    
+    @GetMapping("/users/{id}")
+    User getUserById(@PathVariable("id") String id);
+}
+
+```
+🧩 Use in Controller
+```java
+@RestController
+@RequestMapping("/orders")
+public class OrderController {
+
+    @Autowired
+    private UserClient userClient;
+
+    @GetMapping("/{orderId}")
+    public Order getOrderWithUser(@PathVariable String orderId) {
+        Order order = new Order(orderId, "Laptop");
+
+        User user = userClient.getUserById("1");
+        order.setUser(user);
+
+        return order;
+    }
+}
+
+```
+🛠️ Configuration
+```java
+@SpringBootApplication
+@EnableFeignClients
+public class OrderServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(OrderServiceApplication.class, args);
+    }
+}
+
+```
+### 📌 Key Points
+
+-   ✅ Declarative HTTP client – clean and minimal
+    
+-   ✅ Integrates easily with Eureka and Ribbon
+    
+-   ✅ Supports fallback and retries using `Resilience4j` or `Hystrix`
+    
+-   ⚠ Still blocking – uses underlying `RestTemplate` or `HttpClient`
+
+## ⚡ 3. WebClient
+
+### 🔍 What is WebClient?
+
+`WebClient` is a non-blocking, reactive HTTP client introduced in Spring WebFlux (Spring 5+).  
+Even though it’s **asynchronous**, it can be used **synchronously** with `.block()` method.
+
+----------
+
+### ✅ Why Use WebClient?
+
+-   Supports both synchronous and asynchronous calls
+    
+-   Powerful and customizable (headers, cookies, filters)
+    
+-   Non-blocking by nature
+    
+-   Recommended replacement for `RestTemplate`
+    
+
+----------
+
+### 🧩 Example: Synchronous WebClient Call
+```java
+@RestController
+@RequestMapping("/orders")
+public class OrderController {
+
+    @Autowired
+    private WebClient.Builder webClientBuilder;
+
+    @GetMapping("/{orderId}")
+    public Order getOrderWithUser(@PathVariable String orderId) {
+        Order order = new Order(orderId, "Tablet");
+
+        User user = webClientBuilder.build()
+            .get()
+            .uri("http://USER-SERVICE/users/1")
+            .retrieve()
+            .bodyToMono(User.class)
+            .block(); // Makes it synchronous
+
+        order.setUser(user);
+        return order;
+    }
+}
+
+```
+🛠️ Configuration
+```java
+@Configuration
+public class WebClientConfig {
+
+    @Bean
+    @LoadBalanced
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
+    }
+}
+
+```
+### 📌 Key Points
+
+-   ✅ Recommended for both blocking and non-blocking use
+    
+-   ✅ Ideal for reactive, streaming, or modern microservices
+    
+-   ⚠ Using `.block()` makes it synchronous (beware of blocking threads)
+    
+-   🔄 Supports retries, timeouts, filters, authentication, etc.
+
+📊 Comparison Table
+## 📊 Comparison Table
+
+| Feature           | RestTemplate                 | FeignClient                  | WebClient                              |
+|-------------------|------------------------------|------------------------------|----------------------------------------|
+| Style             | Imperative                   | Declarative                  | Reactive (synchronous with `.block()`) |
+| Boilerplate       | High                         | Low                          | Medium                                 |
+| Service Discovery | ✅ With `@LoadBalanced`       | ✅ Built-in with Eureka       | ✅ With `@LoadBalanced`                 |
+| Load Balancing    | ✅ Ribbon/Spring LoadBalancer | ✅ Ribbon/Spring LoadBalancer | ✅ Ribbon/Spring LoadBalancer           |
+| Retry/Fallback    | ❌ Manual                     | ✅ With Resilience4j/Hystrix  | ⚠ Manual (or reactor-retry)            |
+| Reactive Support  | ❌ No                         | ❌ No                         | ✅ Yes                                  |
+| Spring Boot 3+    | ❌ Deprecated                 | ✅ Supported                  | ✅ Recommended                          |
+| Performance       | Blocking                     | Blocking                     | Non-blocking (unless `.block()` used)  |
+| Best Use Case     | Legacy apps                  | Spring Cloud apps            | Reactive, modern microservices         |
+
+## 🚀 Bonus Tips
+
+-   ✅ Secure calls using JWT token passing via headers
+    
+-   ✅ Add timeout and retry config for external service calls
+    
+-   ✅ Use WebClient in `@Async` or reactive pipelines for scalability
+    
+-   ✅ Always set timeouts for RestTemplate or WebClient to avoid thread starvation
+    
+-   ✅ Use `FeignErrorDecoder` for structured error handling in Feign
+
+
