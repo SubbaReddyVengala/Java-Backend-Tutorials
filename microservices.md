@@ -2011,3 +2011,86 @@ public class WebClientConfig {
 -   ✅ Use `FeignErrorDecoder` for structured error handling in Feign
 
 
+## 🔷 Microservices Communication – Synchronous (RESTTemplate, WebClient, FeignClient)
+
+### 📘 Overview
+
+Synchronous communication in microservices is where the caller waits for a response. In Spring Boot, it can be implemented using:
+
+| Tool           | Description                                 |
+|----------------|---------------------------------------------|
+| `RestTemplate` | Legacy blocking HTTP client                 |
+| `WebClient`    | Non-blocking, reactive HTTP client (WebFlux)|
+| `FeignClient`  | Declarative REST client, integrates with Eureka |
+
+---
+
+### ✅ Interview & Scenario-Based Questions with Answers
+
+| #  | ❓ Question                                                                 | ✅ Answer                                                                 |
+|----|-----------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| 1  | What is synchronous communication in microservices?                        | The calling service waits (blocks) for a response before proceeding.     |
+| 2  | When should you prefer synchronous communication?                          | For real-time, immediate response needs like GET user details.           |
+| 3  | What is `RestTemplate` and is it still recommended?                        | Legacy synchronous HTTP client. Deprecated in favor of `WebClient`.      |
+| 4  | How do you use `RestTemplate` in Spring Boot?                              | Inject `RestTemplate` and use `.getForObject()`, `.postForEntity()`, etc.|
+| 5  | What is `WebClient` and when do you use it?                                | Modern non-blocking client in Spring WebFlux; used for async REST calls. |
+| 6  | How do you configure `WebClient` in a blocking app?                        | Use `.block()` to wait for the response in non-reactive Spring apps.     |
+| 7  | What is `FeignClient` and how does it work?                                | Declarative REST client, autowires based on interface + annotations.     |
+| 8  | How does Feign integrate with Eureka?                                      | Uses `lb://<service-name>` to resolve service names from Eureka.         |
+| 9  | How to enable `FeignClient` in Spring Boot?                                | Add `@EnableFeignClients` to main class and define Feign interfaces.     |
+| 10 | Which one to prefer among RestTemplate, WebClient, Feign?                  | Feign for simplicity + Eureka; WebClient for reactive; RestTemplate is legacy. |
+| 11 | How do you handle timeouts in synchronous calls?                           | Configure connect/read timeouts in RestTemplate/WebClient builder.       |
+| 12 | What if the downstream service is down during a REST call?                 | Use Circuit Breaker (e.g., Resilience4j) with fallback logic.            |
+| 13 | How do you log requests/responses in REST clients?                         | Use interceptors in RestTemplate; exchange filters in WebClient.         |
+| 14 | How to retry a REST call in case of failure?                               | Use Spring Retry or Resilience4j retry module.                           |
+| 15 | How to send headers (auth token, correlation ID) in a FeignClient?         | Use `@RequestHeader`, or a Feign interceptor bean.                       |
+| 16 | How to trace synchronous calls across services?                            | Use Sleuth + Zipkin to auto-propagate trace IDs and log spans.           |
+| 17 | What happens if the response takes too long in sync communication?         | The thread will block → use timeout, fallback, or move to async.         |
+| 18 | How to test synchronous communication in microservices?                    | Use MockMvc or WebTestClient for unit tests; WireMock for integration.   |
+| 19 | Can Feign handle file uploads or downloads?                                | Yes, with proper multipart/form-data support.                            |
+| 20 | What are common pitfalls of synchronous microservices?                     | Tight coupling, increased latency, cascading failures, harder scaling.   |
+
+---
+
+### 📦 Example: FeignClient Usage
+
+```java
+@FeignClient(name = "user-service")
+public interface UserClient {
+    @GetMapping("/users/{id}")
+    UserDto getUserById(@PathVariable("id") String id);
+}
+```
+⚙️ Example: RestTemplate Usage
+```java
+@Configuration
+public class WebClientConfig {
+
+    @Bean
+    @LoadBalanced
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
+    }
+}
+```
+⚙️ Example: WebClient Usage
+```java
+@Bean
+public WebClient webClient(WebClient.Builder builder) {
+    return builder.baseUrl("http://user-service").build();
+}
+...
+String response = webClient.get()
+    .uri("/users/1")
+    .retrieve()
+    .bodyToMono(String.class)
+    .block();  // use .block() in non-reactive apps
+```
+🧠 Summary
+| Tool         | Blocking | Reactive | Eureka Support | Best Use Case                               |
+|--------------|----------|----------|----------------|---------------------------------------------|
+| RestTemplate | ✅ Yes    | ❌ No     | ✅ Manual       | Simple legacy synchronous calls             |
+| WebClient    | ❌ No     | ✅ Yes    | ✅ Yes (manual) | Reactive, non-blocking needs                |
+| FeignClient  | ✅ Yes    | ❌ No     | ✅ Auto         | Simple declarative service-to-service calls |
+
+
