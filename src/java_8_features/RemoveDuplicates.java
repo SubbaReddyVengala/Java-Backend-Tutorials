@@ -18,7 +18,7 @@ public class RemoveDuplicates {
         List<String> fruits = Arrays.asList("apple", "orange", "apple", "banana");
         List<String> uniqueFruits = fruits.stream()
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
         System.out.println("Unique fruits: " + uniqueFruits);
     }
 }
