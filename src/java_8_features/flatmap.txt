@@ -1,4 +1,8 @@
+https://claude.ai/public/artifacts/a56c40ef-b3af-4f51-99e1-a345bbfbf253
+
 Lambda Expressions :
+
+
 --------------------
 
 A lambda expression is simply a function without a name. It can even be used as a parameter in a function.
