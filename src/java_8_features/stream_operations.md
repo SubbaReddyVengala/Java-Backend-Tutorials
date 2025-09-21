@@ -1,82 +1,68 @@
 https://claude.ai/public/artifacts/d8d12fa4-4467-4e8d-b00d-049a0f9c902f
+# Java 8 Stream API - Comprehensive Guide
 
-Java 8 Stream API - Comprehensive Guide
+## Introduction
 
----------------------------------------
+Java 8 introduced the **Stream API**, which provides a functional approach to processing sequences of elements. Streams support operations like filtering, mapping, reducing, and collecting, making it easier to perform complex data manipulations on collections in a concise, readable, and efficient way. Streams can work with collections like `List`, `Set`, and even arrays.
 
-Introduction:
--------------
+## What is a Stream?
 
-Java 8 introduced the Stream API, which provides a functional approach to processing sequences of elements. Streams support operations like filtering, mapping, reducing, and collecting, making it easier to perform complex data manipulations on collections in a concise, readable, and efficient way. Streams can work with collections like List, Set, and even arrays.
+A **Stream** is a sequence of elements that can be processed in a functional style. It's not a data structure but a **pipeline** of operations applied to data.
 
-What is a Stream?
------------------
+### Key Characteristics
 
-A Stream is a sequence of elements that can be processed in a functional style. It's not a data structure but a pipeline of operations applied to data.
+- **Not a storage**: Streams don't store data
+- **Functional**: Operations don't modify the source
+- **Lazy**: Operations are executed only when needed
+- **Possibly infinite**: Can handle infinite sequences
+- **One-time use**: Each stream can only be consumed once
 
-Key Characteristics:
--------------------
-Not a storage: Streams don't store data
+## Creating Streams
 
-Functional: Operations don't modify the source
-
-Lazy: Operations are executed only when needed
-
-Possibly infinite: Can handle infinite sequences
-
-One-time use: Each stream can only be consumed once
-
-Creating Streams
------------------
-1. From Collections
--------------------
+### 1. From Collections
+```java
 List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
-
 Stream<String> stream = names.stream();
+```
 
-2. From Arrays
---------------
+### 2. From Arrays
+```java
 String[] array = {"Apple", "Banana", "Orange"};
-
 Stream<String> stream = Arrays.stream(array);
+```
 
-3. Using Stream.of()
---------------------
+### 3. Using Stream.of()
+```java
 Stream<String> stream = Stream.of("Java", "Python", "C++");
+```
 
-4. Generate Streams
--------------------
+### 4. Generate Streams
+```java
 // Infinite stream of random numbers
 Stream<Double> randomStream = Stream.generate(Math::random);
 
 // Sequential numbers
 Stream<Integer> numbers = Stream.iterate(1, n -> n + 1);
+```
 
-Types of Stream Operations
----------------------------
-1. Intermediate Operations (Lazy)
---------------------------------
+## Types of Stream Operations
 
-Return another Stream
+### 1. Intermediate Operations (Lazy)
+- Return another Stream
+- Can be chained
+- Not executed until terminal operation
 
-Can be chained
+### 2. Terminal Operations (Eager)
+- Produce a result or side effect
+- Trigger the execution of the stream pipeline
 
-Not executed until terminal operation
+---
 
-2. Terminal Operations (Eager)
------------------------------
+# Java 8 Stream API - 15 Practical Examples
 
-Produce a result or side effect
+## Example 1: Create a Stream from a List
 
-Trigger the execution of the stream pipeline
-
-Common Stream Operations:
--------------------------
-
-Java 8 Stream API - 15 Practical Examples
-----------------------------------------
-Example 1: Create a Stream from a List
---------------------------------------
+```java
 import java.util.*;
 import java.util.stream.*;
 
@@ -84,116 +70,133 @@ public class Example1 {
     public static void main(String[] args) {
         // Create a List
         List<String> fruits = Arrays.asList("Apple", "Banana", "Orange", "Mango");
-
+        
         // Create Stream from List
         Stream<String> fruitStream = fruits.stream();
-
+        
         // Print stream elements
         fruitStream.forEach(System.out::println);
     }
 }
-Output:
--------
+```
+
+**Output:**
+```
 Apple
 Banana
 Orange
 Mango
+```
 
-Example 2: Filter Elements in a Stream
---------------------------------------
+---
 
+## Example 2: Filter Elements in a Stream
+
+```java
 import java.util.*;
 import java.util.stream.*;
 
 public class Example2 {
     public static void main(String[] args) {
         List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-
+        
         // Filter even numbers
         List<Integer> evenNumbers = numbers.stream()
             .filter(n -> n % 2 == 0)
             .collect(Collectors.toList());
-
+        
         System.out.println("Even numbers: " + evenNumbers);
-
+        
         // Filter names starting with 'A'
         List<String> names = Arrays.asList("Alice", "Bob", "Anna", "Charlie", "Andrew");
         List<String> aNames = names.stream()
             .filter(name -> name.startsWith("A"))
             .collect(Collectors.toList());
-
+        
         System.out.println("Names starting with A: " + aNames);
     }
 }
+```
 
-Output:
--------
+**Output:**
+```
 Even numbers: [2, 4, 6, 8, 10]
 Names starting with A: [Alice, Anna, Andrew]
+```
 
-Example 3: Map Elements in a Stream
------------------------------------
+---
 
+## Example 3: Map Elements in a Stream
+
+```java
 import java.util.*;
 import java.util.stream.*;
 
 public class Example3 {
     public static void main(String[] args) {
         List<String> names = Arrays.asList("alice", "bob", "charlie");
-
+        
         // Convert to uppercase
         List<String> upperNames = names.stream()
             .map(String::toUpperCase)
             .collect(Collectors.toList());
-
+        
         System.out.println("Uppercase names: " + upperNames);
-
+        
         // Get length of each name
         List<Integer> nameLengths = names.stream()
             .map(String::length)
             .collect(Collectors.toList());
-
+        
         System.out.println("Name lengths: " + nameLengths);
-
+        
         // Square each number
         List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
         List<Integer> squares = numbers.stream()
             .map(n -> n * n)
             .collect(Collectors.toList());
-
+        
         System.out.println("Squares: " + squares);
     }
 }
-Output:
--------
+```
+
+**Output:**
+```
 Uppercase names: [ALICE, BOB, CHARLIE]
 Name lengths: [5, 3, 7]
 Squares: [1, 4, 9, 16, 25]
+```
 
-Example 4: Stream forEach() to Print Elements
----------------------------------------------
+---
+
+## Example 4: Stream `forEach()` to Print Elements
+
+```java
 import java.util.*;
 
 public class Example4 {
     public static void main(String[] args) {
         List<String> colors = Arrays.asList("Red", "Green", "Blue", "Yellow");
-
+        
         // Using forEach with method reference
         System.out.println("Colors:");
         colors.stream().forEach(System.out::println);
-
+        
         // Using forEach with lambda
         System.out.println("\nColors with prefix:");
         colors.stream().forEach(color -> System.out.println("Color: " + color));
-
+        
         // ForEach with index (using IntStream)
         System.out.println("\nColors with index:");
         IntStream.range(0, colors.size())
             .forEach(i -> System.out.println(i + ": " + colors.get(i)));
     }
 }
-Output:
--------
+```
+
+**Output:**
+```
 Colors:
 Red
 Green
@@ -211,53 +214,62 @@ Colors with index:
 1: Green
 2: Blue
 3: Yellow
+```
 
+---
 
-Example 5: Stream collect() to Convert to a List
--------------------------------------------------
+## Example 5: Stream `collect()` to Convert to a List
+
+```java
 import java.util.*;
 import java.util.stream.*;
 
 public class Example5 {
     public static void main(String[] args) {
         List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-
+        
         // Collect even numbers to List
         List<Integer> evenList = numbers.stream()
             .filter(n -> n % 2 == 0)
             .collect(Collectors.toList());
-
+        
         // Collect to Set
         Set<Integer> evenSet = numbers.stream()
             .filter(n -> n % 2 == 0)
             .collect(Collectors.toSet());
-
+        
         // Collect to specific collection (ArrayList)
         ArrayList<Integer> evenArrayList = numbers.stream()
             .filter(n -> n % 2 == 0)
             .collect(Collectors.toCollection(ArrayList::new));
-
+        
         System.out.println("Even List: " + evenList);
         System.out.println("Even Set: " + evenSet);
         System.out.println("Even ArrayList: " + evenArrayList);
-
+        
         // Collect strings with joining
         List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
         String joinedNames = names.stream()
             .collect(Collectors.joining(", "));
-
+        
         System.out.println("Joined names: " + joinedNames);
     }
 }
-Output:
-------
+```
+
+**Output:**
+```
 Even List: [2, 4, 6, 8, 10]
 Even Set: [2, 4, 6, 8, 10]
 Even ArrayList: [2, 4, 6, 8, 10]
 Joined names: Alice, Bob, Charlie
+```
 
-Example 6: Sort Elements in a Stream
-------------------------------------
+---
+
+## Example 6: Sort Elements in a Stream
+
+```java
 import java.util.*;
 import java.util.stream.*;
 
@@ -265,32 +277,32 @@ public class Example6 {
     public static void main(String[] args) {
         List<String> names = Arrays.asList("Charlie", "Alice", "Bob", "David");
         List<Integer> numbers = Arrays.asList(5, 2, 8, 1, 9, 3);
-
+        
         // Sort strings naturally
         List<String> sortedNames = names.stream()
             .sorted()
             .collect(Collectors.toList());
-
+        
         // Sort strings in reverse order
         List<String> reverseSortedNames = names.stream()
             .sorted(Comparator.reverseOrder())
             .collect(Collectors.toList());
-
+        
         // Sort by string length
         List<String> sortedByLength = names.stream()
             .sorted(Comparator.comparing(String::length))
             .collect(Collectors.toList());
-
+        
         // Sort numbers
         List<Integer> sortedNumbers = numbers.stream()
             .sorted()
             .collect(Collectors.toList());
-
+        
         // Sort numbers in descending order
         List<Integer> descendingNumbers = numbers.stream()
             .sorted(Comparator.reverseOrder())
             .collect(Collectors.toList());
-
+        
         System.out.println("Original names: " + names);
         System.out.println("Sorted names: " + sortedNames);
         System.out.println("Reverse sorted names: " + reverseSortedNames);
@@ -299,49 +311,54 @@ public class Example6 {
         System.out.println("Descending numbers: " + descendingNumbers);
     }
 }
+```
 
-Output
-------
+**Output:**
+```
 Original names: [Charlie, Alice, Bob, David]
 Sorted names: [Alice, Bob, Charlie, David]
 Reverse sorted names: [David, Charlie, Bob, Alice]
 Sorted by length: [Bob, Alice, David, Charlie]
 Sorted numbers: [1, 2, 3, 5, 8, 9]
 Descending numbers: [9, 8, 5, 3, 2, 1]
+```
 
-Example 7: Reduce a Stream to a Single Value
---------------------------------------------
+---
+
+## Example 7: Reduce a Stream to a Single Value
+
+```java
 import java.util.*;
 
 public class Example7 {
     public static void main(String[] args) {
         List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
-
+        
         // Sum using reduce
         int sum = numbers.stream()
             .reduce(0, (a, b) -> a + b);
-
+        
         // Alternative sum using Integer::sum
         int sum2 = numbers.stream()
             .reduce(0, Integer::sum);
-
+        
         // Product using reduce
         int product = numbers.stream()
             .reduce(1, (a, b) -> a * b);
-
+        
         // Find maximum
         Optional<Integer> max = numbers.stream()
             .reduce(Integer::max);
-
+        
         // Find minimum
         Optional<Integer> min = numbers.stream()
             .reduce(Integer::min);
-
+        
         // Concatenate strings
         List<String> words = Arrays.asList("Java", "Stream", "API");
         String concatenated = words.stream()
             .reduce("", (a, b) -> a + " " + b);
-
+        
         System.out.println("Sum: " + sum);
         System.out.println("Sum2: " + sum2);
         System.out.println("Product: " + product);
@@ -350,48 +367,54 @@ public class Example7 {
         System.out.println("Concatenated: " + concatenated.trim());
     }
 }
-Output:
---------
+```
+
+**Output:**
+```
 Sum: 15
 Sum2: 15
 Product: 120
 Max: 5
 Min: 1
 Concatenated: Java Stream API
+```
 
-Example 8: Count Elements in a Stream
---------------------------------------
+---
+
+## Example 8: Count Elements in a Stream
+
+```java
 import java.util.*;
 
 public class Example8 {
     public static void main(String[] args) {
         List<String> names = Arrays.asList("Alice", "Bob", "Anna", "Charlie", "Andrew");
-
+        
         // Count total elements
         long totalCount = names.stream().count();
-
+        
         // Count names starting with 'A'
         long aCount = names.stream()
             .filter(name -> name.startsWith("A"))
             .count();
-
+        
         // Count names with length > 4
         long longNameCount = names.stream()
             .filter(name -> name.length() > 4)
             .count();
-
+        
         List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-
+        
         // Count even numbers
         long evenCount = numbers.stream()
             .filter(n -> n % 2 == 0)
             .count();
-
+        
         // Count numbers greater than 5
         long greaterThan5 = numbers.stream()
             .filter(n -> n > 5)
             .count();
-
+        
         System.out.println("Total names: " + totalCount);
         System.out.println("Names starting with A: " + aCount);
         System.out.println("Long names (>4 chars): " + longNameCount);
@@ -399,45 +422,51 @@ public class Example8 {
         System.out.println("Numbers > 5: " + greaterThan5);
     }
 }
-Output:
--------
+```
+
+**Output:**
+```
 Total names: 5
 Names starting with A: 3
 Long names (>4 chars): 3
 Even numbers: 5
 Numbers > 5: 5
+```
 
-Example 9: Limit the Stream Size
---------------------------------
+---
+
+## Example 9: Limit the Stream Size
+
+```java
 import java.util.*;
 import java.util.stream.*;
 
 public class Example9 {
     public static void main(String[] args) {
         List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-
+        
         // Get first 5 elements
         List<Integer> first5 = numbers.stream()
             .limit(5)
             .collect(Collectors.toList());
-
+        
         // Get first 3 even numbers
         List<Integer> first3Even = numbers.stream()
             .filter(n -> n % 2 == 0)
             .limit(3)
             .collect(Collectors.toList());
-
+        
         // Generate infinite stream and limit
         List<Integer> first10Squares = Stream.iterate(1, n -> n + 1)
             .map(n -> n * n)
             .limit(10)
             .collect(Collectors.toList());
-
+        
         // Random numbers with limit
         List<Double> randomNumbers = Stream.generate(Math::random)
             .limit(5)
             .collect(Collectors.toList());
-
+        
         System.out.println("Original: " + numbers);
         System.out.println("First 5: " + first5);
         System.out.println("First 3 even: " + first3Even);
@@ -445,40 +474,46 @@ public class Example9 {
         System.out.println("5 random numbers: " + randomNumbers);
     }
 }
-Output:
-------
+```
+
+**Output:**
+```
 Original: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 First 5: [1, 2, 3, 4, 5]
 First 3 even: [2, 4, 6]
 First 10 squares: [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
 5 random numbers: [0.123, 0.456, 0.789, 0.321, 0.654]
+```
 
-Example 10: Skip Elements in a Stream
--------------------------------------
+---
+
+## Example 10: Skip Elements in a Stream
+
+```java
 import java.util.*;
 import java.util.stream.*;
 
 public class Example10 {
     public static void main(String[] args) {
         List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-
+        
         // Skip first 5 elements
         List<Integer> skip5 = numbers.stream()
             .skip(5)
             .collect(Collectors.toList());
-
+        
         // Skip first 3, then take next 4
         List<Integer> skip3Take4 = numbers.stream()
             .skip(3)
             .limit(4)
             .collect(Collectors.toList());
-
+        
         // Skip and filter
         List<Integer> skipAndFilter = numbers.stream()
             .skip(2)
             .filter(n -> n % 2 == 0)
             .collect(Collectors.toList());
-
+        
         // Pagination example: Page 2 with 3 items per page
         int pageSize = 3;
         int pageNumber = 2; // 0-based
@@ -486,7 +521,7 @@ public class Example10 {
             .skip(pageNumber * pageSize)
             .limit(pageSize)
             .collect(Collectors.toList());
-
+        
         System.out.println("Original: " + numbers);
         System.out.println("Skip 5: " + skip5);
         System.out.println("Skip 3, take 4: " + skip3Take4);
@@ -494,16 +529,22 @@ public class Example10 {
         System.out.println("Page 2 (3 items): " + page2);
     }
 }
-Output:
--------
+```
+
+**Output:**
+```
 Original: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 Skip 5: [6, 7, 8, 9, 10]
 Skip 3, take 4: [4, 5, 6, 7]
 Skip 2, filter even: [4, 6, 8, 10]
 Page 2 (3 items): [7, 8, 9]
+```
 
-Example 11: FlatMap Example (Flattening Nested Lists)
------------------------------------------------------
+---
+
+## Example 11: FlatMap Example (Flattening Nested Lists)
+
+```java
 import java.util.*;
 import java.util.stream.*;
 
@@ -515,56 +556,56 @@ public class Example11 {
             Arrays.asList("C++", "JavaScript"),
             Arrays.asList("Go", "Rust")
         );
-
+        
         List<String> flatList = nestedList.stream()
             .flatMap(List::stream)
             .collect(Collectors.toList());
-
+        
         // Split sentences into words
         List<String> sentences = Arrays.asList(
             "Hello World",
             "Java Stream API",
             "FlatMap Example"
         );
-
+        
         List<String> words = sentences.stream()
             .flatMap(sentence -> Arrays.stream(sentence.split(" ")))
             .collect(Collectors.toList());
-
+        
         // Flatten array of arrays
         String[][] array2D = {
             {"A", "B"},
             {"C", "D", "E"},
             {"F"}
         };
-
+        
         List<String> flatArray = Arrays.stream(array2D)
             .flatMap(Arrays::stream)
             .collect(Collectors.toList());
-
+        
         // Example with objects
         class Person {
             String name;
             List<String> hobbies;
-
+            
             Person(String name, List<String> hobbies) {
                 this.name = name;
                 this.hobbies = hobbies;
             }
-
+            
             List<String> getHobbies() { return hobbies; }
         }
-
+        
         List<Person> people = Arrays.asList(
             new Person("Alice", Arrays.asList("Reading", "Gaming")),
             new Person("Bob", Arrays.asList("Cooking", "Dancing")),
             new Person("Charlie", Arrays.asList("Singing", "Painting"))
         );
-
+        
         List<String> allHobbies = people.stream()
             .flatMap(person -> person.getHobbies().stream())
             .collect(Collectors.toList());
-
+        
         System.out.println("Nested list: " + nestedList);
         System.out.println("Flat list: " + flatList);
         System.out.println("Sentences: " + sentences);
@@ -573,53 +614,59 @@ public class Example11 {
         System.out.println("All hobbies: " + allHobbies);
     }
 }
-Output:
-------
+```
+
+**Output:**
+```
 Nested list: [[Java, Python], [C++, JavaScript], [Go, Rust]]
 Flat list: [Java, Python, C++, JavaScript, Go, Rust]
 Sentences: [Hello World, Java Stream API, FlatMap Example]
 Words: [Hello, World, Java, Stream, API, FlatMap, Example]
 2D Array flattened: [A, B, C, D, E, F]
 All hobbies: [Reading, Gaming, Cooking, Dancing, Singing, Painting]
+```
 
-Example 12: Find the First Element in a Stream:
------------------------------------------------
+---
+
+## Example 12: Find the First Element in a Stream
+
+```java
 import java.util.*;
 
 public class Example12 {
     public static void main(String[] args) {
         List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "David");
         List<Integer> numbers = Arrays.asList(5, 2, 8, 1, 9, 3);
-
+        
         // Find first element
         Optional<String> firstName = names.stream().findFirst();
-
+        
         // Find first element with condition
         Optional<String> firstLongName = names.stream()
             .filter(name -> name.length() > 5)
             .findFirst();
-
+        
         // Find first even number
         Optional<Integer> firstEven = numbers.stream()
             .filter(n -> n % 2 == 0)
             .findFirst();
-
+        
         // Find any element (useful in parallel streams)
         Optional<String> anyName = names.stream().findAny();
-
+        
         // Find first after sorting
         Optional<String> firstAfterSort = names.stream()
             .sorted()
             .findFirst();
-
+        
         // Find first element greater than 5
         Optional<Integer> firstGreater5 = numbers.stream()
             .filter(n -> n > 5)
             .findFirst();
-
+        
         // Empty stream
         Optional<String> firstFromEmpty = Arrays.<String>asList().stream().findFirst();
-
+        
         System.out.println("First name: " + firstName.orElse("None"));
         System.out.println("First long name: " + firstLongName.orElse("None"));
         System.out.println("First even: " + firstEven.orElse(0));
@@ -627,13 +674,15 @@ public class Example12 {
         System.out.println("First after sort: " + firstAfterSort.orElse("None"));
         System.out.println("First > 5: " + firstGreater5.orElse(0));
         System.out.println("First from empty: " + firstFromEmpty.orElse("Empty"));
-
+        
         // Using ifPresent
         firstLongName.ifPresent(name -> System.out.println("Found long name: " + name));
     }
 }
-Output:
--------
+```
+
+**Output:**
+```
 First name: Alice
 First long name: Charlie
 First even: 2
@@ -642,9 +691,13 @@ First after sort: Alice
 First > 5: 8
 First from empty: Empty
 Found long name: Charlie
+```
 
-Example 13: Check if Any Match in a Stream:
---------------------------------------------
+---
+
+## Example 13: Check if Any Match in a Stream
+
+```java
 import java.util.*;
 
 public class Example13 {
@@ -652,55 +705,57 @@ public class Example13 {
         List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Anna");
         List<Integer> numbers = Arrays.asList(1, 3, 5, 7, 9);
         List<Integer> mixedNumbers = Arrays.asList(1, 2, 3, 4, 5);
-
+        
         // anyMatch - check if any element matches condition
         boolean anyStartsWithA = names.stream()
             .anyMatch(name -> name.startsWith("A"));
-
+        
         boolean anyEven = numbers.stream()
             .anyMatch(n -> n % 2 == 0);
-
+        
         boolean anyGreaterThan10 = numbers.stream()
             .anyMatch(n -> n > 10);
-
+        
         // allMatch - check if all elements match condition
         boolean allStartWithA = names.stream()
             .allMatch(name -> name.startsWith("A"));
-
+        
         boolean allOdd = numbers.stream()
             .allMatch(n -> n % 2 != 0);
-
+        
         boolean allPositive = mixedNumbers.stream()
             .allMatch(n -> n > 0);
-
+        
         // noneMatch - check if no elements match condition
         boolean noneStartWithZ = names.stream()
             .noneMatch(name -> name.startsWith("Z"));
-
+        
         boolean noneEven = numbers.stream()
             .noneMatch(n -> n % 2 == 0);
-
+        
         boolean noneNegative = mixedNumbers.stream()
             .noneMatch(n -> n < 0);
-
+        
         System.out.println("=== NAMES: " + names + " ===");
         System.out.println("Any starts with A: " + anyStartsWithA);
         System.out.println("All start with A: " + allStartWithA);
         System.out.println("None start with Z: " + noneStartWithZ);
-
+        
         System.out.println("\n=== ODD NUMBERS: " + numbers + " ===");
         System.out.println("Any even: " + anyEven);
         System.out.println("All odd: " + allOdd);
         System.out.println("None even: " + noneEven);
         System.out.println("Any > 10: " + anyGreaterThan10);
-
+        
         System.out.println("\n=== MIXED NUMBERS: " + mixedNumbers + " ===");
         System.out.println("All positive: " + allPositive);
         System.out.println("None negative: " + noneNegative);
     }
 }
-Output:
--------
+```
+
+**Output:**
+```
 === NAMES: [Alice, Bob, Charlie, Anna] ===
 Any starts with A: true
 All start with A: false
@@ -715,64 +770,68 @@ Any > 10: false
 === MIXED NUMBERS: [1, 2, 3, 4, 5] ===
 All positive: true
 None negative: true
+```
 
-Example 14: Grouping by using Collectors
-----------------------------------------
+---
+
+## Example 14: Grouping by using Collectors
+
+```java
 import java.util.*;
 import java.util.stream.*;
 
 public class Example14 {
     public static void main(String[] args) {
         List<String> names = Arrays.asList("Alice", "Bob", "Anna", "Charlie", "Andrew", "Diana");
-
+        
         // Group by first letter
         Map<Character, List<String>> groupedByLetter = names.stream()
             .collect(Collectors.groupingBy(name -> name.charAt(0)));
-
+        
         // Group by string length
         Map<Integer, List<String>> groupedByLength = names.stream()
             .collect(Collectors.groupingBy(String::length));
-
+        
         // Group by first letter and count
         Map<Character, Long> countByLetter = names.stream()
             .collect(Collectors.groupingBy(
                 name -> name.charAt(0),
                 Collectors.counting()
             ));
-
+        
         // Group by length and join names
         Map<Integer, String> joinedByLength = names.stream()
             .collect(Collectors.groupingBy(
                 String::length,
                 Collectors.joining(", ")
             ));
-
+        
         // Partition by condition (special case of grouping)
         Map<Boolean, List<String>> partitionedByLength = names.stream()
             .collect(Collectors.partitioningBy(name -> name.length() > 4));
-
+        
         // Complex example with custom objects
         class Person {
             String name;
             int age;
             String city;
-
+            
             Person(String name, int age, String city) {
                 this.name = name;
                 this.age = age;
                 this.city = city;
             }
-
+            
             String getName() { return name; }
             int getAge() { return age; }
             String getCity() { return city; }
-
+            
             @Override
             public String toString() {
                 return name + "(" + age + ")";
             }
         }
-
+        
         List<Person> people = Arrays.asList(
             new Person("Alice", 25, "New York"),
             new Person("Bob", 30, "London"),
@@ -780,18 +839,18 @@ public class Example14 {
             new Person("Diana", 28, "London"),
             new Person("Eve", 32, "Paris")
         );
-
+        
         // Group people by city
         Map<String, List<Person>> peopleByCity = people.stream()
             .collect(Collectors.groupingBy(Person::getCity));
-
+        
         // Group by city and collect names only
         Map<String, List<String>> namesByCity = people.stream()
             .collect(Collectors.groupingBy(
                 Person::getCity,
                 Collectors.mapping(Person::getName, Collectors.toList())
             ));
-
+        
         // Group by age range
         Map<String, List<Person>> peopleByAgeRange = people.stream()
             .collect(Collectors.groupingBy(person -> {
@@ -800,22 +859,24 @@ public class Example14 {
                 else if (age < 40) return "30s";
                 else return "40+";
             }));
-
+        
         System.out.println("=== GROUPING NAMES ===");
         System.out.println("By first letter: " + groupedByLetter);
         System.out.println("By length: " + groupedByLength);
         System.out.println("Count by letter: " + countByLetter);
         System.out.println("Joined by length: " + joinedByLength);
         System.out.println("Partitioned by length > 4: " + partitionedByLength);
-
+        
         System.out.println("\n=== GROUPING PEOPLE ===");
         System.out.println("People by city: " + peopleByCity);
         System.out.println("Names by city: " + namesByCity);
         System.out.println("People by age range: " + peopleByAgeRange);
     }
 }
-Output
-------
+```
+
+**Output:**
+```
 === GROUPING NAMES ===
 By first letter: {A=[Alice, Anna, Andrew], B=[Bob], C=[Charlie], D=[Diana]}
 By length: {3=[Bob], 5=[Alice, Diana], 4=[Anna], 7=[Charlie, Andrew]}
@@ -827,57 +888,14 @@ Partitioned by length > 4: {false=[Bob, Anna], true=[Alice, Charlie, Andrew, Dia
 People by city: {New York=[Alice(25), Charlie(35)], London=[Bob(30), Diana(28)], Paris=[Eve(32)]}
 Names by city: {New York=[Alice, Charlie], London=[Bob, Diana], Paris=[Eve]}
 People by age range: {20s=[Alice(25), Diana(28)], 30s=[Bob(30), Charlie(35), Eve(32)]}
+```
 
-Example 15: Stream Parallel Processing
--------------------------------------
+---
+
+## Example 15: Stream Parallel Processing
+
+```java
 import java.util.*;
 import java.util.stream.*;
-import java.time.Instant;
 
-public class Example15 {
-    public static void main(String[] args) {
-        // Create a large list for demonstration
-        List<Integer> largeList = IntStream.rangeClosed(1, 10_000_000)
-            .boxed()
-            .collect(Collectors.toList());
-
-        System.out.println("Processing " + largeList.size() + " elements...\n");
-
-        // Sequential processing
-        long startTime = System.currentTimeMillis();
-        long sequentialSum = largeList.stream()
-            .filter(n -> n % 2 == 0)
-            .mapToLong(n -> n * n)
-            .sum();
-        long sequentialTime = System.currentTimeMillis() - startTime;
-
-        // Parallel processing
-        startTime = System.currentTimeMillis();
-        long parallelSum = largeList.parallelStream()
-            .filter(n -> n % 2 == 0)
-            .mapToLong(n -> n * n)
-            .sum();
-        long parallelTime = System.currentTimeMillis() - startTime;
-
-        System.out.println("=== PERFORMANCE COMPARISON ===");
-        System.out.println("Sequential Sum: " + sequentialSum);
-        System.out.println("Sequential Time: " + sequentialTime + " ms");
-        System.out.println("Parallel Sum: " + parallelSum);
-        System.out.println("Parallel Time: " + parallelTime + " ms");
-        System.out.println("Speedup: " + String.format("%.2fx", (double) sequentialTime / parallelTime));
-
-        // Simple parallel examples
-        List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "David", "Eve", "Frank");
-
-        System.out.println("\n=== PARALLEL EXAMPLES ===");
-
-        // Parallel processing with forEach
-        System.out.println("Sequential forEach:");
-        names.stream().forEach(name -> {
-            System.out.println("Processing: " + name + " on thread: " +
-                Thread.currentThread().getName());
-        });
-
-        System.out.println("\nParallel forEach:");
-        names.parallelStream().forEach(name -> {
-            System.out.println("Processing: " + name + " on
+public class
