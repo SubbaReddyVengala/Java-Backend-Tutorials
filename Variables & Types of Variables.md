@@ -341,3 +341,131 @@ All 3 objects point to the same shared `cityName` and `totalHouses`
 ----------
 
 ## **Comparison Table**
+<img width="877" height="393" alt="image" src="https://github.com/user-attachments/assets/755fbbf6-5e24-4fab-aca0-e44fe0cbc186" />
+
+
+🏠 **House Analogy Summary:**
+
+-   **Local** = Grocery bags (temporary, per cooking session)
+-   **Instance** = Furniture (unique to each house)
+-   **Static** = City utilities (shared by all houses)
+----------
+
+## **Complete Example - All Three Types**
+```java
+public class BankAccount {
+    
+    // Static variable - shared by all accounts
+    static String bankName = "Global Bank";
+    static int totalAccounts = 0;
+    static double interestRate = 3.5;
+    
+    // Instance variables - unique to each account
+    private String accountHolder;
+    private long accountNumber;
+    private double balance;
+    
+    // Constructor
+    public BankAccount(String holder, long accNum) {
+        this.accountHolder = holder;
+        this.accountNumber = accNum;
+        this.balance = 0.0;
+        totalAccounts++;  // Increment shared counter
+    }
+    
+    // Method with local variables
+    public void deposit(double amount) {
+        // Local variables
+        double oldBalance = this.balance;
+        double fee = 2.0;
+        double netAmount = amount - fee;
+        
+        this.balance += netAmount;
+        
+        System.out.println("Old Balance: " + oldBalance);
+        System.out.println("Deposited: " + netAmount);
+        System.out.println("New Balance: " + this.balance);
+        
+        // oldBalance, fee, netAmount destroyed after method ends
+    }
+    
+    public void displayInfo() {
+        // Local variable
+        String message = "Account Details";
+        
+        System.out.println(message);
+        System.out.println("Bank: " + bankName);  // Static
+        System.out.println("Holder: " + accountHolder);  // Instance
+        System.out.println("Balance: " + balance);  // Instance
+        System.out.println("Total Accounts: " + totalAccounts);  // Static
+    }
+    
+    // Static method can access only static variables directly
+    public static void displayBankInfo() {
+        System.out.println("Bank: " + bankName);  // ✅ OK
+        System.out.println("Interest Rate: " + interestRate);  // ✅ OK
+        // System.out.println(accountHolder);  // ❌ ERROR - instance variable
+    }
+}
+
+// Usage:
+public class Main {
+    public static void main(String[] args) {
+        // Access static variable before creating any object
+        System.out.println(BankAccount.bankName);
+        
+        BankAccount acc1 = new BankAccount("Alice", 1001);
+        BankAccount acc2 = new BankAccount("Bob", 1002);
+        
+        acc1.deposit(1000);  // Local variables created and destroyed
+        acc2.deposit(2000);
+        
+        System.out.println("Total: " + BankAccount.totalAccounts);  // 2
+        
+        // Change static variable - affects all accounts
+        BankAccount.interestRate = 4.0;
+        
+        acc1.displayInfo();  // Shows new interest rate
+        acc2.displayInfo();  // Shows same interest rate
+    }
+}
+```
+----------
+
+## **Variable Naming Best Practices**
+```java
+// ✅ GOOD
+int age;
+String firstName;
+double accountBalance;
+boolean isActive;
+final int MAX_SIZE = 100;  // Constant
+
+// ❌ BAD
+int a;           // Not descriptive
+String n;        // Unclear
+double money123; // Meaningless number
+boolean flag;    // Vague
+```
+## **Key Points to Remember**
+
+1.  **Local variables:**
+    -   Must initialize before use
+    -   Temporary (method lifetime)
+    -   No default values
+2.  **Instance variables:**
+    -   One copy per object
+    -   Has default values
+    -   Object lifetime
+3.  **Static variables:**
+    -   One copy for entire class
+    -   Shared among all objects
+    -   Class lifetime
+4.  **Memory:**
+    -   Local → Stack (fast, small)
+    -   Instance → Heap (larger, slower)
+    -   Static → Method Area (special)
+
+🏠 **Remember:** Local = Groceries, Instance = Furniture, Static = City Utilities!
+
+
