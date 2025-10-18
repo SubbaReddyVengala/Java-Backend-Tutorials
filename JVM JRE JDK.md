@@ -123,6 +123,46 @@ java HelloWorld
 Now, the **engine (JVM)** inside the **car (JRE)** starts working.  
 It takes the universal car parts (bytecode) and makes the car run smoothly on **any road (operating system)**.
 
+## ⚙️ **What is JIT Compiler?**
+
+**JIT (Just-In-Time) Compiler** is part of the **JVM’s Execution Engine**.  
+It improves performance by converting **frequently executed bytecode** into **native machine code** _while the program is running._
+
+## 🧠 **Why JIT is Needed**
+
+By default, the **Interpreter** in JVM executes bytecode **line by line**.  
+That’s easy but **slow**, especially for large or frequently repeated code blocks.
+
+To make Java faster, the **JIT compiler** steps in and **compiles hot code** (code executed many times) into **machine code** — so the CPU can run it **directly**, without interpreting it again.
+
+## ⚡ **How JIT Works — Step by Step**
+
+Let’s go through the process visually:
+```pgsql
+Bytecode (.class)
+     ↓
+JVM starts executing using Interpreter
+     ↓
+JVM detects some methods/loops are used frequently (hotspots)
+     ↓
+JIT Compiler compiles those parts into native machine code
+     ↓
+Next time JVM executes that part → runs directly as machine code (faster)
+```
+🧩 Example
+```java
+for (int i = 0; i < 1000000; i++) {
+    calculateInterest();
+}
+```
+-   The **Interpreter** executes `calculateInterest()` line by line the first few times.
+    
+-   JVM notices it’s being called **many times** (a “hotspot”).
+    
+-   JIT compiles it into **machine code** and caches it.
+    
+-   Next calls run **directly on CPU** → **super fast!**
+
 ### 🧠 **In Short**
 
 -   **JDK** → Used by developers to write and compile code.
