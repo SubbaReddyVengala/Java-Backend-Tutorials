@@ -987,3 +987,257 @@ Master these String methods to:
 -   Excel in coding interviews
 
 **Remember:** Strings are immutable—every "modification" creates a new String object!
+
+
+# StringBuilder vs StringBuffer: Complete Comparison
+
+## Quick Overview
+
+<img width="817" height="282" alt="image" src="https://github.com/user-attachments/assets/13def82d-f7cb-43b1-8685-c66f696f73aa" />
+
+----------
+
+## 1. Core Difference: Thread Safety
+
+### StringBuffer - Thread-Safe (Synchronized)
+
+java
+
+```java
+public final class StringBuffer extends AbstractStringBuilder {
+    
+    @Override
+    public synchronized StringBuffer append(String str) {
+        super.append(str);
+        return this;
+    }
+    
+    @Override
+    public synchronized StringBuffer insert(int offset, String str) {
+        super.insert(offset, str);
+        return this;
+    }
+    
+    @Override
+    public synchronized String toString() {
+        return super.toString();
+    }
+    
+    // All methods are synchronized!
+}
+```
+
+### StringBuilder - Not Thread-Safe
+
+java
+
+```java
+public final class StringBuilder extends AbstractStringBuilder {
+    
+    @Override
+    public StringBuilder append(String str) {
+        super.append(str);
+        return this;
+    }
+    
+    @Override
+    public StringBuilder insert(int offset, String str) {
+        super.insert(offset, str);
+        return this;
+    }
+    
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+    
+    // No synchronized keyword!
+}
+```
+
+**Visual Representation:**
+
+```
+┌─────────────────────────────────────────────┐
+│         STRINGBUFFER (Synchronized)         │
+│                                             │
+│  Thread-1        Thread-2        Thread-3   │
+│     │               │               │       │
+│     ├──[LOCK]───────┤               │       │
+│     │   append()    │               │       │
+│     │   "Hello"     │[WAITING]      │       │
+│     └──[UNLOCK]─────┤               │       │
+│                     ├──[LOCK]───────┤       │
+│                     │  append()     │       │
+│                     │  "World"      │[WAIT] │
+│                     └──[UNLOCK]─────┤       │
+│                                     │       │
+│  Only ONE thread can modify at once │       │
+└─────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────┐
+│         STRINGBUILDER (No Sync)             │
+│                                             │
+│  Thread-1        Thread-2        Thread-3   │
+│     │               │               │       │
+│     │               │               │       │
+│  append()       append()        append()    │
+│  "Hello"        "World"         "Java"      │
+│     │               │               │       │
+│     └───────────────┴───────────────┘       │
+│                                             │
+│  ⚠️  RACE CONDITION - Data corruption!      │
+└─────────────────────────────────────────────┘
+```
+
+----------
+
+## 2. Performance Comparison
+
+### Benchmark Test
+
+java
+
+```java
+public class PerformanceTest {
+    private static final int ITERATIONS = 100000;
+    
+    public static void main(String[] args) {
+        // StringBuilder test
+        long start1 = System.currentTimeMillis();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < ITERATIONS; i++) {
+            sb.append("test");
+        }
+        long end1 = System.currentTimeMillis();
+        
+        // StringBuffer test
+        long start2 = System.currentTimeMillis();
+        StringBuffer sbf = new StringBuffer();
+        for (int i = 0; i < ITERATIONS; i++) {
+            sbf.append("test");
+        }
+        long end2 = System.currentTimeMillis();
+        
+        System.out.println("StringBuilder time: " + (end1 - start1) + "ms");
+        System.out.println("StringBuffer time: " + (end2 - start2) + "ms");
+        System.out.println("StringBuffer is " + 
+            ((end2 - start2) / (double)(end1 - start1)) + "x slower");
+    }
+}
+```
+
+**Typical Results:**
+
+```
+StringBuilder time: 15ms
+StringBuffer time: 45ms
+StringBuffer is 3x slower
+
+┌─────────────────────────────────────┐
+│   Performance Comparison            │
+│                                     │
+│   StringBuilder  ████ 15ms          │
+│   StringBuffer   ████████████ 45ms  │
+│                                     │
+│   StringBuilder is ~3x faster!      │
+└─────────────────────────────────────┘
+```
+
+### Why StringBuffer is Slower
+
+**Synchronization Overhead:**
+
+java
+
+```java
+// Each synchronized method call involves:
+1. Acquire lock (monitor)
+2. Execute method
+3. Release lock
+4. Memory barrier operations
+
+// For 100,000 operations:
+100,000 × (Lock + Unlock + Memory Barrier) = Significant overhead!
+```
+
+**Memory Visibility:**
+
+java
+
+```java
+// synchronized ensures:
+- Mutual exclusion (one thread at a time)
+- Happens-before relationship
+- Memory visibility across threads
+- Cache coherence protocols
+
+// All this costs performance!
+```
+
+----------
+
+## 13. Best Practices Checklist
+
+### ✅ Do's
+
+-   Use **StringBuilder** by default (single-threaded)
+-   Use **StringBuffer** only when truly needed (multi-threaded)
+-   Pre-size capacity when you know approximate length
+-   Use method chaining for cleaner code
+-   Consider `String.join()` for simple concatenations
+-   Clear buffer with `setLength(0)` instead of creating new instance
+
+### ❌ Don'ts
+
+-   Don't use StringBuffer for local variables
+-   Don't assume StringBuffer makes all operations thread-safe
+-   Don't create new instances in loops
+-   Don't use for just 2-3 concatenations (use `+` or `String.concat()`)
+-   Don't forget to call `toString()` to get final String
+
+----------
+
+## 14. Interview Q&A
+
+**Q1: What's the main difference between StringBuilder and StringBuffer?**
+
+> **A:** StringBuffer is synchronized (thread-safe) while StringBuilder is not. StringBuilder is faster but not safe for concurrent access.
+
+**Q2: Why was StringBuilder introduced if StringBuffer existed?**
+
+> **A:** Most string building happens in single-threaded contexts where synchronization overhead is unnecessary. StringBuilder provides better performance for the common case.
+
+**Q3: Can you make StringBuilder thread-safe?**
+
+> **A:** Yes, wrap operations in synchronized blocks or use Collections.synchronizedList() pattern, but at that point, just use StringBuffer.
+
+**Q4: Which is more memory efficient?**
+
+> **A:** They use the same amount of memory. Both store characters in a byte array with the same growth strategy.
+
+**Q5: When would you choose StringBuffer over StringBuilder?**
+
+> **A:** Only when the object is shared across multiple threads and being modified concurrently. Examples: shared logging, chat applications, real-time data aggregation.
+
+----------
+
+## Conclusion
+
+### Golden Rule
+
+java
+
+```java
+// 95% of the time, use this:
+StringBuilder sb = new StringBuilder();
+
+// Only 5% of the time (multi-threaded shared state):
+StringBuffer sbf = new StringBuffer();
+```
+
+**Remember:**
+
+-   **StringBuilder** = Fast, single-threaded
+-   **StringBuffer** = Safe, multi-threaded
+-   **Choose based on thread safety needs, not habit!**
