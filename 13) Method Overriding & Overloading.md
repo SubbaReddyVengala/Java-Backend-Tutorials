@@ -567,3 +567,133 @@ Think of polymorphism like a **universal remote control**:
 When you press "Play" on the remote (call a method), the **device that's actually connected** (the real object) determines what happens, not what label is on the remote
 
 <img width="1002" height="259" alt="image" src="https://github.com/user-attachments/assets/62c8fb48-77ae-4ec3-92ac-49e911ee577d" />
+
+
+🚀 **Method Overloading in Java (Compile-Time Polymorphism)**
+## 🧠 1. What is Method Overloading?
+
+> **Method Overloading** means **defining multiple methods** in the same class **with the same name** but **different parameters** (number, type, or order).
+
+👉 It allows a class to perform **similar operations** with **different kinds of inputs**.
+
+✅ **Resolved at compile time** — that’s why it’s also called **Compile-Time Polymorphism** or **Early Binding**.
+----------
+
+## ⚙️ 2. Example: Basic Method Overloading
+``` java
+class Calculator {
+
+    // 1️⃣ Add two integers
+    int add(int a, int b) {
+        return a + b;
+    }
+
+    // 2️⃣ Add three integers
+    int add(int a, int b, int c) {
+        return a + b + c;
+    }
+
+    // 3️⃣ Add two doubles
+    double add(double a, double b) {
+        return a + b;
+    }
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        Calculator calc = new Calculator();
+
+        System.out.println(calc.add(2, 3));         // add(int, int)
+        System.out.println(calc.add(2, 3, 4));      // add(int, int, int)
+        System.out.println(calc.add(2.5, 3.5));     // add(double, double)
+    }
+}
+```
+🧾 Output:
+```
+5
+9
+6.0
+```
+## 🧩 3. 🧠 How the JVM Handles It
+
+<img width="997" height="297" alt="image" src="https://github.com/user-attachments/assets/69d5bb8e-3aae-4925-afd0-20f8b5e2a37b" />
+
+
+## 💾 4. Memory Visualization
+
+```java
+Class Area (Method Table)
+----------------------------
+add(int, int)
+add(int, int, int)
+add(double, double)
+
+Stack:
+calc.add(2, 3) → compiler picks add(int, int)
+
+```
+Stack:
+calc.add(2, 3) → compiler picks add(int, int)
+✅ Decision made before the program runs.
+
+## 🧩 5. Rules of Method Overloading
+
+<img width="1038" height="406" alt="image" src="https://github.com/user-attachments/assets/b4d9c621-a8f7-40fd-b63f-884a6624c4db" />
+
+## ❌ 6. Invalid Example (Overloading by Return Type Only)
+
+```java
+class Test {
+    int show() { return 10; }
+    double show() { return 20.5; } // ❌ Compile-time Error
+}
+``` 
+
+🛑 **Why?**  
+Return type alone is not part of the **method signature**, so the compiler sees both as identical.
+Think of a **“print” button** in different scenarios:
+
+
+You click print with a text file → prints text
+
+You click print with an image → prints image
+
+You click print with a PDF → prints PDF
+
+🖨️ **Same button (method)**, different behavior depending on **input type or count** → **method overloading**!
+
+## 💬 13. Behind the Scenes (Compiler’s Role)
+
+At compile time:
+
+-   Compiler collects all `add()` methods (same name)
+    
+-   Creates a **method signature table**
+    
+-   Based on parameters you pass, it chooses the correct version
+    
+-   Converts it into the correct bytecode method call
+    
+
+✅ No decision at runtime.  
+✅ No overriding relationship.
+
+----------
+
+## 🧭 14. Visual Summary
+``` java
++-------------------------+
+|        Calculator       |
+|-------------------------|
+| add(int, int)           |
+| add(int, int, int)      |
+| add(double, double)     |
++-------------------------+
+
+At compile time:
+-----------------
+calc.add(2, 3) → add(int, int)
+calc.add(2.5, 3.5) → add(double, double)
+
+```
