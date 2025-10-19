@@ -217,6 +217,64 @@ STACK:  myCar ───────────────┘
 ```
 
 ----------
+### Object Class - The Universal Parent
+
+Every class in Java implicitly extends `Object`:
+
+java
+
+```java
+class MyClass {
+    // Implicitly: class MyClass extends Object
+}
+```
+
+**Inherited from Object**:
+
+-   `toString()`
+-   `equals(Object obj)`
+-   `hashCode()`
+-   `getClass()`
+-   `clone()`
+
+```java
+      Object (java.lang)
+         ↓
+    Your Parent Class
+         ↓
+    Your Child Class
+```
+
+### 5. IS-A vs HAS-A Relationship
+
+**IS-A (Inheritance)**:
+
+java
+
+```java
+class Dog extends Animal {
+    // Dog IS-A Animal
+}
+```
+
+**HAS-A (Composition)**:
+
+java
+
+```java
+class Car {
+    private Engine engine;  // Car HAS-A Engine
+    
+    Car() {
+        engine = new Engine();
+    }
+}
+```
+
+**Choosing Between Them**:
+
+-   Use IS-A when there's a natural hierarchical relationship
+-   Use HAS-A when one class uses another but they aren't variants of the same concept
 
 ## Key Takeaways
 
