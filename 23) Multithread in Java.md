@@ -1182,4 +1182,603 @@ Main Thread          Worker Thread
 ```
 
 ----------
+## 9. Java Naming Thread and Current Thread
+
+### Concept
+
+Every thread has a name. You can set custom names or use default names (Thread-0, Thread-1, etc.).
+
+### Analogy
+
+Like giving  **employee ID badges**  in a company. Makes it easy to identify who's doing what.
+Naming and Current Thread
+
+
+### Example 1: Setting Thread Names
+
+java
+
+```java
+class NamedThread extends Thread {
+    @Override
+    public void run() {
+        System.out.println("Thread Name: " + Thread.currentThread().getName());
+        System.out.println("Thread ID: " + Thread.currentThread().getId());
+        System.out.println("Thread Priority: " + Thread.currentThread().getPriority());
+    }
+}
+
+public class ThreadNamingExample {
+    public static void main(String[] args) {
+        // Method 1: Using constructor
+        NamedThread t1 = new NamedThread();
+        t1.setName("Worker-Thread-1");
+        
+        // Method 2: Using constructor with name
+        Thread t2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Thread Name: " + 
+                                  Thread.currentThread().getName());
+            }
+        }, "Worker-Thread-2");
+        
+        // Method 3: Default names
+        NamedThread t3 = new NamedThread();
+        
+        t1.start();
+        t2.start();
+        t3.start();
+        
+        // Main thread info
+        System.out.println("Main Thread: " + 
+                          Thread.currentThread().getName());
+    }
+}
+```
+
+**Output**:
+
+```
+Main Thread: main
+Thread Name: Worker-Thread-1
+Thread ID: 14
+Thread Priority: 5
+Thread Name: Worker-Thread-2
+Thread Name: Thread-2
+Thread ID: 16
+Thread Priority: 5
+```
+
+### Example 2: Thread.currentThread()
+
+java
+
+```java
+public class CurrentThreadExample {
+    public static void method1() {
+        System.out.println("Method1 called by: " + 
+                          Thread.currentThread().getName());
+        method2();
+    }
+    
+    public static void method2() {
+        System.out.println("Method2 called by: " + 
+                          Thread.currentThread().getName());
+    }
+    
+    public static void main(String[] args) {
+        System.out.println("Main thread name: " + 
+                          Thread.currentThread().getName());
+        
+        Thread t = new Thread(() -> {
+            System.out.println("Lambda thread name: " + 
+                              Thread.currentThread().getName());
+            method1();
+        }, "Custom-Worker");
+        
+        t.start();
+        method1(); // Called from main thread
+    }
+}
+```
+
+**Output**:
+
+```
+Main thread name: main
+Method1 called by: main
+Method2 called by: main
+Lambda thread name: Custom-Worker
+Method1 called by: Custom-Worker
+Method2 called by: Custom-Worker
+```
+
+### Useful Thread Methods
+
+java
+
+```java
+public class ThreadInfoExample {
+    public static void main(String[] args) {
+        Thread current = Thread.currentThread();
+        
+        System.out.println("Name: " + current.getName());
+        System.out.println("ID: " + current.getId());
+        System.out.println("Priority: " + current.getPriority());
+        System.out.println("State: " + current.getState());
+        System.out.println("Is Alive: " + current.isAlive());
+        System.out.println("Is Daemon: " + current.isDaemon());
+        System.out.println("Thread Group: " + current.getThreadGroup().getName());
+    }
+}
+```
+
+----------
+
+## 10. Thread Priority in Java
+
+### Concept
+
+Thread priority suggests to the scheduler which thread should get preference. Range: 1 (MIN) to 10 (MAX), Default: 5 (NORM).
+
+### Analogy
+
+Like  **priority lanes at airports**:
+
+-   Priority 10: First class passengers (board first)
+-   Priority 5: Economy passengers (normal boarding)
+-   Priority 1: Standby passengers (board last)
+
+**Important**: Priority is a hint, not a guarantee!
+
+### Visualization
+
+```
+High Priority (8-10): ████████████████░░░░ (More CPU time)
+Medium Priority (4-7): ██████████░░░░░░░░░░ (Normal CPU time)
+Low Priority (1-3):  ████░░░░░░░░░░░░░░░░ (Less CPU time)
+
+Note: Actual behavior depends on OS scheduler
+```
+
+
+
+-   **MIN_PRIORITY**: 1
+-   **NORM_PRIORITY**: 5 (default)
+-   **MAX_PRIORITY**: 10
+
+### 🧠 Analogy
+
+Think of  **hospital emergency room**:
+
+-   Priority 10: Critical emergency (heart attack)
+-   Priority 5: Moderate issue (broken bone)
+-   Priority 1: Minor issue (cold)
+
+### Example 1: Setting Priorities
+
+java
+
+```java
+class PriorityThread extends Thread {
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName() + 
+                          " Priority: " + Thread.currentThread().getPriority() +
+                          " - Started");
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(Thread.currentThread().getName() + " - " + i);
+        }
+    }
+}
+
+public class ThreadPriorityExample {
+    public static void main(String[] args) {
+        PriorityThread low = new PriorityThread();
+        PriorityThread medium = new PriorityThread();
+        PriorityThread high = new PriorityThread();
+        
+        low.setName("Low-Priority");
+        medium.setName("Medium-Priority");
+        high.setName("High-Priority");
+        
+        low.setPriority(Thread.MIN_PRIORITY);      // 1
+        medium.setPriority(Thread.NORM_PRIORITY);  // 5
+        high.setPriority(Thread.MAX_PRIORITY);     // 10
+        
+        low.start();
+        medium.start();
+        high.start();
+    }
+}
+```
+
+### Scheduler Behavior with Priorities
+
+```
+Thread Queue (Conceptual):
+
+HIGH PRIORITY (10):  [T3] ←───── Scheduler picks more often
+                      ↑
+                      │
+NORMAL PRIORITY (5): [T2] [T2]
+                      │
+                      ↓
+LOW PRIORITY (1):    [T1] [T1] [T1] ←── Picks less often
+
+Note: Priority is a HINT, not a guarantee!
+```
+
+### Example 2: Priority Inheritance
+
+java
+
+```java
+public class PriorityInheritanceExample {
+    public static void main(String[] args) {
+        Thread main = Thread.currentThread();
+        System.out.println("Main priority: " + main.getPriority());
+        
+        Thread child = new Thread(() -> {
+            System.out.println("Child priority: " + 
+                              Thread.currentThread().getPriority());
+            
+            Thread grandChild = new Thread(() -> {
+                System.out.println("GrandChild priority: " + 
+                                  Thread.currentThread().getPriority());
+            });
+            grandChild.start();
+        });
+        
+        child.start();
+    }
+}
+```
+
+**Output**:
+
+```
+Main priority: 5
+Child priority: 5
+GrandChild priority: 5
+```
+
+### Important Notes
+
+1.  **Platform Dependent**: Priority behavior varies by OS
+2.  **Not Guaranteed**: Higher priority doesn't guarantee more CPU time
+3.  **Avoid Relying**: Don't design programs that depend on priorities
+4.  **Default is Best**: Usually stick with NORM_PRIORITY
+
+----------
+
+## 11. Daemon Threads
+
+### What are Daemon Threads?
+
+Background threads that provide services to user threads. JVM exits when only daemon threads remain.
+
+Daemon threads are service threads that run in the background. JVM terminates when only daemon threads remain.
+
+### 🧠 Analogy
+
+Think of  **building staff**:
+
+-   **User Threads**: Employees doing actual work
+-   **Daemon Threads**: Security guards, cleaners
+-   When all employees leave (user threads end), guards also leave (daemon threads terminated)
+
+Think of daemon threads as  **background maintenance staff**:
+
+-   Regular threads: Essential workers (store closes when they leave)
+-   Daemon threads: Janitors (they leave when store closes)
+
+### Comparison
+
+```
+User Threads (Default):     Daemon Threads:
+┌──────────────┐           ┌──────────────┐
+│              │           │              │
+│  Essential   │           │  Background  │
+│   Workers    │           │   Services   │
+│              │           │              │
+│ JVM waits    │           │ JVM doesn't  │
+│ for them to  │           │ wait, kills  │
+│   complete   │           │ when done    │
+│              │           │              │
+└──────────────┘           └──────────────┘
+```
+
+
+### Example 1: Basic Daemon Thread
+
+java
+
+```java
+class DaemonWorker extends Thread {
+    @Override
+    public void run() {
+        if (Thread.currentThread().isDaemon()) {
+            System.out.println("Daemon thread working...");
+        } else {
+            System.out.println("User thread working...");
+        }
+        
+        for (int i = 1; i <= 10; i++) {
+            try {
+                Thread.sleep(500);
+                System.out.println(Thread.currentThread().getName() + " - " + i);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+public class DaemonExample {
+    public static void main(String[] args) {
+        DaemonWorker daemon = new DaemonWorker();
+        DaemonWorker user = new DaemonWorker();
+        
+        daemon.setDaemon(true); // Must be set before start()
+        daemon.setName("Daemon-Thread");
+        user.setName("User-Thread");
+        
+        daemon.start();
+        user.start();
+        
+        System.out.println("Main thread ending...");
+    }
+}
+```
+
+**Output**  (daemon thread may terminate abruptly):
+
+```
+Main thread ending...
+Daemon thread working...
+User thread working...
+Daemon-Thread - 1
+User-Thread - 1
+User-Thread - 2
+Daemon-Thread - 2
+... (daemon stops when user thread completes)
+```
+
+**Common Use Cases:**
+
+-   Garbage Collection
+-   Finalizer threads
+-   Signal dispatcher
+-   Background monitoring
+
+**Important:**
+
+-   Must call  `setDaemon(true)`  BEFORE  `start()`
+-   Can't convert running thread to daemon
+
+----------
+
+## 13. Thread Pool in Java
+
+### Concept
+
+A thread pool manages a collection of reusable threads to execute multiple tasks efficiently.
+
+### Analogy
+
+Like a  **taxi service**:
+
+-   **Without pool**: Hire new taxi for each trip (expensive)
+-   **With pool**: Fleet of taxis waiting, reuse same taxis (efficient)
+
+### Architecture
+
+```
+Thread Pool:
+┌────────────────────────────────────┐
+│         Task Queue                 │
+│  [Task1][Task2][Task3][Task4]...  │
+└────────────────────────────────────┘
+            ↓  ↓  ↓
+┌──────────────────────────────────┐
+│  Thread Pool (Fixed Size = 3)    │
+│  ┌────────┐ ┌────────┐ ┌────────┐│
+│  │Thread 1│ │Thread 2│ │Thread 3││
+│  └────────┘ └────────┘ └────────┘│
+└──────────────────────────────────┘
+       ↓           ↓           ↓
+   Execute     Execute     Execute
+```
+
+### Example
+
+java
+
+```java
+import java.util.concurrent.*;
+
+public class ThreadPoolDemo {
+    public static void main(String[] args) {
+        // Create thread pool with 3 threads
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+        
+        // Submit 6 tasks
+        for (int i = 1; i <= 6; i++) {
+            final int taskId = i;
+            executor.submit(() -> {
+                System.out.println("Task " + taskId + 
+                    " started by " + Thread.currentThread().getName());
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Task " + taskId + " completed");
+            });
+        }
+        
+        // Shutdown pool
+        executor.shutdown();
+        
+        try {
+            if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+        }
+        
+        System.out.println("All tasks completed");
+    }
+}
+```
+
+### Types of Thread Pools
+
+java
+
+```java
+public class ThreadPoolTypes {
+    public static void main(String[] args) {
+        // 1. Fixed Thread Pool - Fixed number of threads
+        ExecutorService fixed = Executors.newFixedThreadPool(5);
+        
+        // 2. Cached Thread Pool - Creates threads as needed
+        ExecutorService cached = Executors.newCachedThreadPool();
+        
+        // 3. Single Thread Executor - Only one thread
+        ExecutorService single = Executors.newSingleThreadExecutor();
+        
+        // 4. Scheduled Thread Pool - For delayed/periodic tasks
+        ScheduledExecutorService scheduled = 
+            Executors.newScheduledThreadPool(2);
+        
+        // Example: Schedule task after 3 seconds
+        scheduled.schedule(() -> {
+            System.out.println("Delayed task executed");
+        }, 3, TimeUnit.SECONDS);
+        
+        // Example: Periodic task every 2 seconds
+        scheduled.scheduleAtFixedRate(() -> {
+            System.out.println("Periodic task: " + System.currentTimeMillis());
+        }, 0, 2, TimeUnit.SECONDS);
+        
+        // Cleanup
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        scheduled.shutdown();
+    }
+}
+```
+
+**Benefits:**
+
+-   Reduces thread creation overhead
+-   Better resource management
+-   Improved performance
+-   Task queuing
+
+----------
+
+## 14. ThreadGroup in Java
+
+### Concept
+
+ThreadGroup represents a set of threads that can be managed as a single unit.
+
+### Analogy
+
+Like  **organizing employees into departments**:
+
+-   ThreadGroup = Department
+-   Threads = Employees
+-   Can manage all employees in a department together
+
+### Hierarchy
+
+```
+System ThreadGroup (root)
+    │
+    ├─→ main ThreadGroup
+    │       ├─→ Thread1
+    │       ├─→ Thread2
+    │       └─→ SubGroup1
+    │               ├─→ Thread3
+    │               └─→ Thread4
+    │
+    └─→ Other System Groups
+```
+
+### Example
+
+java
+
+```java
+public class ThreadGroupDemo {
+    public static void main(String[] args) {
+        // Get current thread group
+        ThreadGroup mainGroup = Thread.currentThread().getThreadGroup();
+        System.out.println("Main group: " + mainGroup.getName());
+        System.out.println("Parent group: " + mainGroup.getParent().getName());
+        
+        // Create custom thread group
+        ThreadGroup workerGroup = new ThreadGroup("Worker-Group");
+        ThreadGroup dbGroup = new ThreadGroup(workerGroup, "Database-Group");
+        
+        // Create threads in groups
+        Thread t1 = new Thread(workerGroup, () -> {
+            System.out.println(Thread.currentThread().getName() + 
+                " in " + Thread.currentThread().getThreadGroup().getName());
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }, "Worker-1");
+        
+        Thread t2 = new Thread(workerGroup, () -> {
+            System.out.println(Thread.currentThread().getName() + 
+                " in " + Thread.currentThread().getThreadGroup().getName());
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }, "Worker-2");
+        
+        Thread t3 = new Thread(dbGroup, () -> {
+            System.out.println(Thread.currentThread().getName() + 
+                " in " + Thread.currentThread().getThreadGroup().getName());
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }, "DB-Worker-1");
+        
+        t1.start();
+        t2.start();
+        t3.start();
+        
+        // Get group information
+        System.out.println("\nWorker Group Info:");
+        System.out.println("Active threads: " + workerGroup.activeCount());
+        System.out.println("Active groups: " + workerGroup.activeGroupCount());
+        
+        // List all threads in group
+        System.out.println("\nListing all threads:");
+        workerGroup.list();
+        
+        // Interrupt all threads in group
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+```
 
