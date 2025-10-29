@@ -3105,3 +3105,999 @@ xml
         </encoder>
     </appender>
   ```  
+
+### Centralized Logging (ELK Stack)
+
+**Components:**
+
+-   **E**lasticsearch: Stores logs
+-   **L**ogstash: Processes logs
+-   **K**ibana: Visualizes logs
+
+**Alternative: EFK Stack** (Fluentd instead of Logstash)
+
+**Logback Configuration (logback-spring.xml):**
+
+xml
+
+```xml
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"service":"${spring.application.name}"}</customFields>
+        </encoder>
+    </appender>
+    
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>localhost:5000</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"service":"${spring.application.name}"}</customFields>
+        </encoder>
+    </appender>
+    
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="LOGSTASH"/>
+    </root>
+</configuration>
+```
+
+**Structured Logging Best Practices:**
+
+java
+
+```java
+@Service
+@Slf4j
+public class OrderServiceImpl {
+    
+    public OrderResponseDTO createOrder(OrderRequestDTO request) {
+        // Use structured logging with MDC (Mapped Diagnostic Context)
+        MDC.put("userId", request.getUserId().toString());
+        MDC.put("restaurantId", request.getRestaurantId().toString());
+        
+        try {
+            log.info("Creating order", 
+                kv("totalAmount", request.getTotalAmount()),
+                kv("itemCount", request.getItems().size()));
+            
+            Order order = processOrder(request);
+            
+            log.info("Order created successfully", 
+                kv("orderId", order.getId()),
+                kv("status", order.getStatus()));
+            
+            return mapToDTO(order);
+        } catch (Exception e) {
+            log.error("Order creation failed", 
+                kv("error", e.getMessage()), e);
+            throw e;
+        } finally {
+            MDC.clear();
+        }
+    }
+}
+```
+
+**Docker Compose for ELK:**
+
+yaml
+
+```yaml
+version: '3'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+  
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - "5000:5000"
+    depends_on:
+      - elasticsearch
+  
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+```
+
+**Logstash Configuration (logstash.conf):**
+
+conf
+
+```conf
+input {
+  tcp {
+    port => 5000
+    codec => json
+  }
+}
+
+filter {
+  # Parse JSON logs
+  if [message] =~ /^\{.*\}$/ {
+    json {
+      source => "message"
+    }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["elasticsearch:9200"]
+    index => "microservices-logs-%{+YYYY.MM.dd}"
+  }
+}
+```
+
+----------
+
+## 10. Deployment and Scaling {#deployment}
+
+### Dockerization
+
+**Dockerfile (Multi-stage build):**
+
+dockerfile
+
+```dockerfile
+# Stage 1: Build
+FROM maven:3.9-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Stage 2: Runtime
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+
+# Add non-root user for security
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s \
+  CMD wget --quiet --tries=1 --spider http://localhost:8081/actuator/health || exit 1
+
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+```
+
+**Build and Run:**
+
+bash
+
+```bash
+# Build image
+docker build -t food-delivery/user-service:1.0 .
+
+# Run container
+docker run -d \
+  --name user-service \
+  -p 8081:8081 \
+  -e SPRING_PROFILES_ACTIVE=prod \
+  -e DB_HOST=postgres \
+  -e DB_PASSWORD=secret \
+  food-delivery/user-service:1.0
+```
+
+**Docker Compose (Complete Setup):**
+
+yaml
+
+```yaml
+version: '3.8'
+
+services:
+  # Infrastructure Services
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+  
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+  
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+  
+  # Spring Boot Services
+  eureka-server:
+    build: ./eureka-server
+    ports:
+      - "8761:8761"
+  
+  config-server:
+    build: ./config-server
+    ports:
+      - "8888:8888"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+  
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8888
+    depends_on:
+      - eureka-server
+      - config-server
+  
+  user-service:
+    build: ./user-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/user_db
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - postgres
+      - eureka-server
+  
+  restaurant-service:
+    build: ./restaurant-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/restaurant_db
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - postgres
+      - eureka-server
+  
+  order-service:
+    build: ./order-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/order_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - postgres
+      - kafka
+      - eureka-server
+  
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/payment_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - postgres
+      - kafka
+      - eureka-server
+  
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/notification_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - mongodb
+      - kafka
+      - eureka-server
+
+volumes:
+  postgres_data:
+  mongo_data:
+```
+
+**Run Everything:**
+
+bash
+
+```bash
+docker-compose up -d
+```
+
+----------
+
+### Kubernetes Deployment
+
+**Why Kubernetes?**
+
+-   Auto-scaling (HPA - Horizontal Pod Autoscaler)
+-   Self-healing (restart failed containers)
+-   Load balancing
+-   Rolling updates
+-   Service discovery
+
+**Deployment YAML (user-service-deployment.yaml):**
+
+yaml
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  labels:
+    app: user-service
+spec:
+  replicas: 3  # Run 3 instances
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+      - name: user-service
+        image: food-delivery/user-service:1.0
+        ports:
+        - containerPort: 8081
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: url
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: password
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8081
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8081
+          initialDelaySeconds: 30
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  selector:
+    app: user-service
+  ports:
+  - port: 8081
+    targetPort: 8081
+  type: ClusterIP  # Internal service
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: user-service-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: user-service
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+```
+
+**ConfigMap for Configuration:**
+
+yaml
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-service-config
+data:
+  application.yml: |
+    server:
+      port: 8081
+    spring:
+      application:
+        name: user-service
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,info,metrics
+```
+
+**Secret for Sensitive Data:**
+
+yaml
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-credentials
+type: Opaque
+data:
+  url: amRiYzpwb3N0Z3Jlc3FsOi8vcG9zdGdyZXM6NTQzMi91c2VyX2Ri  # base64 encoded
+  password: c2VjcmV0cGFzc3dvcmQ=  # base64 encoded
+```
+
+**Ingress for External Access:**
+
+yaml
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-gateway-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: api.fooddelivery.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-gateway
+            port:
+              number: 8080
+```
+
+**Deploy to Kubernetes:**
+
+bash
+
+```bash
+# Create namespace
+kubectl create namespace food-delivery
+
+# Apply configurations
+kubectl apply -f user-service-deployment.yaml -n food-delivery
+
+# Check status
+kubectl get pods -n food-delivery
+kubectl get services -n food-delivery
+kubectl get hpa -n food-delivery
+
+# View logs
+kubectl logs -f deployment/user-service -n food-delivery
+
+# Scale manually
+kubectl scale deployment user-service --replicas=5 -n food-delivery
+```
+
+----------
+
+### AWS Deployment Architecture
+
+**High-Level Architecture:**
+
+```
+Internet
+    ↓
+Application Load Balancer (ALB)
+    ↓
+API Gateway (ECS Fargate)
+    ↓
+┌─────────────┬──────────────┬──────────────┐
+│ User Service│Order Service │Payment Service│
+│ (ECS Task)  │ (ECS Task)   │ (ECS Task)    │
+└─────┬───────┴──────┬───────┴──────┬────────┘
+      ↓              ↓              ↓
+┌─────────────┬──────────────┬──────────────┐
+│   RDS       │   RDS        │    RDS       │
+│ PostgreSQL  │ PostgreSQL   │ PostgreSQL   │
+└─────────────┴──────────────┴──────────────┘
+
+Amazon MSK (Managed Kafka)
+    ↑
+    └── All services publish/consume events
+
+Amazon ElastiCache (Redis) - Session/Cache
+Amazon S3 - Static assets, logs
+Amazon CloudWatch - Logs, Metrics, Alarms
+AWS X-Ray - Distributed tracing
+```
+
+**ECS Task Definition (user-service-task.json):**
+
+json
+
+```json
+{
+  "family": "user-service",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "containerDefinitions": [
+    {
+      "name": "user-service",
+      "image": "123456789.dkr.ecr.us-east-1.amazonaws.com/user-service:1.0",
+      "portMappings": [
+        {
+          "containerPort": 8081,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "SPRING_PROFILES_ACTIVE",
+          "value": "prod"
+        },
+        {
+          "name": "EUREKA_CLIENT_SERVICEURL_DEFAULTZONE",
+          "value": "http://eureka-server.internal:8761/eureka/"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "DB_PASSWORD",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:123456:secret:db-password"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/user-service",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": ["CMD-SHELL", "wget --spider http://localhost:8081/actuator/health || exit 1"],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3
+      }
+    }
+  ]
+}
+```
+
+**Infrastructure as Code (Terraform):**
+
+hcl
+
+```hcl
+# VPC and Networking
+resource "aws_vpc" "main" {
+  cidr_block = "10.0.0.0/16"
+  enable_dns_hostnames = true
+  enable_dns_support = true
+}
+
+# ECS Cluster
+resource "aws_ecs_cluster" "microservices" {
+  name = "food-delivery-cluster"
+}
+
+# Application Load Balancer
+resource "aws_lb" "api" {
+  name               = "food-delivery-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb.id]
+  subnets            = aws_subnet.public[*].id
+}
+
+# ECS Service
+resource "aws_ecs_service" "user_service" {
+  name            = "user-service"
+  cluster         = aws_ecs_cluster.microservices.id
+  task_definition = aws_ecs_task_definition.user_service.arn
+  desired_count   = 3
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets         = aws_subnet.private[*].id
+    security_groups = [aws_security_group.user_service.id]
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.user_service.arn
+    container_name   = "user-service"
+    container_port   = 8081
+  }
+
+  # Auto-scaling
+  depends_on = [aws_lb_listener.api]
+}
+
+# Auto Scaling
+resource "aws_appautoscaling_target" "user_service" {
+  max_capacity       = 10
+  min_capacity       = 2
+  resource_id        = "service/${aws_ecs_cluster.microservices.name}/${aws_ecs_service.user_service.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "user_service_cpu" {
+  name               = "user-service-cpu-autoscaling"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.user_service.resource_id
+  scalable_dimension = aws_appautoscaling_target.user_service.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.user_service.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    target_value       = 70.0
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+  }
+}
+
+# RDS PostgreSQL
+resource "aws_db_instance" "user_db" {
+  identifier              = "user-db"
+  engine                  = "postgres"
+  engine_version          = "15.3"
+  instance_class          = "db.t3.medium"
+  allocated_storage       = 100
+  storage_type            = "gp3"
+  db_name                 = "user_db"
+  username                = "postgres"
+  password                = var.db_password
+  vpc_security_group_ids  = [aws_security_group.rds.id]
+  db_subnet_group_name    = aws_db_subnet_group.main.name
+  multi_az                = true
+  backup_retention_period = 7
+  skip_final_snapshot     = false
+}
+```
+
+----------
+
+## 11. Best Practices and Conclusion {#best-practices}
+
+### Microservices Best Practices
+
+#### 1. Design Principles
+
+**Single Responsibility:**
+
+-   Each service should do ONE thing well
+-   ❌ Bad: OrderAndPaymentService
+-   ✅ Good: OrderService + PaymentService
+
+**Loose Coupling:**
+
+-   Services should be independent
+-   Use events for communication when possible
+-   Avoid direct database access across services
+
+**High Cohesion:**
+
+-   Related functionality should be together
+-   Don't split a single business capability across services
+
+#### 2. API Design
+
+**Versioning:**
+
+java
+
+```java
+@RestController
+@RequestMapping("/api/v1/users")  // Version in URL
+public class UserController {
+    // APIs
+}
+
+// Or use header-based versioning
+@GetMapping(value = "/users", headers = "API-Version=1")
+```
+
+**Pagination:**
+
+java
+
+```java
+@GetMapping("/orders")
+public Page<OrderDTO> getOrders(
+    @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "20") int size,
+    @RequestParam(defaultValue = "orderTime,desc") String sort) {
+    
+    Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+    return orderService.getOrders(pageable);
+}
+```
+
+**Error Handling:**
+
+java
+
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(
+            HttpStatus.NOT_FOUND.value(),
+            ex.getMessage(),
+            LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+    
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(ValidationException ex) {
+        ErrorResponse error = new ErrorResponse(
+            HttpStatus.BAD_REQUEST.value(),
+            ex.getMessage(),
+            LocalDateTime.now()
+        );
+        return ResponseEntity.badRequest().body(error);
+    }
+}
+```
+
+#### 3. Security
+
+**JWT Authentication:**
+
+java
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+            .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        
+        return http.build();
+    }
+}
+```
+
+**Secure Secrets:**
+
+-   Never hardcode secrets in code
+-   Use environment variables or secret managers (AWS Secrets Manager, HashiCorp Vault)
+-   Rotate credentials regularly
+
+#### 4. Data Management
+
+**Database Migrations (Flyway):**
+
+sql
+
+```sql
+-- V1__Create_users_table.sql
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- V2__Add_phone_to_users.sql
+ALTER TABLE users ADD COLUMN phone_number VARCHAR(20);
+```
+
+**Caching Strategy:**
+
+java
+
+```java
+@Service
+public class RestaurantServiceImpl {
+    
+    @Cacheable(value = "restaurants", key = "#id")
+    public RestaurantDTO getRestaurantById(Long id) {
+        // Expensive database call
+        return restaurantRepository.findById(id)
+                .map(this::mapToDTO)
+                .orElseThrow();
+    }
+    
+    @CacheEvict(value = "restaurants", key = "#id")
+    public void updateRestaurant(Long id, RestaurantDTO dto) {
+        // Update restaurant
+    }
+}
+```
+
+#### 5. Performance Optimization
+
+**Connection Pooling:**
+
+yaml
+
+```yaml
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+```
+
+**Async Processing:**
+
+java
+
+```java
+@Service
+public class NotificationService {
+    
+    @Async
+    public CompletableFuture<Void> sendEmailAsync(String email, String message) {
+        // Send email without blocking
+        sendEmail(email, message);
+        return CompletableFuture.completedFuture(null);
+    }
+}
+```
+
+**Bulk Operations:**
+
+java
+
+```java
+// ❌ Bad: N+1 queries
+for (Long id : orderIds) {
+    Order order = orderRepository.findById(id);
+    process(order);
+}
+
+// ✅ Good: Single query
+List<Order> orders = orderRepository.findAllById(orderIds);
+orders.forEach(this::process);
+```
+
+#### 6. Monitoring and Alerts
+
+**Key Metrics to Monitor:**
+
+-   **Golden Signals:**
+    -   Latency: How long does it take?
+    -   Traffic: How much demand?
+    -   Errors: What's failing?
+    -   Saturation: How full are we?
+
+**Alert Rules (Prometheus):**
+
+yaml
+
+```yaml
+groups:
+- name: microservices_alerts
+  rules:
+  - alert: HighErrorRate
+    expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High error rate detected"
+  
+  - alert: HighResponseTime
+    expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "95th percentile response time > 1s"
+```
+
+----------
+
+### Common Pitfalls and Solutions
+<img width="815" height="520" alt="image" src="https://github.com/user-attachments/assets/193df50d-e5d7-4df8-810c-28c92ded2d49" />
+
+When NOT to Use Microservices
+Don't use microservices if:
+
+Small team (< 5 developers)
+Simple application
+Tight deadlines
+No DevOps expertise
+Low traffic/scale requirements
+
+Start with a Monolith when:
+
+MVP or proof of concept
+Unclear domain boundaries
+Limited resources
+Need fast iteration
+
+Evolution Path:
+Monolith → Modular Monolith → Microservices
+
+Summary: Key Takeaways
+
+Architecture: Microservices = Small, independent, focused services
+Communication: Mix of REST (sync) and Kafka (async)
+Infrastructure: API Gateway, Eureka, Config Server are essential
+Database: Database per service for independence
+Resilience: Circuit breakers, retries, fallbacks prevent cascading failures
+Observability: Logs (ELK), Metrics (Prometheus), Traces (Zipkin) are crucial
+Testing: Test pyramid - many unit, some integration, few E2E
+Deployment: Docker + Kubernetes for orchestration and scaling
+SAGA: For distributed transactions across services
+Best Practices: Start simple, evolve, monitor everything
+
