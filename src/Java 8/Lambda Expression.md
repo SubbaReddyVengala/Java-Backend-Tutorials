@@ -812,3 +812,467 @@ Eve (Age: 32, Salary: 90000.00, Dept: IT)
 Lambda expressions transform Java from a verbose, ceremony-heavy language into a more expressive, functional programming language. They're not just syntactic sugar—they represent a fundamental shift in how we write Java code.
 
 **Remember**: A lambda is just a shortcut for writing a function that you need once. Master them, and your Java code will become cleaner, more readable, and more maintainable!
+
+
+## 📖 Lambda Syntax Variations
+
+### 1. No Parameters
+
+java
+
+```java
+Runnable r = () -> System.out.println("Hello Lambda!");
+r.run(); // Output: Hello Lambda!
+```
+
+### 2. Single Parameter (Parentheses Optional)
+
+java
+
+```java
+Consumer<String> print = message -> System.out.println(message);
+print.accept("Hello"); // Output: Hello
+
+// Or with parentheses
+Consumer<String> print2 = (message) -> System.out.println(message);
+```
+
+### 3. Multiple Parameters
+
+java
+
+```java
+BiFunction<Integer, Integer, Integer> add = (a, b) -> a + b;
+System.out.println(add.apply(10, 20)); // 30
+```
+
+### 4. Multiple Statements (Requires Braces)
+
+java
+
+```java
+Comparator<String> comp = (s1, s2) -> {
+    System.out.println("Comparing: " + s1 + " and " + s2);
+    return s1.compareTo(s2);
+};
+```
+
+### 5. With Type Declarations
+
+java
+
+```java
+BiFunction<Integer, Integer, Integer> multiply = (Integer a, Integer b) -> a * b;
+```
+
+## 🎨 Built-in Functional Interfaces
+
+### 1. Predicate<T>  - Boolean Testing
+
+**Memory Trick**: "Predicate PREDICTs true/false"
+
+java
+
+```java
+Predicate<Integer> isEven = num -> num % 2 == 0;
+System.out.println(isEven.test(4));  // true
+System.out.println(isEven.test(7));  // false
+
+// Real-world example: Filtering
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6);
+numbers.stream()
+       .filter(n -> n % 2 == 0)
+       .forEach(System.out::println); // 2, 4, 6
+```
+
+### 2. Function<T, R> - Transformation
+
+**Memory Trick**: "Function transforms input to output"
+
+java
+
+```java
+Function<String, Integer> stringLength = s -> s.length();
+System.out.println(stringLength.apply("Hello")); // 5
+
+// Chaining functions
+Function<Integer, Integer> square = x -> x * x;
+Function<Integer, Integer> addTen = x -> x + 10;
+System.out.println(square.andThen(addTen).apply(5)); // 35 (25 + 10)
+```
+
+### 3. Consumer<T>  - Consumes Input
+
+**Memory Trick**: "Consumer CONSUMES but returns nothing"
+
+java
+
+```java
+Consumer<String> printer = msg -> System.out.println(msg);
+printer.accept("Hello World!"); // Hello World!
+
+// Multiple consumers
+Consumer<String> upperCase = s -> System.out.println(s.toUpperCase());
+Consumer<String> lowerCase = s -> System.out.println(s.toLowerCase());
+printer.andThen(upperCase).accept("Java"); // Java\nJAVA
+```
+
+### 4. Supplier<T>  - Supplies/Produces Value
+
+**Memory Trick**: "Supplier SUPPLIES value from nowhere"
+
+java
+
+```java
+Supplier<Double> randomValue = () -> Math.random();
+System.out.println(randomValue.get()); // Random number
+
+Supplier<LocalDateTime> currentTime = () -> LocalDateTime.now();
+System.out.println(currentTime.get()); // Current timestamp
+```
+
+### 5. BiFunction<T, U, R> - Two Inputs, One Output
+
+java
+
+```java
+BiFunction<Integer, Integer, String> sumToString = 
+    (a, b) -> "Sum is: " + (a + b);
+System.out.println(sumToString.apply(5, 3)); // Sum is: 8
+```
+
+## 🔄 Method References - Lambda Shorthand
+
+**Analogy**: If Lambda is a recipe card, Method Reference is saying "Use Recipe #5 from page 10"
+
+### Types of Method References
+
+#### 1. Static Method Reference
+
+java
+
+```java
+// Lambda
+Function<String, Integer> parser1 = s -> Integer.parseInt(s);
+
+// Method Reference
+Function<String, Integer> parser2 = Integer::parseInt;
+System.out.println(parser2.apply("123")); // 123
+```
+
+#### 2. Instance Method Reference
+
+java
+
+```java
+String str = "Hello";
+
+// Lambda
+Supplier<String> upper1 = () -> str.toUpperCase();
+
+// Method Reference
+Supplier<String> upper2 = str::toUpperCase;
+System.out.println(upper2.get()); // HELLO
+```
+
+#### 3. Constructor Reference
+
+java
+
+```java
+// Lambda
+Supplier<List<String>> listSupplier1 = () -> new ArrayList<>();
+
+// Constructor Reference
+Supplier<List<String>> listSupplier2 = ArrayList::new;
+```
+
+## 💡 Practical Examples
+
+### Example 1: Sorting with Lambdas
+
+java
+
+```java
+class Employee {
+    String name;
+    int salary;
+    
+    Employee(String name, int salary) {
+        this.name = name;
+        this.salary = salary;
+    }
+}
+
+List<Employee> employees = Arrays.asList(
+    new Employee("Alice", 50000),
+    new Employee("Bob", 60000),
+    new Employee("Charlie", 45000)
+);
+
+// Sort by salary
+employees.sort((e1, e2) -> e1.salary - e2.salary);
+
+// Sort by name
+employees.sort((e1, e2) -> e1.name.compareTo(e2.name));
+```
+
+### Example 2: Thread Creation
+
+java
+
+```java
+// Old way
+Thread thread1 = new Thread(new Runnable() {
+    @Override
+    public void run() {
+        System.out.println("Old way");
+    }
+});
+
+// Lambda way
+Thread thread2 = new Thread(() -> System.out.println("Lambda way"));
+thread2.start();
+```
+
+### Example 3: Custom Functional Interface
+
+java
+
+```java
+@FunctionalInterface
+interface StringOperation {
+    String apply(String s);
+}
+
+class StringProcessor {
+    public static String process(String input, StringOperation operation) {
+        return operation.apply(input);
+    }
+}
+
+// Usage
+String result1 = StringProcessor.process("hello", s -> s.toUpperCase());
+System.out.println(result1); // HELLO
+
+String result2 = StringProcessor.process("hello", s -> new StringBuilder(s).reverse().toString());
+System.out.println(result2); // olleh
+```
+
+## 🎓 Interview Problems with Answers
+
+### Problem 1: Filter and Transform
+
+**Question**: Given a list of integers, filter even numbers and square them.
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8);
+
+List<Integer> result = numbers.stream()
+    .filter(n -> n % 2 == 0)
+    .map(n -> n * n)
+    .collect(Collectors.toList());
+
+System.out.println(result); // [4, 16, 36, 64]
+```
+
+**Explanation**:
+
+-   `filter()`  uses Predicate to keep only even numbers
+-   `map()`  uses Function to transform each number
+
+### Problem 2: Find Maximum Salary
+
+**Question**: Find the employee with the highest salary.
+
+java
+
+```java
+List<Employee> employees = Arrays.asList(
+    new Employee("Alice", 50000),
+    new Employee("Bob", 60000),
+    new Employee("Charlie", 45000)
+);
+
+Optional<Employee> maxSalaryEmp = employees.stream()
+    .max((e1, e2) -> e1.salary - e2.salary);
+
+maxSalaryEmp.ifPresent(e -> System.out.println(e.name)); // Bob
+```
+
+### Problem 3: Group By and Count
+
+**Question**: Count how many employees have salary > 50000.
+
+java
+
+```java
+long count = employees.stream()
+    .filter(e -> e.salary > 50000)
+    .count();
+
+System.out.println(count); // 1
+```
+
+### Problem 4: Custom Comparator
+
+**Question**: Sort strings by length, then alphabetically.
+
+java
+
+```java
+List<String> words = Arrays.asList("apple", "pie", "banana", "cat");
+
+words.sort((s1, s2) -> {
+    int lengthCompare = Integer.compare(s1.length(), s2.length());
+    return lengthCompare != 0 ? lengthCompare : s1.compareTo(s2);
+});
+
+System.out.println(words); // [cat, pie, apple, banana]
+```
+
+### Problem 5: Calculate Average
+
+**Question**: Calculate average salary using lambda.
+
+java
+
+```java
+double avgSalary = employees.stream()
+    .mapToInt(e -> e.salary)
+    .average()
+    .orElse(0.0);
+
+System.out.println("Average: " + avgSalary); // 51666.67
+```
+
+### Problem 6: Remove Duplicates
+
+**Question**: Remove duplicate numbers and print them.
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 2, 3, 4, 4, 5);
+
+numbers.stream()
+    .distinct()
+    .forEach(n -> System.out.print(n + " ")); // 1 2 3 4 5
+```
+
+### Problem 7: String Manipulation
+
+**Question**: Convert list of strings to uppercase and join with comma.
+
+java
+
+```java
+List<String> names = Arrays.asList("alice", "bob", "charlie");
+
+String result = names.stream()
+    .map(String::toUpperCase)
+    .collect(Collectors.joining(", "));
+
+System.out.println(result); // ALICE, BOB, CHARLIE
+```
+
+### Problem 8: Parallel Processing
+
+**Question**: Check if any number is greater than 100 in a large list.
+
+java
+
+```java
+List<Integer> bigList = IntStream.range(1, 1000).boxed().collect(Collectors.toList());
+
+boolean anyGreaterThan100 = bigList.parallelStream()
+    .anyMatch(n -> n > 100);
+
+System.out.println(anyGreaterThan100); // true
+```
+
+### Problem 9: Custom Functional Interface
+
+**Question**: Create a validator using lambda.
+
+java
+
+```java
+@FunctionalInterface
+interface Validator<T> {
+    boolean validate(T t);
+}
+
+Validator<String> emailValidator = email -> 
+    email != null && email.contains("@") && email.contains(".");
+
+System.out.println(emailValidator.validate("test@example.com")); // true
+System.out.println(emailValidator.validate("invalid")); // false
+```
+
+### Problem 10: Reduce Operation
+
+**Question**: Find product of all numbers using reduce.
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+int product = numbers.stream()
+    .reduce(1, (a, b) -> a * b);
+
+System.out.println(product); // 120
+```
+
+## 🚀 Advanced Concepts
+
+### 1. Closure in Lambda
+
+**A lambda can access variables from enclosing scope (must be effectively final)**
+
+java
+
+```java
+int factor = 10;  // Effectively final
+Function<Integer, Integer> multiplier = num -> num * factor;
+System.out.println(multiplier.apply(5)); // 50
+
+// factor = 20; // Error: Cannot modify
+```
+
+### 2. Lambda with Exception Handling
+
+java
+
+```java
+@FunctionalInterface
+interface ThrowingFunction<T, R> {
+    R apply(T t) throws Exception;
+}
+
+ThrowingFunction<String, Integer> parser = s -> {
+    try {
+        return Integer.parseInt(s);
+    } catch (NumberFormatException e) {
+        return 0;
+    }
+};
+```
+
+### 3. Combining Predicates
+
+java
+
+```java
+Predicate<Integer> isEven = n -> n % 2 == 0;
+Predicate<Integer> isPositive = n -> n > 0;
+
+Predicate<Integer> evenAndPositive = isEven.and(isPositive);
+System.out.println(evenAndPositive.test(4));  // true
+System.out.println(evenAndPositive.test(-4)); // false
+```
+
+
