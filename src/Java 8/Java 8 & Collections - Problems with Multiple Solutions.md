@@ -4363,4 +4363,779 @@ System.out.println(maxArea(height)); // 49
 
 ----------
 
-## Problem 77: Move Zeroes to End
+## Problem 78: Majority Element (Appears > n/2 times)
+
+### Solution 1: Using HashMap
+
+java
+
+```java
+public int majorityElement(int[] nums) {
+    Map<Integer, Integer> frequency = new HashMap<>();
+    int majority = nums.length / 2;
+    
+    for (int num : nums) {
+        frequency.put(num, frequency.getOrDefault(num, 0) + 1);
+        if (frequency.get(num) > majority) {
+            return num;
+        }
+    }
+    
+    return -1;
+}
+```
+
+### Solution 2: Boyer-Moore Voting Algorithm (O(1) space)
+
+java
+
+```java
+public int majorityElement(int[] nums) {
+    int candidate = nums[0];
+    int count = 1;
+    
+    for (int i = 1; i < nums.length; i++) {
+        if (count == 0) {
+            candidate = nums[i];
+            count = 1;
+        } else if (nums[i] == candidate) {
+            count++;
+        } else {
+            count--;
+        }
+    }
+    
+    return candidate;
+}
+```
+
+### Solution 3: Using Streams
+
+java
+
+```java
+public int majorityElement(int[] nums) {
+    return Arrays.stream(nums)
+        .boxed()
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+        .entrySet().stream()
+        .filter(e -> e.getValue() > nums.length / 2)
+        .map(Map.Entry::getKey)
+        .findFirst()
+        .orElse(-1);
+}
+```
+
+### Solution 4: Sorting (O(n log n))
+
+java
+
+```java
+public int majorityElement(int[] nums) {
+    Arrays.sort(nums);
+    return nums[nums.length / 2];
+}
+```
+
+----------
+
+## Problem 79: Best Time to Buy and Sell Stock
+
+### Solution 1: Single Pass (One Transaction)
+
+java
+
+```java
+public int maxProfit(int[] prices) {
+    int minPrice = Integer.MAX_VALUE;
+    int maxProfit = 0;
+    
+    for (int price : prices) {
+        minPrice = Math.min(minPrice, price);
+        maxProfit = Math.max(maxProfit, price - minPrice);
+    }
+    
+    return maxProfit;
+}
+
+// Usage
+int[] prices = {7, 1, 5, 3, 6, 4};
+System.out.println(maxProfit(prices)); // 5 (buy at 1, sell at 6)
+```
+
+### Solution 2: Multiple Transactions Allowed
+
+java
+
+```java
+public int maxProfit(int[] prices) {
+    int maxProfit = 0;
+    
+    for (int i = 1; i < prices.length; i++) {
+        if (prices[i] > prices[i - 1]) {
+            maxProfit += prices[i] - prices[i - 1];
+        }
+    }
+    
+    return maxProfit;
+}
+```
+
+### Solution 3: Using Streams (One Transaction)
+
+java
+
+```java
+public int maxProfit(int[] prices) {
+    class State {
+        int minPrice;
+        int maxProfit;
+        
+        State(int minPrice, int maxProfit) {
+            this.minPrice = minPrice;
+            this.maxProfit = maxProfit;
+        }
+    }
+    
+    State result = Arrays.stream(prices)
+        .boxed()
+        .reduce(new State(Integer.MAX_VALUE, 0),
+            (state, price) -> new State(
+                Math.min(state.minPrice, price),
+                Math.max(state.maxProfit, price - state.minPrice)
+            ),
+            (s1, s2) -> s2);
+    
+    return result.maxProfit;
+}
+```
+
+----------
+
+## Problem 80: Convert Roman to Integer
+
+### Solution 1: Using HashMap
+
+java
+
+```java
+public int romanToInt(String s) {
+    Map<Character, Integer> map = Map.of(
+        'I', 1, 'V', 5, 'X', 10, 'L', 50,
+        'C', 100, 'D', 500, 'M', 1000
+    );
+    
+    int result = 0;
+    
+    for (int i = 0; i < s.length(); i++) {
+        int current = map.get(s.charAt(i));
+        int next = (i + 1 < s.length()) ? map.get(s.charAt(i + 1)) : 0;
+        
+        if (current < next) {
+            result -= current;
+        } else {
+            result += current;
+        }
+    }
+    
+    return result;
+}
+
+// Usage
+System.out.println(romanToInt("III")); // 3
+System.out.println(romanToInt("LVIII")); // 58
+System.out.println(romanToInt("MCMXCIV")); // 1994
+```
+
+### Solution 2: Using Switch Statement
+
+java
+
+```java
+public int romanToInt(String s) {
+    int result = 0;
+    int prevValue = 0;
+    
+    for (int i = s.length() - 1; i >= 0; i--) {
+        int value = switch (s.charAt(i)) {
+            case 'I' -> 1;
+            case 'V' -> 5;
+            case 'X' -> 10;
+            case 'L' -> 50;
+            case 'C' -> 100;
+            case 'D' -> 500;
+            case 'M' -> 1000;
+            default -> 0;
+        };
+        
+        if (value < prevValue) {
+            result -= value;
+        } else {
+            result += value;
+        }
+        
+        prevValue = value;
+    }
+    
+    return result;
+}
+```
+
+----------
+
+## Problem 81: Palindrome Permutation
+
+### Solution 1: Using HashMap
+
+java
+
+```java
+public boolean canPermutePalindrome(String s) {
+    Map<Character, Integer> frequency = new HashMap<>();
+    
+    for (char c : s.toCharArray()) {
+        frequency.put(c, frequency.getOrDefault(c, 0) + 1);
+    }
+    
+    int oddCount = 0;
+    for (int count : frequency.values()) {
+        if (count % 2 != 0) {
+            oddCount++;
+        }
+        if (oddCount > 1) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// Usage
+System.out.println(canPermutePalindrome("code")); // false
+System.out.println(canPermutePalindrome("aab")); // true (aba)
+System.out.println(canPermutePalindrome("carerac")); // true (racecar)
+```
+
+### Solution 2: Using Set
+
+java
+
+```java
+public boolean canPermutePalindrome(String s) {
+    Set<Character> set = new HashSet<>();
+    
+    for (char c : s.toCharArray()) {
+        if (!set.add(c)) {
+            set.remove(c);
+        }
+    }
+    
+    return set.size() <= 1;
+}
+```
+
+### Solution 3: Using Streams
+
+java
+
+```java
+public boolean canPermutePalindrome(String s) {
+    long oddCount = s.chars()
+        .mapToObj(c -> (char) c)
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+        .values().stream()
+        .filter(count -> count % 2 != 0)
+        .count();
+    
+    return oddCount <= 1;
+}
+```
+
+----------
+
+## Problem 82: Isomorphic Strings
+
+### Solution 1: Using Two HashMaps
+
+java
+
+```java
+public boolean isIsomorphic(String s, String t) {
+    if (s.length() != t.length()) return false;
+    
+    Map<Character, Character> mapS = new HashMap<>();
+    Map<Character, Character> mapT = new HashMap<>();
+    
+    for (int i = 0; i < s.length(); i++) {
+        char c1 = s.charAt(i);
+        char c2 = t.charAt(i);
+        
+        if (mapS.containsKey(c1)) {
+            if (mapS.get(c1) != c2) return false;
+        } else {
+            mapS.put(c1, c2);
+        }
+        
+        if (mapT.containsKey(c2)) {
+            if (mapT.get(c2) != c1) return false;
+        } else {
+            mapT.put(c2, c1);
+        }
+    }
+    
+    return true;
+}
+
+// Usage
+System.out.println(isIsomorphic("egg", "add")); // true
+System.out.println(isIsomorphic("foo", "bar")); // false
+System.out.println(isIsomorphic("paper", "title")); // true
+```
+
+### Solution 2: Using Arrays (For ASCII characters)
+
+java
+
+```java
+public boolean isIsomorphic(String s, String t) {
+    int[] mapS = new int[256];
+    int[] mapT = new int[256];
+    
+    for (int i = 0; i < s.length(); i++) {
+        char c1 = s.charAt(i);
+        char c2 = t.charAt(i);
+        
+        if (mapS[c1] != mapT[c2]) {
+            return false;
+        }
+        
+        mapS[c1] = i + 1;
+        mapT[c2] = i + 1;
+    }
+    
+    return true;
+}
+```
+
+----------
+
+## Problem 83: Shuffle an Array
+
+### Solution 1: Fisher-Yates Shuffle
+
+java
+
+```java
+class Solution {
+    private int[] original;
+    private Random random;
+    
+    public Solution(int[] nums) {
+        original = nums.clone();
+        random = new Random();
+    }
+    
+    public int[] reset() {
+        return original.clone();
+    }
+    
+    public int[] shuffle() {
+        int[] shuffled = original.clone();
+        
+        for (int i = shuffled.length - 1; i > 0; i--) {
+            int j = random.nextInt(i + 1);
+            int temp = shuffled[i];
+            shuffled[i] = shuffled[j];
+            shuffled[j] = temp;
+        }
+        
+        return shuffled;
+    }
+}
+```
+
+### Solution 2: Using Collections.shuffle()
+
+java
+
+```java
+class Solution {
+    private int[] original;
+    
+    public Solution(int[] nums) {
+        original = nums.clone();
+    }
+    
+    public int[] reset() {
+        return original.clone();
+    }
+    
+    public int[] shuffle() {
+        List<Integer> list = Arrays.stream(original)
+            .boxed()
+            .collect(Collectors.toList());
+        
+        Collections.shuffle(list);
+        
+        return list.stream()
+            .mapToInt(Integer::intValue)
+            .toArray();
+    }
+}
+```
+
+----------
+
+## Problem 84: Kth Smallest Element in BST
+
+### Solution 1: Inorder Traversal with Counter
+
+java
+
+```java
+class TreeNode {
+    int val;
+    TreeNode left, right;
+    TreeNode(int val) { this.val = val; }
+}
+
+public int kthSmallest(TreeNode root, int k) {
+    Stack<TreeNode> stack = new Stack<>();
+    TreeNode current = root;
+    int count = 0;
+    
+    while (current != null || !stack.isEmpty()) {
+        while (current != null) {
+            stack.push(current);
+            current = current.left;
+        }
+        
+        current = stack.pop();
+        count++;
+        
+        if (count == k) {
+            return current.val;
+        }
+        
+        current = current.right;
+    }
+    
+    return -1;
+}
+```
+
+### Solution 2: Recursive Inorder
+
+java
+
+```java
+public int kthSmallest(TreeNode root, int k) {
+    List<Integer> inorder = new ArrayList<>();
+    inorderTraversal(root, inorder);
+    return inorder.get(k - 1);
+}
+
+private void inorderTraversal(TreeNode node, List<Integer> result) {
+    if (node == null) return;
+    
+    inorderTraversal(node.left, result);
+    result.add(node.val);
+    inorderTraversal(node.right, result);
+}
+```
+
+----------
+
+## Problem 85: Serialize and Deserialize Binary Tree
+
+### Solution 1: Using Queue (Level Order)
+
+java
+
+```java
+public class Codec {
+    public String serialize(TreeNode root) {
+        if (root == null) return "";
+        
+        StringBuilder sb = new StringBuilder();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            
+            if (node == null) {
+                sb.append("null,");
+            } else {
+                sb.append(node.val).append(",");
+                queue.offer(node.left);
+                queue.offer(node.right);
+            }
+        }
+        
+        return sb.toString();
+    }
+    
+    public TreeNode deserialize(String data) {
+        if (data.isEmpty()) return null;
+        
+        String[] values = data.split(",");
+        TreeNode root = new TreeNode(Integer.parseInt(values[0]));
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        
+        int i = 1;
+        while (!queue.isEmpty() && i < values.length) {
+            TreeNode node = queue.poll();
+            
+            if (!values[i].equals("null")) {
+                node.left = new TreeNode(Integer.parseInt(values[i]));
+                queue.offer(node.left);
+            }
+            i++;
+            
+            if (i < values.length && !values[i].equals("null")) {
+                node.right = new TreeNode(Integer.parseInt(values[i]));
+                queue.offer(node.right);
+            }
+            i++;
+        }
+        
+        return root;
+    }
+}
+```
+
+----------
+
+## Problem 86: Design Twitter Feed
+
+### Solution 1: Basic Implementation
+
+java
+
+```java
+class Twitter {
+    private Map<Integer, Set<Integer>> followers;
+    private List<Tweet> tweets;
+    private int timestamp;
+    
+    class Tweet {
+        int userId;
+        int tweetId;
+        int time;
+        
+        Tweet(int userId, int tweetId, int time) {
+            this.userId = userId;
+            this.tweetId = tweetId;
+            this.time = time;
+        }
+    }
+    
+    public Twitter() {
+        followers = new HashMap<>();
+        tweets = new ArrayList<>();
+        timestamp = 0;
+    }
+    
+    public void postTweet(int userId, int tweetId) {
+        tweets.add(new Tweet(userId, tweetId, timestamp++));
+    }
+    
+    public List<Integer> getNewsFeed(int userId) {
+        Set<Integer> following = followers.getOrDefault(userId, new HashSet<>());
+        following.add(userId); // User follows themselves
+        
+        return tweets.stream()
+            .filter(tweet -> following.contains(tweet.userId))
+            .sorted(Comparator.comparingInt(t -> -t.time))
+            .limit(10)
+            .map(tweet -> tweet.tweetId)
+            .collect(Collectors.toList());
+    }
+    
+    public void follow(int followerId, int followeeId) {
+        followers.computeIfAbsent(followerId, k -> new HashSet<>()).add(followeeId);
+    }
+    
+    public void unfollow(int followerId, int followeeId) {
+        Set<Integer> following = followers.get(followerId);
+        if (following != null) {
+            following.remove(followeeId);
+        }
+    }
+}
+```
+
+----------
+
+## Problem 87: Group Shifted Strings
+
+### Solution 1: Using HashMap with Pattern
+
+java
+
+```java
+public List<List<String>> groupStrings(String[] strings) {
+    Map<String, List<String>> groups = new HashMap<>();
+    
+    for (String s : strings) {
+        String pattern = getPattern(s);
+        groups.computeIfAbsent(pattern, k -> new ArrayList<>()).add(s);
+    }
+    
+    return new ArrayList<>(groups.values());
+}
+
+private String getPattern(String s) {
+    StringBuilder pattern = new StringBuilder();
+    
+    for (int i = 1; i < s.length(); i++) {
+        int diff = s.charAt(i) - s.charAt(i - 1);
+        if (diff < 0) diff += 26;
+        pattern.append(diff).append(",");
+    }
+    
+    return pattern.toString();
+}
+
+// Usage
+String[] strings = {"abc", "bcd", "acef", "xyz", "az", "ba", "a", "z"};
+System.out.println(groupStrings(strings));
+// [[abc, bcd, xyz], [acef], [az, ba], [a, z]]
+```
+
+----------
+
+## Problem 88: Range Sum Query - Immutable
+
+### Solution 1: Prefix Sum Array
+
+java
+
+```java
+class NumArray {
+    private int[] prefixSum;
+    
+    public NumArray(int[] nums) {
+        prefixSum = new int[nums.length + 1];
+        for (int i = 0; i < nums.length; i++) {
+            prefixSum[i + 1] = prefixSum[i] + nums[i];
+        }
+    }
+    
+    public int sumRange(int left, int right) {
+        return prefixSum[right + 1] - prefixSum[left];
+    }
+}
+
+// Usage
+NumArray numArray = new NumArray(new int[]{-2, 0, 3, -5, 2, -1});
+System.out.println(numArray.sumRange(0, 2)); // 1
+System.out.println(numArray.sumRange(2, 5)); // -1
+```
+
+----------
+
+## Problem 89: Logger Rate Limiter
+
+### Solution 1: Using HashMap
+
+java
+
+```java
+class Logger {
+    private Map<String, Integer> messageTimestamps;
+    
+    public Logger() {
+        messageTimestamps = new HashMap<>();
+    }
+    
+    public boolean shouldPrintMessage(int timestamp, String message) {
+        if (!messageTimestamps.containsKey(message)) {
+            messageTimestamps.put(message, timestamp);
+            return true;
+        }
+        
+        int lastTimestamp = messageTimestamps.get(message);
+        if (timestamp - lastTimestamp >= 10) {
+            messageTimestamps.put(message, timestamp);
+            return true;
+        }
+        
+        return false;
+    }
+}
+
+// Usage
+Logger logger = new Logger();
+System.out.println(logger.shouldPrintMessage(1, "foo")); // true
+System.out.println(logger.shouldPrintMessage(2, "bar")); // true
+System.out.println(logger.shouldPrintMessage(3, "foo")); // false
+System.out.println(logger.shouldPrintMessage(11, "foo")); // true
+```
+
+----------
+
+## Problem 90: Design Hit Counter
+
+### Solution 1: Using Queue
+
+java
+
+```java
+class HitCounter {
+    private Queue<Integer> hits;
+    
+    public HitCounter() {
+        hits = new LinkedList<>();
+    }
+    
+    public void hit(int timestamp) {
+        hits.offer(timestamp);
+    }
+    
+    public int getHits(int timestamp) {
+        while (!hits.isEmpty() && timestamp - hits.peek() >= 300) {
+            hits.poll();
+        }
+        return hits.size();
+    }
+}
+```
+
+### Solution 2: Using Array (Circular Buffer)
+
+java
+
+```java
+class HitCounter {
+    private int[] times;
+    private int[] hits;
+    
+    public HitCounter() {
+        times = new int[300];
+        hits = new int[300];
+    }
+    
+    public void hit(int timestamp) {
+        int idx = timestamp % 300;
+        if (times[idx] != timestamp) {
+            times[idx] = timestamp;
+            hits[idx] = 1;
+        } else {
+            hits[idx]++;
+        }
+    }
+    
+    public int getHits(int timestamp) {
+        int total = 0;
+        for (int i = 0; i < 300; i++) {
+            if (timestamp - times[i] < 300) {
+                total += hits[i];
+            }
+        }
+        return total;
+    }
+}
+```
