@@ -1,0 +1,2340 @@
+# Java 8 & Collections - Problems with Multiple Solutions
+
+## Problem 1: Find Duplicate Elements in a List
+
+### Solution 1: Using HashSet
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 2, 4, 5, 1, 6);
+Set<Integer> seen = new HashSet<>();
+Set<Integer> duplicates = new HashSet<>();
+
+for (Integer num : numbers) {
+    if (!seen.add(num)) {
+        duplicates.add(num);
+    }
+}
+System.out.println(duplicates); // [1, 2]
+```
+
+### Solution 2: Using Streams and Collections.frequency()
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 2, 4, 5, 1, 6);
+Set<Integer> duplicates = numbers.stream()
+    .filter(n -> Collections.frequency(numbers, n) > 1)
+    .collect(Collectors.toSet());
+System.out.println(duplicates); // [1, 2]
+```
+
+### Solution 3: Using Streams with groupingBy()
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 2, 4, 5, 1, 6);
+Set<Integer> duplicates = numbers.stream()
+    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+    .entrySet().stream()
+    .filter(e -> e.getValue() > 1)
+    .map(Map.Entry::getKey)
+    .collect(Collectors.toSet());
+System.out.println(duplicates); // [1, 2]
+```
+
+----------
+
+## Problem 2: Remove Duplicates from ArrayList
+
+### Solution 1: Using HashSet (Order not preserved)
+
+java
+
+```java
+List<String> list = new ArrayList<>(Arrays.asList("A", "B", "C", "A", "D", "B"));
+Set<String> set = new HashSet<>(list);
+list = new ArrayList<>(set);
+System.out.println(list); // [A, B, C, D] - order may vary
+```
+
+### Solution 2: Using LinkedHashSet (Order preserved)
+
+java
+
+```java
+List<String> list = new ArrayList<>(Arrays.asList("A", "B", "C", "A", "D", "B"));
+Set<String> set = new LinkedHashSet<>(list);
+list = new ArrayList<>(set);
+System.out.println(list); // [A, B, C, D] - insertion order preserved
+```
+
+### Solution 3: Using Streams distinct()
+
+java
+
+```java
+List<String> list = new ArrayList<>(Arrays.asList("A", "B", "C", "A", "D", "B"));
+List<String> unique = list.stream()
+    .distinct()
+    .collect(Collectors.toList());
+System.out.println(unique); // [A, B, C, D]
+```
+
+----------
+
+## Problem 3: Group Employees by Department
+
+### Employee Class
+
+java
+
+```java
+class Employee {
+    private String name;
+    private String department;
+    private double salary;
+    
+    public Employee(String name, String department, double salary) {
+        this.name = name;
+        this.department = department;
+        this.salary = salary;
+    }
+    
+    // Getters
+    public String getName() { return name; }
+    public String getDepartment() { return department; }
+    public double getSalary() { return salary; }
+}
+```
+
+### Solution 1: Using Traditional Loop with HashMap
+
+java
+
+```java
+List<Employee> employees = Arrays.asList(
+    new Employee("John", "IT", 60000),
+    new Employee("Jane", "HR", 55000),
+    new Employee("Bob", "IT", 65000),
+    new Employee("Alice", "HR", 58000)
+);
+
+Map<String, List<Employee>> byDept = new HashMap<>();
+for (Employee emp : employees) {
+    byDept.computeIfAbsent(emp.getDepartment(), k -> new ArrayList<>()).add(emp);
+}
+```
+
+### Solution 2: Using Streams groupingBy()
+
+java
+
+```java
+Map<String, List<Employee>> byDept = employees.stream()
+    .collect(Collectors.groupingBy(Employee::getDepartment));
+```
+
+### Solution 3: Group by Department and Get Names Only
+
+java
+
+```java
+Map<String, List<String>> deptNames = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.mapping(Employee::getName, Collectors.toList())
+    ));
+```
+
+### Solution 4: Group and Count Employees per Department
+
+java
+
+```java
+Map<String, Long> deptCount = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.counting()
+    ));
+```
+
+----------
+
+## Problem 4: Find Second Highest Salary
+
+### Solution 1: Using TreeSet
+
+java
+
+```java
+List<Integer> salaries = Arrays.asList(50000, 75000, 60000, 80000, 75000);
+TreeSet<Integer> uniqueSalaries = new TreeSet<>(salaries);
+Integer secondHighest = uniqueSalaries.lower(uniqueSalaries.last());
+System.out.println(secondHighest); // 75000
+```
+
+### Solution 2: Using Streams with distinct() and sorted()
+
+java
+
+```java
+List<Integer> salaries = Arrays.asList(50000, 75000, 60000, 80000, 75000);
+Integer secondHighest = salaries.stream()
+    .distinct()
+    .sorted(Comparator.reverseOrder())
+    .skip(1)
+    .findFirst()
+    .orElse(null);
+System.out.println(secondHighest); // 75000
+```
+
+### Solution 3: Using Employee Objects
+
+java
+
+```java
+Double secondHighest = employees.stream()
+    .map(Employee::getSalary)
+    .distinct()
+    .sorted(Comparator.reverseOrder())
+    .skip(1)
+    .findFirst()
+    .orElse(0.0);
+```
+
+----------
+
+## Problem 5: Sort Map by Values
+
+### Solution 1: Using Streams and LinkedHashMap
+
+java
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put("John", 25);
+map.put("Alice", 30);
+map.put("Bob", 20);
+
+Map<String, Integer> sorted = map.entrySet().stream()
+    .sorted(Map.Entry.comparingByValue())
+    .collect(Collectors.toMap(
+        Map.Entry::getKey,
+        Map.Entry::getValue,
+        (e1, e2) -> e1,
+        LinkedHashMap::new
+    ));
+System.out.println(sorted); // {Bob=20, John=25, Alice=30}
+```
+
+### Solution 2: Sort in Reverse Order
+
+java
+
+```java
+Map<String, Integer> sortedDesc = map.entrySet().stream()
+    .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+    .collect(Collectors.toMap(
+        Map.Entry::getKey,
+        Map.Entry::getValue,
+        (e1, e2) -> e1,
+        LinkedHashMap::new
+    ));
+```
+
+### Solution 3: Using TreeMap with Custom Comparator
+
+java
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put("John", 25);
+map.put("Alice", 30);
+map.put("Bob", 20);
+
+Map<String, Integer> sorted = new TreeMap<>((k1, k2) -> {
+    int comp = map.get(k1).compareTo(map.get(k2));
+    return comp != 0 ? comp : k1.compareTo(k2);
+});
+sorted.putAll(map);
+```
+
+----------
+
+## Problem 6: Count Character Frequency in String
+
+### Solution 1: Using HashMap
+
+java
+
+```java
+String str = "programming";
+Map<Character, Integer> frequency = new HashMap<>();
+
+for (char c : str.toCharArray()) {
+    frequency.put(c, frequency.getOrDefault(c, 0) + 1);
+}
+System.out.println(frequency);
+```
+
+### Solution 2: Using Streams groupingBy()
+
+java
+
+```java
+String str = "programming";
+Map<Character, Long> frequency = str.chars()
+    .mapToObj(c -> (char) c)
+    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+System.out.println(frequency);
+```
+
+### Solution 3: Using compute()
+
+java
+
+```java
+String str = "programming";
+Map<Character, Integer> frequency = new HashMap<>();
+
+for (char c : str.toCharArray()) {
+    frequency.compute(c, (key, val) -> val == null ? 1 : val + 1);
+}
+```
+
+### Solution 4: Using merge()
+
+java
+
+```java
+String str = "programming";
+Map<Character, Integer> frequency = new HashMap<>();
+
+for (char c : str.toCharArray()) {
+    frequency.merge(c, 1, Integer::sum);
+}
+```
+
+----------
+
+## Problem 7: Find First Non-Repeating Character
+
+### Solution 1: Using LinkedHashMap
+
+java
+
+```java
+String str = "programming";
+Map<Character, Integer> frequency = new LinkedHashMap<>();
+
+for (char c : str.toCharArray()) {
+    frequency.put(c, frequency.getOrDefault(c, 0) + 1);
+}
+
+Character first = frequency.entrySet().stream()
+    .filter(e -> e.getValue() == 1)
+    .map(Map.Entry::getKey)
+    .findFirst()
+    .orElse(null);
+System.out.println(first); // 'p'
+```
+
+### Solution 2: Using Streams
+
+java
+
+```java
+String str = "programming";
+Character first = str.chars()
+    .mapToObj(c -> (char) c)
+    .filter(c -> str.indexOf(c) == str.lastIndexOf(c))
+    .findFirst()
+    .orElse(null);
+System.out.println(first); // 'p'
+```
+
+----------
+
+## Problem 8: Merge Two Lists and Remove Duplicates
+
+### Solution 1: Using HashSet
+
+java
+
+```java
+List<Integer> list1 = Arrays.asList(1, 2, 3, 4);
+List<Integer> list2 = Arrays.asList(3, 4, 5, 6);
+
+Set<Integer> merged = new HashSet<>(list1);
+merged.addAll(list2);
+List<Integer> result = new ArrayList<>(merged);
+```
+
+### Solution 2: Using Streams concat()
+
+java
+
+```java
+List<Integer> result = Stream.concat(list1.stream(), list2.stream())
+    .distinct()
+    .collect(Collectors.toList());
+```
+
+### Solution 3: Using flatMap()
+
+java
+
+```java
+List<Integer> result = Stream.of(list1, list2)
+    .flatMap(List::stream)
+    .distinct()
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 9: Partition List into Two Groups
+
+### Solution 1: Using Streams partitioningBy()
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+Map<Boolean, List<Integer>> partitioned = numbers.stream()
+    .collect(Collectors.partitioningBy(n -> n % 2 == 0));
+
+List<Integer> even = partitioned.get(true);
+List<Integer> odd = partitioned.get(false);
+System.out.println("Even: " + even); // [2, 4, 6, 8]
+System.out.println("Odd: " + odd);   // [1, 3, 5, 7, 9]
+```
+
+### Solution 2: Using Traditional Loop
+
+java
+
+```java
+List<Integer> even = new ArrayList<>();
+List<Integer> odd = new ArrayList<>();
+
+for (Integer num : numbers) {
+    if (num % 2 == 0) {
+        even.add(num);
+    } else {
+        odd.add(num);
+    }
+}
+```
+
+### Solution 3: Using filter()
+
+java
+
+```java
+List<Integer> even = numbers.stream()
+    .filter(n -> n % 2 == 0)
+    .collect(Collectors.toList());
+
+List<Integer> odd = numbers.stream()
+    .filter(n -> n % 2 != 0)
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 10: Flatten List of Lists
+
+### Solution 1: Using flatMap()
+
+java
+
+```java
+List<List<Integer>> listOfLists = Arrays.asList(
+    Arrays.asList(1, 2, 3),
+    Arrays.asList(4, 5, 6),
+    Arrays.asList(7, 8, 9)
+);
+
+List<Integer> flattened = listOfLists.stream()
+    .flatMap(List::stream)
+    .collect(Collectors.toList());
+System.out.println(flattened); // [1, 2, 3, 4, 5, 6, 7, 8, 9]
+```
+
+### Solution 2: Using Traditional Loop
+
+java
+
+```java
+List<Integer> flattened = new ArrayList<>();
+for (List<Integer> list : listOfLists) {
+    flattened.addAll(list);
+}
+```
+
+### Solution 3: Flatten and Remove Duplicates
+
+java
+
+```java
+List<Integer> flattened = listOfLists.stream()
+    .flatMap(List::stream)
+    .distinct()
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 11: Find Top 3 Highest Salaries
+
+### Solution 1: Using Streams with sorted()
+
+java
+
+```java
+List<Double> top3 = employees.stream()
+    .map(Employee::getSalary)
+    .distinct()
+    .sorted(Comparator.reverseOrder())
+    .limit(3)
+    .collect(Collectors.toList());
+```
+
+### Solution 2: Using PriorityQueue
+
+java
+
+```java
+PriorityQueue<Double> pq = new PriorityQueue<>(Collections.reverseOrder());
+employees.forEach(e -> pq.offer(e.getSalary()));
+
+List<Double> top3 = new ArrayList<>();
+for (int i = 0; i < 3 && !pq.isEmpty(); i++) {
+    top3.add(pq.poll());
+}
+```
+
+### Solution 3: Using TreeSet
+
+java
+
+```java
+TreeSet<Double> salaries = new TreeSet<>(Collections.reverseOrder());
+employees.forEach(e -> salaries.add(e.getSalary()));
+
+List<Double> top3 = salaries.stream()
+    .limit(3)
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 12: Convert List to Map
+
+### Solution 1: Using toMap() - Simple Key-Value
+
+java
+
+```java
+List<Employee> employees = Arrays.asList(
+    new Employee("John", "IT", 60000),
+    new Employee("Jane", "HR", 55000)
+);
+
+Map<String, Double> nameToSalary = employees.stream()
+    .collect(Collectors.toMap(
+        Employee::getName,
+        Employee::getSalary
+    ));
+```
+
+### Solution 2: Handle Duplicate Keys
+
+java
+
+```java
+Map<String, Double> nameToSalary = employees.stream()
+    .collect(Collectors.toMap(
+        Employee::getName,
+        Employee::getSalary,
+        (existing, replacement) -> existing // Keep first occurrence
+    ));
+```
+
+### Solution 3: Custom Map Type (LinkedHashMap)
+
+java
+
+```java
+Map<String, Employee> map = employees.stream()
+    .collect(Collectors.toMap(
+        Employee::getName,
+        Function.identity(),
+        (e1, e2) -> e1,
+        LinkedHashMap::new
+    ));
+```
+
+### Solution 4: Group Multiple Employees by Department
+
+java
+
+```java
+Map<String, List<Employee>> deptMap = employees.stream()
+    .collect(Collectors.toMap(
+        Employee::getDepartment,
+        e -> new ArrayList<>(Arrays.asList(e)),
+        (list1, list2) -> {
+            list1.addAll(list2);
+            return list1;
+        }
+    ));
+```
+
+----------
+
+## Problem 13: Find Common Elements Between Two Lists
+
+### Solution 1: Using retainAll()
+
+java
+
+```java
+List<Integer> list1 = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
+List<Integer> list2 = Arrays.asList(4, 5, 6, 7, 8);
+
+list1.retainAll(list2);
+System.out.println(list1); // [4, 5]
+```
+
+### Solution 2: Using Streams filter()
+
+java
+
+```java
+List<Integer> list1 = Arrays.asList(1, 2, 3, 4, 5);
+List<Integer> list2 = Arrays.asList(4, 5, 6, 7, 8);
+
+List<Integer> common = list1.stream()
+    .filter(list2::contains)
+    .collect(Collectors.toList());
+```
+
+### Solution 3: Using HashSet for Better Performance
+
+java
+
+```java
+Set<Integer> set2 = new HashSet<>(list2);
+List<Integer> common = list1.stream()
+    .filter(set2::contains)
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 14: Calculate Average Salary by Department
+
+### Solution 1: Using averagingDouble()
+
+java
+
+```java
+Map<String, Double> avgSalaries = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.averagingDouble(Employee::getSalary)
+    ));
+```
+
+### Solution 2: Using summingDouble() and counting()
+
+java
+
+```java
+Map<String, Double> avgSalaries = employees.stream()
+    .collect(Collectors.groupingBy(Employee::getDepartment))
+    .entrySet().stream()
+    .collect(Collectors.toMap(
+        Map.Entry::getKey,
+        e -> e.getValue().stream()
+            .mapToDouble(Employee::getSalary)
+            .average()
+            .orElse(0.0)
+    ));
+```
+
+----------
+
+## Problem 15: Join Strings with Delimiter
+
+### Solution 1: Using Collectors.joining()
+
+java
+
+```java
+List<String> names = Arrays.asList("John", "Jane", "Bob", "Alice");
+String result = names.stream()
+    .collect(Collectors.joining(", "));
+System.out.println(result); // "John, Jane, Bob, Alice"
+```
+
+### Solution 2: With Prefix and Suffix
+
+java
+
+```java
+String result = names.stream()
+    .collect(Collectors.joining(", ", "[", "]"));
+System.out.println(result); // "[John, Jane, Bob, Alice]"
+```
+
+### Solution 3: Using String.join()
+
+java
+
+```java
+String result = String.join(", ", names);
+```
+
+### Solution 4: Using reduce()
+
+java
+
+```java
+String result = names.stream()
+    .reduce((s1, s2) -> s1 + ", " + s2)
+    .orElse("");
+```
+
+----------
+
+## Problem 16: Remove Elements While Iterating
+
+### Solution 1: Using Iterator (Correct Way)
+
+java
+
+```java
+List<Integer> numbers = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6));
+Iterator<Integer> iterator = numbers.iterator();
+
+while (iterator.hasNext()) {
+    Integer num = iterator.next();
+    if (num % 2 == 0) {
+        iterator.remove();
+    }
+}
+System.out.println(numbers); // [1, 3, 5]
+```
+
+### Solution 2: Using removeIf()
+
+java
+
+```java
+List<Integer> numbers = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6));
+numbers.removeIf(n -> n % 2 == 0);
+System.out.println(numbers); // [1, 3, 5]
+```
+
+### Solution 3: Using Streams (Creates New List)
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6);
+List<Integer> filtered = numbers.stream()
+    .filter(n -> n % 2 != 0)
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 17: Find Maximum Salary Employee in Each Department
+
+### Solution 1: Using maxBy()
+
+java
+
+```java
+Map<String, Optional<Employee>> maxByDept = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.maxBy(Comparator.comparingDouble(Employee::getSalary))
+    ));
+```
+
+### Solution 2: Using collectingAndThen()
+
+java
+
+```java
+Map<String, Employee> maxByDept = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.collectingAndThen(
+            Collectors.maxBy(Comparator.comparingDouble(Employee::getSalary)),
+            Optional::get
+        )
+    ));
+```
+
+### Solution 3: Using reducing()
+
+java
+
+```java
+Map<String, Optional<Employee>> maxByDept = employees.stream()
+    .collect(Collectors.groupingBy(
+        Employee::getDepartment,
+        Collectors.reducing(BinaryOperator.maxBy(
+            Comparator.comparingDouble(Employee::getSalary)
+        ))
+    ));
+```
+
+----------
+
+## Problem 18: Check if String is Anagram
+
+### Solution 1: Using Sorting
+
+java
+
+```java
+public static boolean isAnagram(String s1, String s2) {
+    if (s1.length() != s2.length()) return false;
+    
+    char[] arr1 = s1.toLowerCase().toCharArray();
+    char[] arr2 = s2.toLowerCase().toCharArray();
+    Arrays.sort(arr1);
+    Arrays.sort(arr2);
+    
+    return Arrays.equals(arr1, arr2);
+}
+```
+
+### Solution 2: Using HashMap
+
+java
+
+```java
+public static boolean isAnagram(String s1, String s2) {
+    if (s1.length() != s2.length()) return false;
+    
+    Map<Character, Integer> map = new HashMap<>();
+    for (char c : s1.toCharArray()) {
+        map.put(c, map.getOrDefault(c, 0) + 1);
+    }
+    
+    for (char c : s2.toCharArray()) {
+        if (!map.containsKey(c)) return false;
+        map.put(c, map.get(c) - 1);
+        if (map.get(c) < 0) return false;
+    }
+    
+    return true;
+}
+```
+
+### Solution 3: Using Streams
+
+java
+
+```java
+public static boolean isAnagram(String s1, String s2) {
+    if (s1.length() != s2.length()) return false;
+    
+    Map<Character, Long> map1 = s1.chars()
+        .mapToObj(c -> (char) c)
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    
+    Map<Character, Long> map2 = s2.chars()
+        .mapToObj(c -> (char) c)
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    
+    return map1.equals(map2);
+}
+```
+
+----------
+
+## Problem 19: Implement LRU Cache using LinkedHashMap
+
+### Solution 1: Override removeEldestEntry()
+
+java
+
+```java
+class LRUCache<K, V> extends LinkedHashMap<K, V> {
+    private final int capacity;
+    
+    public LRUCache(int capacity) {
+        super(capacity, 0.75f, true);
+        this.capacity = capacity;
+    }
+    
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+        return size() > capacity;
+    }
+}
+
+// Usage
+LRUCache<Integer, String> cache = new LRUCache<>(3);
+cache.put(1, "One");
+cache.put(2, "Two");
+cache.put(3, "Three");
+cache.put(4, "Four"); // Removes eldest entry (1, "One")
+```
+
+### Solution 2: Using Collections.synchronizedMap() for Thread Safety
+
+java
+
+```java
+Map<Integer, String> cache = Collections.synchronizedMap(
+    new LinkedHashMap<Integer, String>(16, 0.75f, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<Integer, String> eldest) {
+            return size() > 3;
+        }
+    }
+);
+```
+
+----------
+
+## Problem 20: Sum of All Elements Using reduce()
+
+### Solution 1: Basic reduce()
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+Integer sum = numbers.stream()
+    .reduce(0, Integer::sum);
+System.out.println(sum); // 15
+```
+
+### Solution 2: Using reduce() with Lambda
+
+java
+
+```java
+Integer sum = numbers.stream()
+    .reduce(0, (a, b) -> a + b);
+```
+
+### Solution 3: Using mapToInt() and sum()
+
+java
+
+```java
+int sum = numbers.stream()
+    .mapToInt(Integer::intValue)
+    .sum();
+```
+
+### Solution 4: Sum of Salaries
+
+java
+
+```java
+double totalSalary = employees.stream()
+    .map(Employee::getSalary)
+    .reduce(0.0, Double::sum);
+```
+
+----------
+
+## Problem 21: Find Words Starting with Specific Letter
+
+### Solution 1: Using filter()
+
+java
+
+```java
+List<String> words = Arrays.asList("Apple", "Banana", "Apricot", "Cherry", "Avocado");
+List<String> aWords = words.stream()
+    .filter(w -> w.startsWith("A"))
+    .collect(Collectors.toList());
+System.out.println(aWords); // [Apple, Apricot, Avocado]
+```
+
+### Solution 2: Case Insensitive
+
+java
+
+```java
+List<String> aWords = words.stream()
+    .filter(w -> w.toLowerCase().startsWith("a"))
+    .collect(Collectors.toList());
+```
+
+### Solution 3: Count Words Starting with Letter
+
+java
+
+```java
+long count = words.stream()
+    .filter(w -> w.startsWith("A"))
+    .count();
+```
+
+----------
+
+## Problem 22: Convert Map Keys/Values to List
+
+### Solution 1: Keys to List
+
+java
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put("John", 25);
+map.put("Alice", 30);
+map.put("Bob", 20);
+
+List<String> keys = new ArrayList<>(map.keySet());
+// OR using streams
+List<String> keys = map.keySet().stream()
+    .collect(Collectors.toList());
+```
+
+### Solution 2: Values to List
+
+java
+
+```java
+List<Integer> values = new ArrayList<>(map.values());
+// OR using streams
+List<Integer> values = map.values().stream()
+    .collect(Collectors.toList());
+```
+
+### Solution 3: Entries to List of Custom Objects
+
+java
+
+```java
+List<String> keyValuePairs = map.entrySet().stream()
+    .map(e -> e.getKey() + "=" + e.getValue())
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 23: Sort List of Objects by Multiple Fields
+
+### Solution 1: Using Comparator.comparing() with thenComparing()
+
+java
+
+```java
+class Person {
+    String name;
+    int age;
+    double salary;
+    
+    // Constructor and getters
+}
+
+List<Person> people = Arrays.asList(
+    new Person("John", 30, 60000),
+    new Person("Alice", 25, 65000),
+    new Person("John", 25, 55000)
+);
+
+// Sort by name, then by age
+List<Person> sorted = people.stream()
+    .sorted(Comparator.comparing(Person::getName)
+        .thenComparing(Person::getAge))
+    .collect(Collectors.toList());
+```
+
+### Solution 2: Sort by Name Ascending, Age Descending
+
+java
+
+```java
+List<Person> sorted = people.stream()
+    .sorted(Comparator.comparing(Person::getName)
+        .thenComparing(Person::getAge, Comparator.reverseOrder()))
+    .collect(Collectors.toList());
+```
+
+### Solution 3: Sort with Null Handling
+
+java
+
+```java
+List<Person> sorted = people.stream()
+    .sorted(Comparator.comparing(Person::getName, 
+        Comparator.nullsFirst(String::compareTo))
+        .thenComparing(Person::getAge))
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 24: Find Employees Earning Above Average Salary
+
+### Solution 1: Two Pass Solution
+
+java
+
+```java
+double avgSalary = employees.stream()
+    .mapToDouble(Employee::getSalary)
+    .average()
+    .orElse(0.0);
+
+List<Employee> aboveAvg = employees.stream()
+    .filter(e -> e.getSalary() > avgSalary)
+    .collect(Collectors.toList());
+```
+
+### Solution 2: Using DoubleSummaryStatistics
+
+java
+
+```java
+DoubleSummaryStatistics stats = employees.stream()
+    .mapToDouble(Employee::getSalary)
+    .summaryStatistics();
+
+List<Employee> aboveAvg = employees.stream()
+    .filter(e -> e.getSalary() > stats.getAverage())
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 25: Optional - Handling Null Values
+
+### Solution 1: Basic Optional Usage
+
+java
+
+```java
+Optional<String> optional = Optional.ofNullable(getString());
+String result = optional.orElse("Default Value");
+```
+
+### Solution 2: Using orElseGet() with Supplier
+
+java
+
+```java
+String result = optional.orElseGet(() -> {
+    // Expensive computation only if value is absent
+    return computeDefaultValue();
+});
+```
+
+### Solution 3: Using map() and flatMap()
+
+java
+
+```java
+Optional<Employee> empOptional = findEmployee(id);
+Optional<String> deptName = empOptional
+    .map(Employee::getDepartment)
+    .map(String::toUpperCase);
+```
+
+### Solution 4: Using ifPresent() and ifPresentOrElse()
+
+java
+
+```java
+optional.ifPresent(value -> System.out.println(value));
+
+// Java 9+
+optional.ifPresentOrElse(
+    value -> System.out.println(value),
+    () -> System.out.println("Not found")
+);
+```
+
+### Solution 5: Chaining with filter()
+
+java
+
+```java
+Optional<Employee> highEarner = empOptional
+    .filter(e -> e.getSalary() > 50000);
+```
+
+----------
+
+## Problem 26: Reverse a String Using Streams
+
+### Solution 1: Using StringBuilder
+
+java
+
+```java
+String str = "Hello World";
+String reversed = new StringBuilder(str).reverse().toString();
+```
+
+### Solution 2: Using Streams
+
+java
+
+```java
+String reversed = str.chars()
+    .mapToObj(c -> (char) c)
+    .reduce("", (s, c) -> c + s, (s1, s2) -> s2 + s1);
+```
+
+### Solution 3: Reverse Each Word in Sentence
+
+java
+
+```java
+String sentence = "Hello World Java";
+String reversed = Arrays.stream(sentence.split(" "))
+    .map(word -> new StringBuilder(word).reverse().toString())
+    .collect(Collectors.joining(" "));
+```
+
+----------
+
+## Problem 27: Implement computeIfAbsent, computeIfPresent, compute
+
+### Solution 1: computeIfAbsent()
+
+java
+
+```java
+Map<String, List<String>> map = new HashMap<>();
+
+// Traditional way
+if (!map.containsKey("fruits")) {
+    map.put("fruits", new ArrayList<>());
+}
+map.get("fruits").add("Apple");
+
+// Using computeIfAbsent
+map.computeIfAbsent("fruits", k -> new ArrayList<>()).add("Apple");
+```
+
+### Solution 2: computeIfPresent()
+
+java
+
+```java
+Map<String, Integer> scores = new HashMap<>();
+scores.put("John", 100);
+
+// Update only if key exists
+scores.computeIfPresent("John", (k, v) -> v + 50); // 150
+scores.computeIfPresent("Jane", (k, v) -> v + 50); // No change, key doesn't exist
+```
+
+### Solution 3: compute()
+
+java
+
+```java
+Map<String, Integer> scores = new HashMap<>();
+scores.put("John", 100);
+
+// Always computes (updates or adds)
+scores.compute("John", (k, v) -> v == null ? 1 : v + 1); // 101
+scores.compute("Jane", (k, v) -> v == null ? 1 : v + 1); // 1
+```
+
+### Solution 4: merge()
+
+java
+
+```java
+Map<String, Integer> scores = new HashMap<>();
+scores.put("John", 100);
+
+// Merge with default value
+scores.merge("John", 50, Integer::sum); // 150
+scores.merge("Jane", 50, Integer::sum); // 50
+```
+
+----------
+
+## Problem 28: Get Nth Element from Stream
+
+### Solution 1: Using skip() and findFirst()
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(10, 20, 30, 40, 50);
+Optional<Integer> third = numbers.stream()
+    .skip(2)
+    .findFirst();
+System.out.println(third.get()); // 30
+```
+
+### Solution 2: Using limit() and reduce()
+
+java
+
+```java
+Optional<Integer> third = numbers.stream()
+    .skip(2)
+    .limit(1)
+    .findFirst();
+```
+
+### Solution 3: Traditional Access
+
+java
+
+```java
+Integer third = numbers.get(2); // Direct access for lists
+```
+
+----------
+
+## Problem 29: Check if Any/All Elements Match Condition
+
+### Solution 1: anyMatch()
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+boolean hasEven = numbers.stream()
+    .anyMatch(n -> n % 2 == 0);
+System.out.println(hasEven); // true
+```
+
+### Solution 2: allMatch()
+
+java
+
+```java
+boolean allPositive = numbers.stream()
+    .allMatch(n -> n > 0);
+System.out.println(allPositive); // true
+```
+
+### Solution 3: noneMatch()
+
+java
+
+```java
+boolean noNegative = numbers.stream()
+    .noneMatch(n -> n < 0);
+System.out.println(noNegative); // true
+```
+
+### Solution 4: Check if All Employees Earn Above Threshold
+
+java
+
+```java
+boolean allHighEarners = employees.stream()
+    .allMatch(e -> e.getSalary() > 50000);
+```
+
+----------
+
+## Problem 30: Convert Array to List and Vice Versa
+
+### Solution 1: Array to List
+
+java
+
+```java
+String[] array = {"A", "B", "C"};
+
+// Immutable list (Arrays.asList)
+List<String> list1 = Arrays.asList(array);
+
+// Mutable list
+List<String> list2 = new ArrayList<>(Arrays.asList(array));
+
+// Using Streams
+List<String> list3 = Arrays.stream(array)
+    .collect(Collectors.toList());
+```
+
+### Solution 2: List to Array
+
+java
+
+```java
+List<String> list = Arrays.asList("A", "B", "C");
+
+// Method 1
+String[] array1 = list.toArray(new String[0]);
+
+// Method 2 (pre-sized)
+String[] array2 = list.toArray(new String[list.size()]);
+
+// Using Streams
+String[] array3 = list.stream()
+    .toArray(String[]::new);
+```
+
+### Solution 3: Primitive Array to List
+
+java
+
+```java
+int[] numbers = {1, 2, 3, 4, 5};
+
+// Box to Integer list
+List<Integer> list = Arrays.stream(numbers)
+    .boxed()
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 31: FlatMap with Nested Objects
+
+### Solution 1: Flatten Department -> Employees
+
+java
+
+```java
+class Department {
+    String name;
+    List<Employee> employees;
+    
+    public Department(String name, List<Employee> employees) {
+        this.name = name;
+        this.employees = employees;
+    }
+    
+    public List<Employee> getEmployees() { return employees; }
+}
+
+List<Department> departments = Arrays.asList(
+    new Department("IT", Arrays.asList(
+        new Employee("John", "IT", 60000),
+        new Employee("Bob", "IT", 65000)
+    )),
+    new Department("HR", Arrays.asList(
+        new Employee("Jane", "HR", 55000)
+    ))
+);
+
+// Get all employees from all departments
+List<Employee> allEmployees = departments.stream()
+    .flatMap(dept -> dept.getEmployees().stream())
+    .collect(Collectors.toList());
+```
+
+### Solution 2: Flatten List of Arrays
+
+java
+
+```java
+String[][] arrays = {
+    {"A", "B"},
+    {"C", "D"},
+    {"E", "F"}
+};
+
+List<String> flattened = Arrays.stream(arrays)
+    .flatMap(Arrays::stream)
+    .collect(Collectors.toList());
+System.out.println(flattened); // [A, B, C, D, E, F]
+```
+
+### Solution 3: Flatten and Transform
+
+java
+
+```java
+List<String> allNames = departments.stream()
+    .flatMap(dept -> dept.getEmployees().stream())
+    .map(Employee::getName)
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 32: Custom Sorting with Comparator
+
+### Solution 1: Natural Order and Reverse
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(5, 2, 8, 1, 9);
+
+// Ascending
+numbers.sort(Comparator.naturalOrder());
+
+// Descending
+numbers.sort(Comparator.reverseOrder());
+
+// Using sorted() in streams
+List<Integer> sorted = numbers.stream()
+    .sorted()
+    .collect(Collectors.toList());
+```
+
+### Solution 2: Custom Comparator Lambda
+
+java
+
+```java
+List<String> names = Arrays.asList("John", "Alice", "Bob");
+
+// Sort by length
+names.sort((s1, s2) -> Integer.compare(s1.length(), s2.length()));
+
+// Using Comparator.comparing()
+names.sort(Comparator.comparing(String::length));
+```
+
+### Solution 3: Multiple Sorting Criteria
+
+java
+
+```java
+employees.sort(
+    Comparator.comparing(Employee::getDepartment)
+        .thenComparing(Employee::getSalary, Comparator.reverseOrder())
+        .thenComparing(Employee::getName)
+);
+```
+
+### Solution 4: Null-Safe Sorting
+
+java
+
+```java
+employees.sort(
+    Comparator.comparing(Employee::getName, 
+        Comparator.nullsLast(String::compareTo))
+);
+```
+
+----------
+
+## Problem 33: Peak, Limit, and Skip Operations
+
+### Solution 1: peek() for Debugging
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+List<Integer> result = numbers.stream()
+    .filter(n -> n % 2 == 0)
+    .peek(n -> System.out.println("Filtered: " + n))
+    .map(n -> n * 2)
+    .peek(n -> System.out.println("Mapped: " + n))
+    .collect(Collectors.toList());
+```
+
+### Solution 2: Pagination with skip() and limit()
+
+java
+
+```java
+int pageNumber = 2;
+int pageSize = 5;
+
+List<Employee> page = employees.stream()
+    .skip((pageNumber - 1) * pageSize)
+    .limit(pageSize)
+    .collect(Collectors.toList());
+```
+
+### Solution 3: Get First N Elements After Filtering
+
+java
+
+```java
+List<Employee> topSalaries = employees.stream()
+    .filter(e -> e.getDepartment().equals("IT"))
+    .sorted(Comparator.comparing(Employee::getSalary).reversed())
+    .limit(5)
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 34: Collectors.toMap() Advanced Usage
+
+### Solution 1: Simple Key-Value Mapping
+
+java
+
+```java
+Map<Integer, String> map = employees.stream()
+    .collect(Collectors.toMap(
+        e -> e.hashCode(),
+        Employee::getName
+    ));
+```
+
+### Solution 2: Handle Duplicates with Merge Function
+
+java
+
+```java
+List<Employee> employees = Arrays.asList(
+    new Employee("John", "IT", 60000),
+    new Employee("John", "HR", 55000) // Duplicate name
+);
+
+Map<String, Double> nameToSalary = employees.stream()
+    .collect(Collectors.toMap(
+        Employee::getName,
+        Employee::getSalary,
+        (salary1, salary2) -> salary1 + salary2 // Sum salaries for duplicate names
+    ));
+```
+
+### Solution 3: Custom Map Implementation
+
+java
+
+```java
+Map<String, Employee> treeMap = employees.stream()
+    .collect(Collectors.toMap(
+        Employee::getName,
+        Function.identity(),
+        (e1, e2) -> e1,
+        TreeMap::new
+    ));
+```
+
+### Solution 4: Collect to ConcurrentHashMap
+
+java
+
+```java
+Map<String, Employee> concurrentMap = employees.parallelStream()
+    .collect(Collectors.toConcurrentMap(
+        Employee::getName,
+        Function.identity(),
+        (e1, e2) -> e1
+    ));
+```
+
+----------
+
+## Problem 35: Sum, Average, Max, Min Using Collectors
+
+### Solution 1: Summarizing Statistics
+
+java
+
+```java
+DoubleSummaryStatistics stats = employees.stream()
+    .collect(Collectors.summarizingDouble(Employee::getSalary));
+
+System.out.println("Count: " + stats.getCount());
+System.out.println("Sum: " + stats.getSum());
+System.out.println("Min: " + stats.getMin());
+System.out.println("Max: " + stats.getMax());
+System.out.println("Average: " + stats.getAverage());
+```
+
+### Solution 2: Individual Collectors
+
+java
+
+```java
+Double sum = employees.stream()
+    .collect(Collectors.summingDouble(Employee::getSalary));
+
+Double avg = employees.stream()
+    .collect(Collectors.averagingDouble(Employee::getSalary));
+
+Optional<Employee> maxSalary = employees.stream()
+    .collect(Collectors.maxBy(Comparator.comparing(Employee::getSalary)));
+```
+
+### Solution 3: Using reduce()
+
+java
+
+```java
+Double totalSalary = employees.stream()
+    .map(Employee::getSalary)
+    .reduce(0.0, Double::sum);
+
+Optional<Double> maxSalary = employees.stream()
+    .map(Employee::getSalary)
+    .reduce(Double::max);
+```
+
+----------
+
+## Problem 36: Parallel Streams
+
+### Solution 1: Basic Parallel Stream
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+// Sequential
+long sum1 = numbers.stream()
+    .mapToLong(Integer::longValue)
+    .sum();
+
+// Parallel
+long sum2 = numbers.parallelStream()
+    .mapToLong(Integer::longValue)
+    .sum();
+```
+
+### Solution 2: When to Use Parallel Streams
+
+java
+
+```java
+// Good use case: CPU-intensive operations on large datasets
+List<String> largeList = generateLargeList();
+long count = largeList.parallelStream()
+    .filter(s -> expensiveOperation(s))
+    .count();
+
+// Bad use case: Small datasets or I/O operations
+List<String> smallList = Arrays.asList("A", "B", "C");
+// Don't use parallel here - overhead is not worth it
+```
+
+### Solution 3: Thread-Safe Collection with Parallel Stream
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+// Thread-safe collection
+List<Integer> result = numbers.parallelStream()
+    .map(n -> n * 2)
+    .collect(Collectors.toList());
+
+// For custom collectors, ensure thread safety
+Map<Integer, Integer> map = numbers.parallelStream()
+    .collect(Collectors.toConcurrentMap(
+        Function.identity(),
+        n -> n * 2
+    ));
+```
+
+----------
+
+## Problem 37: Method References
+
+### Solution 1: Static Method Reference
+
+java
+
+```java
+List<String> numbers = Arrays.asList("1", "2", "3", "4", "5");
+
+// Lambda
+List<Integer> ints1 = numbers.stream()
+    .map(s -> Integer.parseInt(s))
+    .collect(Collectors.toList());
+
+// Method reference
+List<Integer> ints2 = numbers.stream()
+    .map(Integer::parseInt)
+    .collect(Collectors.toList());
+```
+
+### Solution 2: Instance Method Reference
+
+java
+
+```java
+List<String> words = Arrays.asList("apple", "banana", "cherry");
+
+// Lambda
+List<String> upper1 = words.stream()
+    .map(s -> s.toUpperCase())
+    .collect(Collectors.toList());
+
+// Method reference
+List<String> upper2 = words.stream()
+    .map(String::toUpperCase)
+    .collect(Collectors.toList());
+```
+
+### Solution 3: Constructor Reference
+
+java
+
+```java
+List<String> names = Arrays.asList("John", "Jane", "Bob");
+
+// Lambda
+List<Employee> emps1 = names.stream()
+    .map(name -> new Employee(name, "IT", 50000))
+    .collect(Collectors.toList());
+
+// Constructor reference (if appropriate constructor exists)
+class Person {
+    String name;
+    Person(String name) { this.name = name; }
+}
+
+List<Person> people = names.stream()
+    .map(Person::new)
+    .collect(Collectors.toList());
+```
+
+### Solution 4: Arbitrary Object Method Reference
+
+java
+
+```java
+List<String> words = Arrays.asList("apple", "banana", "cherry");
+String prefix = "fruit_";
+
+// Instance method of arbitrary object
+List<String> prefixed = words.stream()
+    .map(prefix::concat)
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 38: Custom Functional Interfaces
+
+### Solution 1: Predicate
+
+java
+
+```java
+Predicate<Integer> isEven = n -> n % 2 == 0;
+Predicate<Integer> isPositive = n -> n > 0;
+
+// Combining predicates
+Predicate<Integer> isEvenAndPositive = isEven.and(isPositive);
+Predicate<Integer> isEvenOrNegative = isEven.or(n -> n < 0);
+Predicate<Integer> isOdd = isEven.negate();
+
+List<Integer> numbers = Arrays.asList(-2, -1, 0, 1, 2, 3, 4);
+List<Integer> filtered = numbers.stream()
+    .filter(isEvenAndPositive)
+    .collect(Collectors.toList()); // [2, 4]
+```
+
+### Solution 2: Function
+
+java
+
+```java
+Function<String, Integer> stringLength = String::length;
+Function<Integer, Integer> square = n -> n * n;
+
+// Composing functions
+Function<String, Integer> lengthSquared = stringLength.andThen(square);
+
+String word = "Hello";
+Integer result = lengthSquared.apply(word); // 25
+```
+
+### Solution 3: Consumer
+
+java
+
+```java
+Consumer<String> print = System.out::println;
+Consumer<String> upperPrint = s -> System.out.println(s.toUpperCase());
+
+// Chaining consumers
+Consumer<String> printTwice = print.andThen(upperPrint);
+
+printTwice.accept("hello");
+// Output:
+// hello
+// HELLO
+```
+
+### Solution 4: Supplier
+
+java
+
+```java
+Supplier<Double> randomSupplier = Math::random;
+Supplier<List<String>> listSupplier = ArrayList::new;
+
+Double random = randomSupplier.get();
+List<String> newList = listSupplier.get();
+```
+
+### Solution 5: BiFunction, BiConsumer, BiPredicate
+
+java
+
+```java
+BiFunction<Integer, Integer, Integer> add = (a, b) -> a + b;
+BiFunction<String, String, String> concat = (s1, s2) -> s1 + s2;
+
+BiConsumer<String, Integer> printWithIndex = (s, i) -> 
+    System.out.println(i + ": " + s);
+
+BiPredicate<String, Integer> lengthEquals = (s, len) -> 
+    s.length() == len;
+
+Integer sum = add.apply(5, 3); // 8
+String combined = concat.apply("Hello", "World"); // HelloWorld
+```
+
+----------
+
+## Problem 39: Convert Collection to Different Types
+
+### Solution 1: List to Set
+
+java
+
+```java
+List<Integer> list = Arrays.asList(1, 2, 2, 3, 4, 4, 5);
+
+// Using constructor
+Set<Integer> set1 = new HashSet<>(list);
+
+// Using streams
+Set<Integer> set2 = list.stream()
+    .collect(Collectors.toSet());
+
+// Using specific Set implementation
+Set<Integer> linkedSet = list.stream()
+    .collect(Collectors.toCollection(LinkedHashSet::new));
+```
+
+### Solution 2: Set to List
+
+java
+
+```java
+Set<String> set = new HashSet<>(Arrays.asList("A", "B", "C"));
+
+List<String> list1 = new ArrayList<>(set);
+
+List<String> list2 = set.stream()
+    .collect(Collectors.toList());
+```
+
+### Solution 3: Map to List of Entries
+
+java
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put("A", 1);
+map.put("B", 2);
+
+List<Map.Entry<String, Integer>> entries = new ArrayList<>(map.entrySet());
+
+// Or specific transformations
+List<String> keys = new ArrayList<>(map.keySet());
+List<Integer> values = new ArrayList<>(map.values());
+```
+
+----------
+
+## Problem 40: Infinite Streams
+
+### Solution 1: Stream.generate()
+
+java
+
+```java
+// Generate infinite stream of random numbers
+Stream.generate(Math::random)
+    .limit(5)
+    .forEach(System.out::println);
+
+// Generate infinite stream of UUIDs
+List<String> uuids = Stream.generate(UUID.randomUUID()::toString)
+    .limit(10)
+    .collect(Collectors.toList());
+```
+
+### Solution 2: Stream.iterate()
+
+java
+
+```java
+// Generate sequence: 0, 2, 4, 6, 8
+List<Integer> evens = Stream.iterate(0, n -> n + 2)
+    .limit(5)
+    .collect(Collectors.toList());
+
+// Fibonacci sequence
+Stream.iterate(new int[]{0, 1}, f -> new int[]{f[1], f[0] + f[1]})
+    .limit(10)
+    .map(f -> f[0])
+    .forEach(System.out::println);
+```
+
+### Solution 3: IntStream.range() and IntStream.rangeClosed()
+
+java
+
+```java
+// 0 to 9 (exclusive end)
+IntStream.range(0, 10)
+    .forEach(System.out::println);
+
+// 1 to 10 (inclusive end)
+IntStream.rangeClosed(1, 10)
+    .forEach(System.out::println);
+
+// Create list of specific size
+List<Integer> list = IntStream.range(0, 5)
+    .boxed()
+    .collect(Collectors.toList()); // [0, 1, 2, 3, 4]
+```
+
+----------
+
+## Problem 41: Date-Time API Operations
+
+### Solution 1: Current Date and Time
+
+java
+
+```java
+LocalDate today = LocalDate.now();
+LocalTime now = LocalTime.now();
+LocalDateTime dateTime = LocalDateTime.now();
+ZonedDateTime zonedDateTime = ZonedDateTime.now();
+
+System.out.println(today); // 2025-11-02
+```
+
+### Solution 2: Parsing and Formatting
+
+java
+
+```java
+// Parsing
+LocalDate date = LocalDate.parse("2025-11-02");
+LocalDate customFormat = LocalDate.parse("02/11/2025", 
+    DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+// Formatting
+String formatted = date.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy"));
+System.out.println(formatted); // 02-Nov-2025
+```
+
+### Solution 3: Date Arithmetic
+
+java
+
+```java
+LocalDate today = LocalDate.now();
+
+LocalDate nextWeek = today.plusWeeks(1);
+LocalDate lastMonth = today.minusMonths(1);
+LocalDate nextYear = today.plusYears(1);
+
+// Using Period
+Period period = Period.ofDays(10);
+LocalDate future = today.plus(period);
+```
+
+### Solution 4: Date Comparison and Difference
+
+java
+
+```java
+LocalDate date1 = LocalDate.of(2025, 1, 1);
+LocalDate date2 = LocalDate.of(2025, 12, 31);
+
+// Comparison
+boolean isBefore = date1.isBefore(date2); // true
+boolean isAfter = date1.isAfter(date2); // false
+
+// Difference
+Period period = Period.between(date1, date2);
+System.out.println(period.getDays() + " days");
+
+long daysBetween = ChronoUnit.DAYS.between(date1, date2);
+System.out.println(daysBetween); // 364
+```
+
+### Solution 5: Working with Time
+
+java
+
+```java
+LocalTime time1 = LocalTime.of(10, 30);
+LocalTime time2 = time1.plusHours(2).plusMinutes(15);
+
+Duration duration = Duration.between(time1, time2);
+System.out.println(duration.toMinutes()); // 135
+```
+
+----------
+
+## Problem 42: ConcurrentHashMap Operations
+
+### Solution 1: Basic Thread-Safe Operations
+
+java
+
+```java
+ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
+
+// Thread-safe put
+map.put("A", 1);
+
+// putIfAbsent
+map.putIfAbsent("B", 2);
+map.putIfAbsent("A", 10); // Won't update, A already exists
+
+// Thread-safe iteration
+map.forEach((key, value) -> System.out.println(key + ": " + value));
+```
+
+### Solution 2: Atomic Operations
+
+java
+
+```java
+ConcurrentHashMap<String, Integer> scores = new ConcurrentHashMap<>();
+scores.put("Player1", 100);
+
+// Atomic increment
+scores.compute("Player1", (k, v) -> v + 10);
+
+// Atomic add with merge
+scores.merge("Player1", 5, Integer::sum);
+
+// Get and update atomically
+Integer oldValue = scores.computeIfPresent("Player1", (k, v) -> v * 2);
+```
+
+### Solution 3: Bulk Operations
+
+java
+
+```java
+ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
+map.put("A", 1);
+map.put("B", 2);
+map.put("C", 3);
+
+// Search
+String result = map.search(1, (key, value) -> 
+    value > 2 ? key : null);
+
+// Reduce
+Integer sum = map.reduce(1, 
+    (key, value) -> value,
+    Integer::sum);
+```
+
+----------
+
+## Problem 43: Working with Immutable Collections
+
+### Solution 1: Collections.unmodifiable...()
+
+java
+
+```java
+List<String> list = new ArrayList<>(Arrays.asList("A", "B", "C"));
+List<String> immutableList = Collections.unmodifiableList(list);
+
+// This will throw UnsupportedOperationException
+// immutableList.add("D");
+```
+
+### Solution 2: Java 9+ List.of(), Set.of(), Map.of()
+
+java
+
+```java
+List<String> immutableList = List.of("A", "B", "C");
+Set<Integer> immutableSet = Set.of(1, 2, 3);
+Map<String, Integer> immutableMap = Map.of("A", 1, "B", 2);
+
+// All modifications throw UnsupportedOperationException
+```
+
+### Solution 3: Collectors.toUnmodifiableList()
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+List<Integer> immutable = numbers.stream()
+    .filter(n -> n % 2 == 0)
+    .collect(Collectors.toUnmodifiableList());
+```
+
+----------
+
+## Problem 44: Frequency and Occurrence Problems
+
+### Solution 1: Find Most Frequent Element
+
+java
+
+```java
+List<String> words = Arrays.asList("apple", "banana", "apple", 
+    "cherry", "banana", "apple");
+
+Map<String, Long> frequency = words.stream()
+    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+String mostFrequent = frequency.entrySet().stream()
+    .max(Map.Entry.comparingByValue())
+    .map(Map.Entry::getKey)
+    .orElse(null);
+
+System.out.println(mostFrequent); // apple
+```
+
+### Solution 2: Elements with Frequency > N
+
+java
+
+```java
+int threshold = 2;
+List<String> frequent = frequency.entrySet().stream()
+    .filter(e -> e.getValue() > threshold)
+    .map(Map.Entry::getKey)
+    .collect(Collectors.toList());
+```
+
+### Solution 3: Sort by Frequency
+
+java
+
+```java
+List<String> sortedByFreq = frequency.entrySet().stream()
+    .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+    .map(Map.Entry::getKey)
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 45: Stream Short-Circuit Operations
+
+### Solution 1: findFirst() vs findAny()
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+// findFirst - returns first element
+Optional<Integer> first = numbers.stream()
+    .filter(n -> n > 2)
+    .findFirst(); // 3
+
+// findAny - returns any element (useful in parallel streams)
+Optional<Integer> any = numbers.parallelStream()
+    .filter(n -> n > 2)
+    .findAny(); // Could be 3, 4, or 5
+```
+
+### Solution 2: anyMatch(), allMatch(), noneMatch()
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+// Short-circuits on first match
+boolean hasEven = numbers.stream()
+    .peek(n -> System.out.println("Checking: " + n))
+    .anyMatch(n -> n % 2 == 0);
+// Stops after finding first even number
+
+// Checks all elements
+boolean allPositive = numbers.stream()
+    .allMatch(n -> n > 0);
+
+// Short-circuits on first non-match
+boolean noneNegative = numbers.stream()
+    .noneMatch(n -> n < 0);
+```
+
+----------
+
+## Key Interview Tips
+
+### Time Complexities to Remember
+
+java
+
+```java
+// ArrayList
+- get(index): O(1)
+- add(element): O(1) amortized
+- add(index, element): O(n)
+- remove(index): O(n)
+- contains(element): O(n)
+
+// LinkedList
+- get(index): O(n)
+- add(element): O(1)
+- add(first/last): O(1)
+- remove(first/last): O(1)
+
+// HashSet/HashMap
+- add/put: O(1) average
+- contains/get: O(1) average
+- remove: O(1) average
+
+// TreeSet/TreeMap
+- add/put: O(log n)
+- contains/get: O(log n)
+- remove: O(log n)
+
+// Stream Operations
+- Intermediate operations: Lazy (O(1) to setup)
+- Terminal operations: Eager (O(n) typically)
+```
+
+### Common Pitfalls to Avoid
+
+java
+
+```java
+// 1. Reusing streams
+Stream<Integer> stream = list.stream();
+stream.forEach(System.out::println);
+// stream.count(); // IllegalStateException!
+
+// 2. Modifying source during stream operation
+// list.stream().forEach(e -> list.remove(e)); // ConcurrentModificationException!
+
+// 3. Using parallel streams incorrectly
+// list.parallelStream().forEach(e -> list.add(e)); // Thread-safety issue!
+
+// 4. Ignoring null checks
+// String result = optional.get(); // NoSuchElementException if empty!
+String result = optional.orElse("default"); // Better
+
+// 5. Inefficient filtering
+// list.stream().filter(e -> list2.contains(e)) // O(n*m)
+Set<String> set2 = new HashSet<>(list2);
+list.stream().filter(set2::contains) // O(n)
+```
