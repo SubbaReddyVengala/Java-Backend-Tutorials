@@ -1,4 +1,29 @@
 # Java 8 & Collections - Problems with Multiple Solutions
+### **Core Collections (45+ problems)**
+
+-   List, Set, Map operations
+-   Custom implementations (HashMap, LRU Cache, LFU Cache)
+-   Stack/Queue problems
+-   PriorityQueue applications
+-   Trie data structure
+
+### **Java 8 Features (30+ problems)**
+
+-   Stream operations (filter, map, reduce, flatMap)
+-   Collectors (grouping, partitioning, joining)
+-   Optional class usage
+-   Lambda expressions & method references
+-   Functional interfaces
+-   Parallel streams
+-   Date-Time API
+
+### **Advanced Problems (15+ problems)**
+
+-   Concurrent collections (ConcurrentHashMap, BlockingQueue)
+-   Design problems (Twitter, Hit Counter, Logger, RandomizedSet)
+-   Graph/Tree problems (Clone, Serialize)
+-   Sliding window patterns
+-   Two-pointer techniques
 
 ## Problem 1: Find Duplicate Elements in a List
 
@@ -2338,3 +2363,2004 @@ String result = optional.orElse("default"); // Better
 Set<String> set2 = new HashSet<>(list2);
 list.stream().filter(set2::contains) // O(n)
 ```
+## Problem 46: Find Intersection of Multiple Lists
+
+### Solution 1: Using retainAll() Sequentially
+
+java
+
+```java
+List<Integer> list1 = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
+List<Integer> list2 = Arrays.asList(3, 4, 5, 6, 7);
+List<Integer> list3 = Arrays.asList(4, 5, 6, 7, 8);
+
+list1.retainAll(list2);
+list1.retainAll(list3);
+System.out.println(list1); // [4, 5]
+```
+
+### Solution 2: Using Streams with reduce()
+
+java
+
+```java
+List<List<Integer>> lists = Arrays.asList(
+    Arrays.asList(1, 2, 3, 4, 5),
+    Arrays.asList(3, 4, 5, 6, 7),
+    Arrays.asList(4, 5, 6, 7, 8)
+);
+
+Set<Integer> intersection = lists.stream()
+    .map(HashSet::new)
+    .reduce((set1, set2) -> {
+        set1.retainAll(set2);
+        return set1;
+    })
+    .orElse(new HashSet<>());
+```
+
+### Solution 3: Using Frequency Count
+
+java
+
+```java
+Map<Integer, Long> frequency = lists.stream()
+    .flatMap(List::stream)
+    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+List<Integer> intersection = frequency.entrySet().stream()
+    .filter(e -> e.getValue() == lists.size())
+    .map(Map.Entry::getKey)
+    .collect(Collectors.toList());
+```
+
+----------
+
+## Problem 47: Group Anagrams Together
+
+### Solution 1: Using Sorted String as Key
+
+java
+
+```java
+List<String> words = Arrays.asList("eat", "tea", "tan", "ate", "nat", "bat");
+
+Map<String, List<String>> anagramGroups = words.stream()
+    .collect(Collectors.groupingBy(word -> {
+        char[] chars = word.toCharArray();
+        Arrays.sort(chars);
+        return new String(chars);
+    }));
+
+System.out.println(anagramGroups);
+// {aet=[eat, tea, ate], ant=[tan, nat], abt=[bat]}
+```
+
+### Solution 2: Using Character Frequency as Key
+
+java
+
+```java
+Map<Map<Character, Long>, List<String>> anagramGroups = words.stream()
+    .collect(Collectors.groupingBy(word -> 
+        word.chars()
+            .mapToObj(c -> (char) c)
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+    ));
+```
+
+### Solution 3: Get Only Anagram Lists
+
+java
+
+```java
+Collection<List<String>> anagramLists = words.stream()
+    .collect(Collectors.groupingBy(word -> {
+        char[] chars = word.toCharArray();
+        Arrays.sort(chars);
+        return new String(chars);
+    }))
+    .values();
+```
+
+----------
+
+## Problem 48: Find Missing Numbers in a Range
+
+### Solution 1: Using Set Difference
+
+java
+
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 4, 6, 7, 9);
+int min = 1, max = 10;
+
+Set<Integer> numberSet = new HashSet<>(numbers);
+List<Integer> missing = IntStream.rangeClosed(min, max)
+    .filter(n -> !numberSet.contains(n))
+    .boxed()
+    .collect(Collectors.toList());
+
+System.out.println(missing); // [3, 5, 8, 10]
+```
+
+### Solution 2: Using removeAll()
+
+java
+
+```java
+Set<Integer> allNumbers = IntStream.rangeClosed(min, max)
+    .boxed()
+    .collect(Collectors.toSet());
+    
+allNumbers.removeAll(numbers);
+List<Integer> missing = new ArrayList<>(allNumbers);
+```
+
+### Solution 3: Find First Missing Positive
+
+java
+
+```java
+public int firstMissingPositive(int[] nums) {
+    Set<Integer> set = Arrays.stream(nums)
+        .boxed()
+        .collect(Collectors.toSet());
+    
+    int result = 1;
+    while (set.contains(result)) {
+        result++;
+    }
+    return result;
+}
+```
+
+----------
+
+## Problem 49: Rotate List/Array
+
+### Solution 1: Rotate List to Right by K positions
+
+java
+
+```java
+public static <T> List<T> rotateRight(List<T> list, int k) {
+    if (list.isEmpty()) return list;
+    
+    int size = list.size();
+    k = k % size; // Handle k > size
+    
+    List<T> rotated = new ArrayList<>();
+    rotated.addAll(list.subList(size - k, size));
+    rotated.addAll(list.subList(0, size - k));
+    
+    return rotated;
+}
+
+// Usage
+List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
+List<Integer> rotated = rotateRight(list, 2);
+System.out.println(rotated); // [4, 5, 1, 2, 3]
+```
+
+### Solution 2: In-Place Rotation Using Collections.rotate()
+
+java
+
+```java
+List<Integer> list = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
+Collections.rotate(list, 2);
+System.out.println(list); // [4, 5, 1, 2, 3]
+```
+
+### Solution 3: Using Streams
+
+java
+
+```java
+public static <T> List<T> rotateRight(List<T> list, int k) {
+    int size = list.size();
+    k = k % size;
+    
+    return Stream.concat(
+        list.stream().skip(size - k),
+        list.stream().limit(size - k)
+    ).collect(Collectors.toList());
+}
+```
+
+----------
+
+## Problem 50: Implement Stack Using Queue and Vice Versa
+
+### Solution 1: Stack Using Two Queues
+
+java
+
+```java
+class StackUsingQueues {
+    private Queue<Integer> q1 = new LinkedList<>();
+    private Queue<Integer> q2 = new LinkedList<>();
+    
+    public void push(int x) {
+        q2.offer(x);
+        while (!q1.isEmpty()) {
+            q2.offer(q1.poll());
+        }
+        Queue<Integer> temp = q1;
+        q1 = q2;
+        q2 = temp;
+    }
+    
+    public int pop() {
+        return q1.poll();
+    }
+    
+    public int top() {
+        return q1.peek();
+    }
+    
+    public boolean empty() {
+        return q1.isEmpty();
+    }
+}
+```
+
+### Solution 2: Queue Using Two Stacks
+
+java
+
+```java
+class QueueUsingStacks {
+    private Stack<Integer> stack1 = new Stack<>();
+    private Stack<Integer> stack2 = new Stack<>();
+    
+    public void enqueue(int x) {
+        stack1.push(x);
+    }
+    
+    public int dequeue() {
+        if (stack2.isEmpty()) {
+            while (!stack1.isEmpty()) {
+                stack2.push(stack1.pop());
+            }
+        }
+        return stack2.pop();
+    }
+    
+    public int peek() {
+        if (stack2.isEmpty()) {
+            while (!stack1.isEmpty()) {
+                stack2.push(stack1.pop());
+            }
+        }
+        return stack2.peek();
+    }
+    
+    public boolean empty() {
+        return stack1.isEmpty() && stack2.isEmpty();
+    }
+}
+```
+
+----------
+
+## Problem 51: Min/Max Stack - Get Min in O(1)
+
+### Solution 1: Using Two Stacks
+
+java
+
+```java
+class MinStack {
+    private Stack<Integer> stack = new Stack<>();
+    private Stack<Integer> minStack = new Stack<>();
+    
+    public void push(int x) {
+        stack.push(x);
+        if (minStack.isEmpty() || x <= minStack.peek()) {
+            minStack.push(x);
+        }
+    }
+    
+    public int pop() {
+        int val = stack.pop();
+        if (val == minStack.peek()) {
+            minStack.pop();
+        }
+        return val;
+    }
+    
+    public int top() {
+        return stack.peek();
+    }
+    
+    public int getMin() {
+        return minStack.peek();
+    }
+}
+```
+
+### Solution 2: Using Single Stack with Pairs
+
+java
+
+```java
+class MinStack {
+    private Stack<int[]> stack = new Stack<>(); // [value, min]
+    
+    public void push(int x) {
+        if (stack.isEmpty()) {
+            stack.push(new int[]{x, x});
+        } else {
+            int currentMin = Math.min(x, stack.peek()[1]);
+            stack.push(new int[]{x, currentMin});
+        }
+    }
+    
+    public int pop() {
+        return stack.pop()[0];
+    }
+    
+    public int top() {
+        return stack.peek()[0];
+    }
+    
+    public int getMin() {
+        return stack.peek()[1];
+    }
+}
+```
+
+----------
+
+## Problem 52: Implement Priority Queue Operations
+
+### Solution 1: Basic PriorityQueue Usage
+
+java
+
+```java
+// Min heap (default)
+PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+minHeap.offer(5);
+minHeap.offer(2);
+minHeap.offer(8);
+minHeap.offer(1);
+
+System.out.println(minHeap.poll()); // 1
+System.out.println(minHeap.poll()); // 2
+```
+
+### Solution 2: Max Heap
+
+java
+
+```java
+PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+maxHeap.offer(5);
+maxHeap.offer(2);
+maxHeap.offer(8);
+maxHeap.offer(1);
+
+System.out.println(maxHeap.poll()); // 8
+System.out.println(maxHeap.poll()); // 5
+```
+
+### Solution 3: Custom Comparator for Objects
+
+java
+
+```java
+PriorityQueue<Employee> pq = new PriorityQueue<>(
+    Comparator.comparing(Employee::getSalary).reversed()
+        .thenComparing(Employee::getName)
+);
+
+pq.offer(new Employee("John", "IT", 60000));
+pq.offer(new Employee("Jane", "HR", 65000));
+pq.offer(new Employee("Bob", "IT", 65000));
+
+Employee highest = pq.poll(); // Jane (highest salary, first alphabetically)
+```
+
+### Solution 4: Find Kth Largest Element
+
+java
+
+```java
+public int findKthLargest(int[] nums, int k) {
+    PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+    
+    for (int num : nums) {
+        minHeap.offer(num);
+        if (minHeap.size() > k) {
+            minHeap.poll();
+        }
+    }
+    
+    return minHeap.peek();
+}
+```
+
+----------
+
+## Problem 53: Sliding Window Maximum Using Deque
+
+### Solution 1: Using Deque
+
+java
+
+```java
+public int[] maxSlidingWindow(int[] nums, int k) {
+    if (nums == null || nums.length == 0) return new int[0];
+    
+    Deque<Integer> deque = new ArrayDeque<>();
+    int[] result = new int[nums.length - k + 1];
+    
+    for (int i = 0; i < nums.length; i++) {
+        // Remove elements outside window
+        while (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {
+            deque.pollFirst();
+        }
+        
+        // Remove smaller elements
+        while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {
+            deque.pollLast();
+        }
+        
+        deque.offerLast(i);
+        
+        // Add to result
+        if (i >= k - 1) {
+            result[i - k + 1] = nums[deque.peekFirst()];
+        }
+    }
+    
+    return result;
+}
+
+// Usage
+int[] nums = {1, 3, -1, -3, 5, 3, 6, 7};
+int[] result = maxSlidingWindow(nums, 3);
+System.out.println(Arrays.toString(result)); // [3, 3, 5, 5, 6, 7]
+```
+
+----------
+
+## Problem 54: Implement Trie (Prefix Tree)
+
+### Solution 1: Basic Trie Implementation
+
+java
+
+```java
+class TrieNode {
+    Map<Character, TrieNode> children = new HashMap<>();
+    boolean isEndOfWord = false;
+}
+
+class Trie {
+    private TrieNode root = new TrieNode();
+    
+    public void insert(String word) {
+        TrieNode current = root;
+        for (char ch : word.toCharArray()) {
+            current = current.children.computeIfAbsent(ch, c -> new TrieNode());
+        }
+        current.isEndOfWord = true;
+    }
+    
+    public boolean search(String word) {
+        TrieNode node = searchPrefix(word);
+        return node != null && node.isEndOfWord;
+    }
+    
+    public boolean startsWith(String prefix) {
+        return searchPrefix(prefix) != null;
+    }
+    
+    private TrieNode searchPrefix(String prefix) {
+        TrieNode current = root;
+        for (char ch : prefix.toCharArray()) {
+            current = current.children.get(ch);
+            if (current == null) return null;
+        }
+        return current;
+    }
+}
+```
+
+### Solution 2: Auto-Complete Feature
+
+java
+
+```java
+class Trie {
+    private TrieNode root = new TrieNode();
+    
+    public List<String> autoComplete(String prefix) {
+        List<String> results = new ArrayList<>();
+        TrieNode node = searchPrefix(prefix);
+        
+        if (node != null) {
+            collectWords(node, prefix, results);
+        }
+        return results;
+    }
+    
+    private void collectWords(TrieNode node, String prefix, List<String> results) {
+        if (node.isEndOfWord) {
+            results.add(prefix);
+        }
+        
+        for (Map.Entry<Character, TrieNode> entry : node.children.entrySet()) {
+            collectWords(entry.getValue(), prefix + entry.getKey(), results);
+        }
+    }
+}
+```
+
+----------
+
+## Problem 55: Design HashMap from Scratch
+
+### Solution 1: Simple HashMap Implementation
+
+java
+
+```java
+class MyHashMap<K, V> {
+    private static class Entry<K, V> {
+        K key;
+        V value;
+        Entry<K, V> next;
+        
+        Entry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+    
+    private Entry<K, V>[] buckets;
+    private int capacity = 16;
+    private int size = 0;
+    
+    @SuppressWarnings("unchecked")
+    public MyHashMap() {
+        buckets = new Entry[capacity];
+    }
+    
+    private int getBucketIndex(K key) {
+        return key == null ? 0 : Math.abs(key.hashCode() % capacity);
+    }
+    
+    public void put(K key, V value) {
+        int index = getBucketIndex(key);
+        Entry<K, V> entry = buckets[index];
+        
+        // Check if key exists
+        while (entry != null) {
+            if ((key == null && entry.key == null) || 
+                (key != null && key.equals(entry.key))) {
+                entry.value = value;
+                return;
+            }
+            entry = entry.next;
+        }
+        
+        // Add new entry at beginning
+        Entry<K, V> newEntry = new Entry<>(key, value);
+        newEntry.next = buckets[index];
+        buckets[index] = newEntry;
+        size++;
+        
+        // Rehash if needed
+        if (size > capacity * 0.75) {
+            rehash();
+        }
+    }
+    
+    public V get(K key) {
+        int index = getBucketIndex(key);
+        Entry<K, V> entry = buckets[index];
+        
+        while (entry != null) {
+            if ((key == null && entry.key == null) || 
+                (key != null && key.equals(entry.key))) {
+                return entry.value;
+            }
+            entry = entry.next;
+        }
+        return null;
+    }
+    
+    public V remove(K key) {
+        int index = getBucketIndex(key);
+        Entry<K, V> entry = buckets[index];
+        Entry<K, V> prev = null;
+        
+        while (entry != null) {
+            if ((key == null && entry.key == null) || 
+                (key != null && key.equals(entry.key))) {
+                if (prev == null) {
+                    buckets[index] = entry.next;
+                } else {
+                    prev.next = entry.next;
+                }
+                size--;
+                return entry.value;
+            }
+            prev = entry;
+            entry = entry.next;
+        }
+        return null;
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void rehash() {
+        Entry<K, V>[] oldBuckets = buckets;
+        capacity *= 2;
+        buckets = new Entry[capacity];
+        size = 0;
+        
+        for (Entry<K, V> entry : oldBuckets) {
+            while (entry != null) {
+                put(entry.key, entry.value);
+                entry = entry.next;
+            }
+        }
+    }
+    
+    public int size() {
+        return size;
+    }
+}
+```
+
+----------
+
+## Problem 56: Find Longest Substring Without Repeating Characters
+
+### Solution 1: Using HashMap with Sliding Window
+
+java
+
+```java
+public int lengthOfLongestSubstring(String s) {
+    Map<Character, Integer> map = new HashMap<>();
+    int maxLength = 0;
+    int left = 0;
+    
+    for (int right = 0; right < s.length(); right++) {
+        char c = s.charAt(right);
+        
+        if (map.containsKey(c)) {
+            left = Math.max(left, map.get(c) + 1);
+        }
+        
+        map.put(c, right);
+        maxLength = Math.max(maxLength, right - left + 1);
+    }
+    
+    return maxLength;
+}
+
+// Usage
+String s = "abcabcbb";
+System.out.println(lengthOfLongestSubstring(s)); // 3 (abc)
+```
+
+### Solution 2: Using Set
+
+java
+
+```java
+public int lengthOfLongestSubstring(String s) {
+    Set<Character> set = new HashSet<>();
+    int maxLength = 0;
+    int left = 0;
+    
+    for (int right = 0; right < s.length(); right++) {
+        while (set.contains(s.charAt(right))) {
+            set.remove(s.charAt(left));
+            left++;
+        }
+        set.add(s.charAt(right));
+        maxLength = Math.max(maxLength, right - left + 1);
+    }
+    
+    return maxLength;
+}
+```
+
+----------
+
+## Problem 57: Two Sum Problem
+
+### Solution 1: Using HashMap
+
+java
+
+```java
+public int[] twoSum(int[] nums, int target) {
+    Map<Integer, Integer> map = new HashMap<>();
+    
+    for (int i = 0; i < nums.length; i++) {
+        int complement = target - nums[i];
+        if (map.containsKey(complement)) {
+            return new int[]{map.get(complement), i};
+        }
+        map.put(nums[i], i);
+    }
+    
+    return new int[0];
+}
+
+// Usage
+int[] nums = {2, 7, 11, 15};
+int[] result = twoSum(nums, 9);
+System.out.println(Arrays.toString(result)); // [0, 1]
+```
+
+### Solution 2: Using Streams (Less Efficient)
+
+java
+
+```java
+public int[] twoSum(int[] nums, int target) {
+    Map<Integer, Integer> map = IntStream.range(0, nums.length)
+        .boxed()
+        .collect(Collectors.toMap(i -> nums[i], i -> i, (a, b) -> a));
+    
+    return IntStream.range(0, nums.length)
+        .filter(i -> map.containsKey(target - nums[i]) && map.get(target - nums[i]) != i)
+        .findFirst()
+        .map(i -> new int[]{i, map.get(target - nums[i])})
+        .orElse(new int[0]);
+}
+```
+
+----------
+
+## Problem 58: Valid Parentheses
+
+### Solution 1: Using Stack
+
+java
+
+```java
+public boolean isValid(String s) {
+    Stack<Character> stack = new Stack<>();
+    Map<Character, Character> pairs = Map.of(')', '(', '}', '{', ']', '[');
+    
+    for (char c : s.toCharArray()) {
+        if (pairs.containsValue(c)) {
+            stack.push(c);
+        } else if (pairs.containsKey(c)) {
+            if (stack.isEmpty() || stack.pop() != pairs.get(c)) {
+                return false;
+            }
+        }
+    }
+    
+    return stack.isEmpty();
+}
+
+// Usage
+System.out.println(isValid("()")); // true
+System.out.println(isValid("()[]{}")); // true
+System.out.println(isValid("(]")); // false
+```
+
+### Solution 2: Using Deque
+
+java
+
+```java
+public boolean isValid(String s) {
+    Deque<Character> deque = new ArrayDeque<>();
+    
+    for (char c : s.toCharArray()) {
+        if (c == '(') deque.push(')');
+        else if (c == '{') deque.push('}');
+        else if (c == '[') deque.push(']');
+        else if (deque.isEmpty() || deque.pop() != c) return false;
+    }
+    
+    return deque.isEmpty();
+}
+```
+
+----------
+
+## Problem 59: Merge K Sorted Lists
+
+### Solution 1: Using PriorityQueue
+
+java
+
+```java
+public ListNode mergeKLists(ListNode[] lists) {
+    if (lists == null || lists.length == 0) return null;
+    
+    PriorityQueue<ListNode> pq = new PriorityQueue<>(
+        (a, b) -> a.val - b.val
+    );
+    
+    // Add first node of each list
+    for (ListNode node : lists) {
+        if (node != null) {
+            pq.offer(node);
+        }
+    }
+    
+    ListNode dummy = new ListNode(0);
+    ListNode current = dummy;
+    
+    while (!pq.isEmpty()) {
+        ListNode node = pq.poll();
+        current.next = node;
+        current = current.next;
+        
+        if (node.next != null) {
+            pq.offer(node.next);
+        }
+    }
+    
+    return dummy.next;
+}
+```
+
+### Solution 2: Merge Two at a Time
+
+java
+
+```java
+public ListNode mergeKLists(ListNode[] lists) {
+    if (lists == null || lists.length == 0) return null;
+    
+    ListNode result = lists[0];
+    for (int i = 1; i < lists.length; i++) {
+        result = mergeTwoLists(result, lists[i]);
+    }
+    return result;
+}
+
+private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+    ListNode dummy = new ListNode(0);
+    ListNode current = dummy;
+    
+    while (l1 != null && l2 != null) {
+        if (l1.val < l2.val) {
+            current.next = l1;
+            l1 = l1.next;
+        } else {
+            current.next = l2;
+            l2 = l2.next;
+        }
+        current = current.next;
+    }
+    
+    current.next = (l1 != null) ? l1 : l2;
+    return dummy.next;
+}
+```
+
+----------
+
+## Problem 60: Implement Iterator for Nested List
+
+### Solution 1: Flatten in Constructor
+
+java
+
+```java
+class NestedIterator implements Iterator<Integer> {
+    private List<Integer> flatList = new ArrayList<>();
+    private int index = 0;
+    
+    public NestedIterator(List<NestedInteger> nestedList) {
+        flatten(nestedList);
+    }
+    
+    private void flatten(List<NestedInteger> list) {
+        for (NestedInteger ni : list) {
+            if (ni.isInteger()) {
+                flatList.add(ni.getInteger());
+            } else {
+                flatten(ni.getList());
+            }
+        }
+    }
+    
+    @Override
+    public Integer next() {
+        return flatList.get(index++);
+    }
+    
+    @Override
+    public boolean hasNext() {
+        return index < flatList.size();
+    }
+}
+```
+
+### Solution 2: Lazy Evaluation Using Stack
+
+java
+
+```java
+class NestedIterator implements Iterator<Integer> {
+    private Stack<NestedInteger> stack = new Stack<>();
+    
+    public NestedIterator(List<NestedInteger> nestedList) {
+        for (int i = nestedList.size() - 1; i >= 0; i--) {
+            stack.push(nestedList.get(i));
+        }
+    }
+    
+    @Override
+    public Integer next() {
+        return stack.pop().getInteger();
+    }
+    
+    @Override
+    public boolean hasNext() {
+        while (!stack.isEmpty()) {
+            NestedInteger top = stack.peek();
+            if (top.isInteger()) {
+                return true;
+            }
+            stack.pop();
+            List<NestedInteger> list = top.getList();
+            for (int i = list.size() - 1; i >= 0; i--) {
+                stack.push(list.get(i));
+            }
+        }
+        return false;
+    }
+}
+```
+
+----------
+
+## Problem 61: Clone a Graph with HashMap
+
+### Solution 1: DFS Approach
+
+java
+
+```java
+class Node {
+    public int val;
+    public List<Node> neighbors;
+    
+    public Node(int val) {
+        this.val = val;
+        neighbors = new ArrayList<>();
+    }
+}
+
+public Node cloneGraph(Node node) {
+    if (node == null) return null;
+    
+    Map<Node, Node> visited = new HashMap<>();
+    return dfs(node, visited);
+}
+
+private Node dfs(Node node, Map<Node, Node> visited) {
+    if (visited.containsKey(node)) {
+        return visited.get(node);
+    }
+    
+    Node clone = new Node(node.val);
+    visited.put(node, clone);
+    
+    for (Node neighbor : node.neighbors) {
+        clone.neighbors.add(dfs(neighbor, visited));
+    }
+    
+    return clone;
+}
+```
+
+### Solution 2: BFS Approach
+
+java
+
+```java
+public Node cloneGraph(Node node) {
+    if (node == null) return null;
+    
+    Map<Node, Node> visited = new HashMap<>();
+    Queue<Node> queue = new LinkedList<>();
+    
+    Node clone = new Node(node.val);
+    visited.put(node, clone);
+    queue.offer(node);
+    
+    while (!queue.isEmpty()) {
+        Node current = queue.poll();
+        
+        for (Node neighbor : current.neighbors) {
+            if (!visited.containsKey(neighbor)) {
+                visited.put(neighbor, new Node(neighbor.val));
+                queue.offer(neighbor);
+            }
+            visited.get(current).neighbors.add(visited.get(neighbor));
+        }
+    }
+    
+    return clone;
+}
+```
+
+----------
+
+## Problem 62: LFU Cache (Least Frequently Used)
+
+### Solution 1: Using HashMap + TreeSet
+
+java
+
+```java
+class LFUCache {
+    private int capacity;
+    private int minFreq;
+    private Map<Integer, Integer> keyToVal;
+    private Map<Integer, Integer> keyToFreq;
+    private Map<Integer, LinkedHashSet<Integer>> freqToKeys;
+    
+    public LFUCache(int capacity) {
+        this.capacity = capacity;
+        this.minFreq = 0;
+        keyToVal = new HashMap<>();
+        keyToFreq = new HashMap<>();
+        freqToKeys = new HashMap<>();
+    }
+    
+    public int get(int key) {
+        if (!keyToVal.containsKey(key)) return -1;
+        
+        increaseFreq(key);
+        return keyToVal.get(key);
+    }
+    
+    public void put(int key, int value) {
+        if (capacity <= 0) return;
+        
+        if (keyToVal.containsKey(key)) {
+            keyToVal.put(key, value);
+            increaseFreq(key);
+            return;
+        }
+        
+        if (keyToVal.size() >= capacity) {
+            evict();
+        }
+        
+        keyToVal.put(key, value);
+        keyToFreq.put(key, 1);
+        freqToKeys.computeIfAbsent(1, k -> new LinkedHashSet<>()).add(key);
+        minFreq = 1;
+    }
+    
+    private void increaseFreq(int key) {
+        int freq = keyToFreq.get(key);
+        keyToFreq.put(key, freq + 1);
+        
+        freqToKeys.get(freq).remove(key);
+        if (freq == minFreq && freqToKeys.get(freq).isEmpty()) {
+            minFreq++;
+        }
+        
+        freqToKeys.computeIfAbsent(freq + 1, k -> new LinkedHashSet<>()).add(key);
+    }
+    
+    private void evict() {
+        LinkedHashSet<Integer> keys = freqToKeys.get(minFreq);
+        int keyToDelete = keys.iterator().next();
+        keys.remove(keyToDelete);
+        keyToVal.remove(keyToDelete);
+        keyToFreq.remove(keyToDelete);
+    }
+}
+```
+
+----------
+
+## Problem 63: Implement BlockingQueue
+
+### Solution 1: Using wait() and notify()
+
+java
+
+```java
+class MyBlockingQueue<T> {
+    private Queue<T> queue = new LinkedList<>();
+    private int capacity;
+    
+    public MyBlockingQueue(int capacity) {
+        this.capacity = capacity;
+    }
+    
+    public synchronized void put(T item) throws InterruptedException {
+        while (queue.size() == capacity) {
+            wait();
+        }
+        queue.add(item);
+        notifyAll();
+    }
+    
+    public synchronized T take() throws InterruptedException {
+        while (queue.isEmpty()) {
+            wait();
+        }
+        T item = queue.remove();
+        notifyAll();
+        return item;
+    }
+    
+    public synchronized int size() {
+        return queue.size();
+    }
+}
+```
+
+### Solution 2: Using Java's ArrayBlockingQueue
+
+java
+
+```java
+BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(10);
+
+// Producer
+new Thread(() -> {
+    try {
+        for (int i = 0; i < 100; i++) {
+            queue.put(i);
+            System.out.println("Produced: " + i);
+        }
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+    }
+}).start();
+
+// Consumer
+new Thread(() -> {
+    try {
+        while (true) {
+            Integer item = queue.take();
+            System.out.println("Consumed: " + item);
+        }
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+    }
+}).start();
+```
+
+----------
+
+## Problem 64: Find All Pairs with Given Sum
+
+### Solution 1: Using HashMap
+
+java
+
+```java
+public List<int[]> findPairs(int[] nums, int target) {
+    List<int[]> result = new ArrayList<>();
+    Map<Integer, Integer> map = new HashMap<>();
+    
+    for (int i = 0; i < nums.length; i++) {
+        int complement = target - nums[i];
+        if (map.containsKey(complement)) {
+            result.add(new int[]{map.get(complement), i});
+        }
+        map.put(nums[i], i);
+    }
+    
+    return result;
+}
+
+// Usage
+int[] nums = {2, 7, 11, 15, 3, 6};
+List<int[]> pairs = findPairs(nums, 9);
+pairs.forEach(pair -> System.out.println(Arrays.toString(pair)));
+// [0, 1] -> 2+7=9
+// [4, 5] -> 3+6=9
+```
+
+### Solution 2: Two Pointer Approach (Sorted Array)
+
+java
+
+```java
+public List<List<Integer>> findPairs(int[] nums, int target) {
+    List<List<Integer>> result = new ArrayList<>();
+    Arrays.sort(nums);
+    
+    int left = 0, right = nums.length - 1;
+    
+    while (left < right) {
+        int sum = nums[left] + nums[right];
+        if (sum == target) {
+            result.add(Arrays.asList(nums[left], nums[right]));
+            left++;
+            right--;
+        } else if (sum < target) {
+            left++;
+        } else {
+            right--;
+        }
+    }
+    
+    return result;
+}
+```
+
+### Solution 3: Using Streams
+
+java
+
+```java
+public List<int[]> findPairs(int[] nums, int target) {
+    Map<Integer, Integer> indexMap = IntStream.range(0, nums.length)
+        .boxed()
+        .collect(Collectors.toMap(i -> nums[i], i -> i, (a, b) -> a));
+    
+    return IntStream.range(0, nums.length)
+        .filter(i -> {
+            int complement = target - nums[i];
+            return indexMap.containsKey(complement) && indexMap.get(complement) > i;
+        })
+        .mapToObj(i -> new int[]{i, indexMap.get(target - nums[i])})
+        .collect(Collectors.toList());
+}
+```
+
+----------
+
+## Problem 65: Subarray Sum Equals K
+
+### Solution 1: Using HashMap (Prefix Sum)
+
+java
+
+```java
+public int subarraySum(int[] nums, int k) {
+    Map<Integer, Integer> prefixSumCount = new HashMap<>();
+    prefixSumCount.put(0, 1);
+    
+    int sum = 0;
+    int count = 0;
+    
+    for (int num : nums) {
+        sum += num;
+        if (prefixSumCount.containsKey(sum - k)) {
+            count += prefixSumCount.get(sum - k);
+        }
+        prefixSumCount.put(sum, prefixSumCount.getOrDefault(sum, 0) + 1);
+    }
+    
+    return count;
+}
+
+// Usage
+int[] nums = {1, 1, 1};
+System.out.println(subarraySum(nums, 2)); // 2 ([1,1] and [1,1])
+```
+
+### Solution 2: Brute Force (For Comparison)
+
+java
+
+```java
+public int subarraySum(int[] nums, int k) {
+    int count = 0;
+    for (int i = 0; i < nums.length; i++) {
+        int sum = 0;
+        for (int j = i; j < nums.length; j++) {
+            sum += nums[j];
+            if (sum == k) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+```
+
+----------
+
+## Problem 66: Top K Frequent Elements
+
+### Solution 1: Using HashMap + PriorityQueue
+
+java
+
+```java
+public int[] topKFrequent(int[] nums, int k) {
+    Map<Integer, Integer> frequency = new HashMap<>();
+    for (int num : nums) {
+        frequency.put(num, frequency.getOrDefault(num, 0) + 1);
+    }
+    
+    PriorityQueue<Map.Entry<Integer, Integer>> pq = new PriorityQueue<>(
+        (a, b) -> b.getValue() - a.getValue()
+    );
+    
+    pq.addAll(frequency.entrySet());
+    
+    int[] result = new int[k];
+    for (int i = 0; i < k; i++) {
+        result[i] = pq.poll().getKey();
+    }
+    
+    return result;
+}
+```
+
+### Solution 2: Using Streams
+
+java
+
+```java
+public int[] topKFrequent(int[] nums, int k) {
+    return Arrays.stream(nums)
+        .boxed()
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+        .entrySet().stream()
+        .sorted(Map.Entry.<Integer, Long>comparingByValue().reversed())
+        .limit(k)
+        .mapToInt(Map.Entry::getKey)
+        .toArray();
+}
+```
+
+### Solution 3: Using Bucket Sort (O(n) time)
+
+java
+
+```java
+public int[] topKFrequent(int[] nums, int k) {
+    Map<Integer, Integer> frequency = new HashMap<>();
+    for (int num : nums) {
+        frequency.put(num, frequency.getOrDefault(num, 0) + 1);
+    }
+    
+    List<Integer>[] buckets = new List[nums.length + 1];
+    for (int key : frequency.keySet()) {
+        int freq = frequency.get(key);
+        if (buckets[freq] == null) {
+            buckets[freq] = new ArrayList<>();
+        }
+        buckets[freq].add(key);
+    }
+    
+    int[] result = new int[k];
+    int index = 0;
+    
+    for (int i = buckets.length - 1; i >= 0 && index < k; i--) {
+        if (buckets[i] != null) {
+            for (int num : buckets[i]) {
+                result[index++] = num;
+                if (index == k) break;
+            }
+        }
+    }
+    
+    return result;
+}
+```
+
+----------
+
+## Problem 67: Word Pattern Matching
+
+### Solution 1: Using Two HashMaps
+
+java
+
+```java
+public boolean wordPattern(String pattern, String s) {
+    String[] words = s.split(" ");
+    if (pattern.length() != words.length) return false;
+    
+    Map<Character, String> charToWord = new HashMap<>();
+    Map<String, Character> wordToChar = new HashMap<>();
+    
+    for (int i = 0; i < pattern.length(); i++) {
+        char c = pattern.charAt(i);
+        String word = words[i];
+        
+        if (charToWord.containsKey(c)) {
+            if (!charToWord.get(c).equals(word)) {
+                return false;
+            }
+        } else {
+            charToWord.put(c, word);
+        }
+        
+        if (wordToChar.containsKey(word)) {
+            if (wordToChar.get(word) != c) {
+                return false;
+            }
+        } else {
+            wordToChar.put(word, c);
+        }
+    }
+    
+    return true;
+}
+
+// Usage
+System.out.println(wordPattern("abba", "dog cat cat dog")); // true
+System.out.println(wordPattern("abba", "dog cat cat fish")); // false
+```
+
+### Solution 2: Using Single Map with Index
+
+java
+
+```java
+public boolean wordPattern(String pattern, String s) {
+    String[] words = s.split(" ");
+    if (pattern.length() != words.length) return false;
+    
+    Map<Object, Integer> map = new HashMap<>();
+    
+    for (int i = 0; i < pattern.length(); i++) {
+        Integer charIndex = map.put(pattern.charAt(i), i);
+        Integer wordIndex = map.put(words[i], i);
+        
+        if (!Objects.equals(charIndex, wordIndex)) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+```
+
+----------
+
+## Problem 68: Design a Data Structure with Insert, Delete, GetRandom in O(1)
+
+### Solution 1: Using ArrayList + HashMap
+
+java
+
+```java
+class RandomizedSet {
+    private List<Integer> list;
+    private Map<Integer, Integer> map; // value -> index
+    private Random random;
+    
+    public RandomizedSet() {
+        list = new ArrayList<>();
+        map = new HashMap<>();
+        random = new Random();
+    }
+    
+    public boolean insert(int val) {
+        if (map.containsKey(val)) return false;
+        
+        map.put(val, list.size());
+        list.add(val);
+        return true;
+    }
+    
+    public boolean remove(int val) {
+        if (!map.containsKey(val)) return false;
+        
+        int index = map.get(val);
+        int lastElement = list.get(list.size() - 1);
+        
+        // Swap with last element
+        list.set(index, lastElement);
+        map.put(lastElement, index);
+        
+        // Remove last element
+        list.remove(list.size() - 1);
+        map.remove(val);
+        
+        return true;
+    }
+    
+    public int getRandom() {
+        return list.get(random.nextInt(list.size()));
+    }
+}
+```
+
+----------
+
+## Problem 69: Find All Substrings of a String
+
+### Solution 1: Traditional Approach
+
+java
+
+```java
+public List<String> getAllSubstrings(String s) {
+    List<String> substrings = new ArrayList<>();
+    
+    for (int i = 0; i < s.length(); i++) {
+        for (int j = i + 1; j <= s.length(); j++) {
+            substrings.add(s.substring(i, j));
+        }
+    }
+    
+    return substrings;
+}
+
+// Usage
+System.out.println(getAllSubstrings("abc"));
+// [a, ab, abc, b, bc, c]
+```
+
+### Solution 2: Using Streams
+
+java
+
+```java
+public List<String> getAllSubstrings(String s) {
+    return IntStream.range(0, s.length())
+        .boxed()
+        .flatMap(i -> IntStream.range(i + 1, s.length() + 1)
+            .mapToObj(j -> s.substring(i, j)))
+        .collect(Collectors.toList());
+}
+```
+
+### Solution 3: Get Unique Substrings Only
+
+java
+
+```java
+public Set<String> getUniqueSubstrings(String s) {
+    return IntStream.range(0, s.length())
+        .boxed()
+        .flatMap(i -> IntStream.range(i + 1, s.length() + 1)
+            .mapToObj(j -> s.substring(i, j)))
+        .collect(Collectors.toSet());
+}
+```
+
+----------
+
+## Problem 70: Reverse Words in a String
+
+### Solution 1: Using Split and Collections.reverse()
+
+java
+
+```java
+public String reverseWords(String s) {
+    List<String> words = new ArrayList<>(Arrays.asList(s.trim().split("\\s+")));
+    Collections.reverse(words);
+    return String.join(" ", words);
+}
+
+// Usage
+System.out.println(reverseWords("the sky is blue")); // "blue is sky the"
+```
+
+### Solution 2: Using Streams
+
+java
+
+```java
+public String reverseWords(String s) {
+    return Arrays.stream(s.trim().split("\\s+"))
+        .collect(Collectors.collectingAndThen(
+            Collectors.toList(),
+            list -> {
+                Collections.reverse(list);
+                return String.join(" ", list);
+            }
+        ));
+}
+```
+
+### Solution 3: Manual Approach with StringBuilder
+
+java
+
+```java
+public String reverseWords(String s) {
+    String[] words = s.trim().split("\\s+");
+    StringBuilder result = new StringBuilder();
+    
+    for (int i = words.length - 1; i >= 0; i--) {
+        result.append(words[i]);
+        if (i > 0) result.append(" ");
+    }
+    
+    return result.toString();
+}
+```
+
+### Solution 4: Reverse Each Character in Each Word
+
+java
+
+```java
+public String reverseEachWord(String s) {
+    return Arrays.stream(s.split(" "))
+        .map(word -> new StringBuilder(word).reverse().toString())
+        .collect(Collectors.joining(" "));
+}
+
+// Usage
+System.out.println(reverseEachWord("hello world")); // "olleh dlrow"
+```
+
+----------
+
+## Problem 71: Product of Array Except Self
+
+### Solution 1: Using Left and Right Products
+
+java
+
+```java
+public int[] productExceptSelf(int[] nums) {
+    int n = nums.length;
+    int[] result = new int[n];
+    
+    // Left products
+    result[0] = 1;
+    for (int i = 1; i < n; i++) {
+        result[i] = result[i - 1] * nums[i - 1];
+    }
+    
+    // Right products
+    int right = 1;
+    for (int i = n - 1; i >= 0; i--) {
+        result[i] *= right;
+        right *= nums[i];
+    }
+    
+    return result;
+}
+
+// Usage
+int[] nums = {1, 2, 3, 4};
+System.out.println(Arrays.toString(productExceptSelf(nums))); // [24, 12, 8, 6]
+```
+
+### Solution 2: Using Streams (Less Efficient)
+
+java
+
+```java
+public int[] productExceptSelf(int[] nums) {
+    return IntStream.range(0, nums.length)
+        .map(i -> IntStream.range(0, nums.length)
+            .filter(j -> j != i)
+            .map(j -> nums[j])
+            .reduce(1, (a, b) -> a * b))
+        .toArray();
+}
+```
+
+----------
+
+## Problem 72: Find Missing and Duplicate Numbers
+
+### Solution 1: Using HashSet
+
+java
+
+```java
+public int[] findErrorNums(int[] nums) {
+    Set<Integer> set = new HashSet<>();
+    int duplicate = -1;
+    
+    for (int num : nums) {
+        if (set.contains(num)) {
+            duplicate = num;
+        }
+        set.add(num);
+    }
+    
+    int missing = -1;
+    for (int i = 1; i <= nums.length; i++) {
+        if (!set.contains(i)) {
+            missing = i;
+            break;
+        }
+    }
+    
+    return new int[]{duplicate, missing};
+}
+```
+
+### Solution 2: Using Math (XOR)
+
+java
+
+```java
+public int[] findErrorNums(int[] nums) {
+    int n = nums.length;
+    long expectedSum = (long) n * (n + 1) / 2;
+    long actualSum = 0;
+    long actualSumSquare = 0;
+    long expectedSumSquare = (long) n * (n + 1) * (2 * n + 1) / 6;
+    
+    for (int num : nums) {
+        actualSum += num;
+        actualSumSquare += (long) num * num;
+    }
+    
+    long diffSum = expectedSum - actualSum;
+    long diffSumSquare = expectedSumSquare - actualSumSquare;
+    
+    int missing = (int) ((diffSum + diffSumSquare / diffSum) / 2);
+    int duplicate = (int) (missing - diffSum);
+    
+    return new int[]{duplicate, missing};
+}
+```
+
+### Solution 3: Using Frequency Map
+
+java
+
+```java
+public int[] findErrorNums(int[] nums) {
+    Map<Integer, Integer> frequency = Arrays.stream(nums)
+        .boxed()
+        .collect(Collectors.groupingBy(Function.identity(), 
+            Collectors.collectingAndThen(Collectors.counting(), Long::intValue)));
+    
+    int duplicate = frequency.entrySet().stream()
+        .filter(e -> e.getValue() == 2)
+        .map(Map.Entry::getKey)
+        .findFirst()
+        .orElse(-1);
+    
+    int missing = IntStream.rangeClosed(1, nums.length)
+        .filter(i -> !frequency.containsKey(i))
+        .findFirst()
+        .orElse(-1);
+    
+    return new int[]{duplicate, missing};
+}
+```
+
+----------
+
+## Problem 73: Longest Consecutive Sequence
+
+### Solution 1: Using HashSet
+
+java
+
+```java
+public int longestConsecutive(int[] nums) {
+    Set<Integer> numSet = Arrays.stream(nums).boxed().collect(Collectors.toSet());
+    int longest = 0;
+    
+    for (int num : numSet) {
+        // Only start counting if it's the beginning of a sequence
+        if (!numSet.contains(num - 1)) {
+            int currentNum = num;
+            int currentStreak = 1;
+            
+            while (numSet.contains(currentNum + 1)) {
+                currentNum++;
+                currentStreak++;
+            }
+            
+            longest = Math.max(longest, currentStreak);
+        }
+    }
+    
+    return longest;
+}
+
+// Usage
+int[] nums = {100, 4, 200, 1, 3, 2};
+System.out.println(longestConsecutive(nums)); // 4 (sequence: 1,2,3,4)
+```
+
+### Solution 2: Using Sorting
+
+java
+
+```java
+public int longestConsecutive(int[] nums) {
+    if (nums.length == 0) return 0;
+    
+    Arrays.sort(nums);
+    int longest = 1;
+    int current = 1;
+    
+    for (int i = 1; i < nums.length; i++) {
+        if (nums[i] == nums[i - 1]) continue;
+        
+        if (nums[i] == nums[i - 1] + 1) {
+            current++;
+        } else {
+            longest = Math.max(longest, current);
+            current = 1;
+        }
+    }
+    
+    return Math.max(longest, current);
+}
+```
+
+----------
+
+## Problem 74: Evaluate Reverse Polish Notation
+
+### Solution 1: Using Stack
+
+java
+
+```java
+public int evalRPN(String[] tokens) {
+    Stack<Integer> stack = new Stack<>();
+    Set<String> operators = Set.of("+", "-", "*", "/");
+    
+    for (String token : tokens) {
+        if (operators.contains(token)) {
+            int b = stack.pop();
+            int a = stack.pop();
+            
+            switch (token) {
+                case "+": stack.push(a + b); break;
+                case "-": stack.push(a - b); break;
+                case "*": stack.push(a * b); break;
+                case "/": stack.push(a / b); break;
+            }
+        } else {
+            stack.push(Integer.parseInt(token));
+        }
+    }
+    
+    return stack.pop();
+}
+
+// Usage
+String[] tokens = {"2", "1", "+", "3", "*"};
+System.out.println(evalRPN(tokens)); // 9 ((2+1)*3)
+```
+
+### Solution 2: Using Deque
+
+java
+
+```java
+public int evalRPN(String[] tokens) {
+    Deque<Integer> deque = new ArrayDeque<>();
+    
+    for (String token : tokens) {
+        if (token.matches("-?\\d+")) {
+            deque.push(Integer.parseInt(token));
+        } else {
+            int b = deque.pop();
+            int a = deque.pop();
+            
+            int result = switch (token) {
+                case "+" -> a + b;
+                case "-" -> a - b;
+                case "*" -> a * b;
+                case "/" -> a / b;
+                default -> 0;
+            };
+            
+            deque.push(result);
+        }
+    }
+    
+    return deque.pop();
+}
+```
+
+----------
+
+## Problem 75: Encode and Decode Strings
+
+### Solution 1: Using Length Prefix
+
+java
+
+```java
+class Codec {
+    public String encode(List<String> strs) {
+        StringBuilder sb = new StringBuilder();
+        for (String str : strs) {
+            sb.append(str.length()).append('#').append(str);
+        }
+        return sb.toString();
+    }
+    
+    public List<String> decode(String s) {
+        List<String> result = new ArrayList<>();
+        int i = 0;
+        
+        while (i < s.length()) {
+            int delimiterPos = s.indexOf('#', i);
+            int length = Integer.parseInt(s.substring(i, delimiterPos));
+            i = delimiterPos + 1;
+            result.add(s.substring(i, i + length));
+            i += length;
+        }
+        
+        return result;
+    }
+}
+
+// Usage
+Codec codec = new Codec();
+List<String> original = Arrays.asList("Hello", "World", "Java");
+String encoded = codec.encode(original);
+System.out.println(encoded); // "5#Hello5#World4#Java"
+List<String> decoded = codec.decode(encoded);
+System.out.println(decoded); // [Hello, World, Java]
+```
+
+### Solution 2: Using Base64 Encoding
+
+java
+
+```java
+class Codec {
+    public String encode(List<String> strs) {
+        return strs.stream()
+            .map(s -> Base64.getEncoder().encodeToString(s.getBytes()))
+            .collect(Collectors.joining(","));
+    }
+    
+    public List<String> decode(String s) {
+        if (s.isEmpty()) return new ArrayList<>();
+        
+        return Arrays.stream(s.split(","))
+            .map(encoded -> new String(Base64.getDecoder().decode(encoded)))
+            .collect(Collectors.toList());
+    }
+}
+```
+
+----------
+
+## Problem 76: Container With Most Water
+
+### Solution 1: Two Pointer Approach
+
+java
+
+```java
+public int maxArea(int[] height) {
+    int left = 0, right = height.length - 1;
+    int maxArea = 0;
+    
+    while (left < right) {
+        int width = right - left;
+        int h = Math.min(height[left], height[right]);
+        maxArea = Math.max(maxArea, width * h);
+        
+        if (height[left] < height[right]) {
+            left++;
+        } else {
+            right--;
+        }
+    }
+    
+    return maxArea;
+}
+
+// Usage
+int[] height = {1, 8, 6, 2, 5, 4, 8, 3, 7};
+System.out.println(maxArea(height)); // 49
+```
+
+----------
+
+## Problem 77: Move Zeroes to End
